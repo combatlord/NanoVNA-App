@@ -734,6 +734,7 @@ void __fastcall CNanoVNA2Comms::poll()
 				addTxRead1(REG_V2_HARDWARE_REVISION);
 				addTxRead1(REG_V2_FIRMWARE_MAJOR);
 				addTxRead1(REG_V2_FIRMWARE_MINOR);
+				addTxRead2(REG_V2_BATTERY);
 				sendData();
 				m_tx_cmd.resize(0);
 				m_retries++;
@@ -985,20 +986,26 @@ int __fastcall CNanoVNA2Comms::processRx(t_serial_buffer &serial_buffer)
 	if (m_mode == MODE_POLL)
 	{	// we are polling the VNA to see if it's still there and working OK
 
-		if (size >= 3)
+		if (size >= 5)
 		{	// we have received enough bytes
 
 			// fetch them
 			const uint8_t b1 = serial_buffer.buffer[k++];
 			const uint8_t b2 = serial_buffer.buffer[k++];
 			const uint8_t b3 = serial_buffer.buffer[k++];
-
+			int value = serial_buffer.buffer[k++]|(serial_buffer.buffer[k++]<<8);
+			if (value > 0)
+			{
+				data_unit.m_vna_data.vbat_mv = value;
+				m_poll_timer.mark();
+				::PostMessage(Form1->Handle, WM_UPDATE_BATTERY_VOLTAGE, data_unit.m_vna_data.vbat_mv, 0);
+			}
 			const bool was_dfu_mode = inDFUMode();
 			const bool now_dfu_mode = (b1 == REG_DFU_V2_HARDWARE_REVISION_ACK && b2 == REG_DFU_V2_FIRMWARE_MAJOR_ACK) ? true : false;
 
 			if (b1 == data_unit.m_vna_data.hardware_revision && b2 == data_unit.m_vna_data.firmware_major && b3 == data_unit.m_vna_data.firmware_minor)
 			{	// no change in V2 mode (normal/DFU)
-				s = IntToHex((int)b1, 2) + " " + IntToHex((int)b2, 2) + " " + IntToHex((int)b3, 2) + " .. POLL OK";
+				s = IntToHex((int)b1, 2) + " " + IntToHex((int)b2, 2) + " " + IntToHex((int)b3, 2) + " " + value + " .. POLL OK";
 				Form1->pushCommMessage("rx: " + s);
 
 				setMode(MODE_IDLE);

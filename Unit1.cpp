@@ -7194,12 +7194,13 @@ void __fastcall TForm1::configGUI()
 		if (data_unit.m_vna_data.type == UNIT_TYPE_NANOVNA_V2)
 		{	// V2
 			PointBandwidthHzComboBox->Enabled = false;
-
+            BatteryVoltageBitBtn->Enabled = true;
+/*
 			BatteryVoltageBitBtn->Enabled = false;
 			if (BatteryVoltageForm)
 				if (BatteryVoltageForm->Showing)
 					BatteryVoltageForm->Hide();
-
+*/
 			VNAUsartCommsBitBtn->Enabled = false;
 			if (VNAUsartCommsForm)
 				if (VNAUsartCommsForm->Showing)

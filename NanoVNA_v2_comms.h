@@ -42,6 +42,7 @@
 #define REG_V2_ADF4350_POWER             0x42    // uint8_t .. power
 
 #define REG_V2_UNIX_TIME                 0x58    // uint32_t .. unix time
+#define REG_V2_BATTERY                   0x5C
 
 #define REG_V2_CAPTURE_SCREEN            0xEE    // t_v2_capture_screen_header followed by image data
 #define REG_V2_DEVICE_VARIANT            0xF0    // uint8 .... the type of device this is - always 0x02 for NanoVNA V2
