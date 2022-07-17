@@ -1394,7 +1394,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 								if (TryStrToFloat(s2, value))
 								{
 									data_unit.m_vna_data.edelay = value;
-									settings.eDelaySecs = value;
+									settings.eDelaySecs = value * 1e-12;
 									::PostMessage(Form1->Handle, WM_UPDATE_EDELAY, 0, 0);
 								}
 							}
