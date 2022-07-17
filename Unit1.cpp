@@ -3535,6 +3535,11 @@ void __fastcall TForm1::WMUpdateEDelay(TMessage &msg)
 	updateEDelayEdit();
 }
 
+void __fastcall TForm1::WMUpdateS21Offset(TMessage &msg)
+{
+	updateS21OffsetEdit();
+}
+
 void __fastcall TForm1::WMUpdateThresholdHz(TMessage &msg)
 {
 	StatusBar2->Panels->Items[3]->Text = "Threshold " + common.freqToStr1(data_unit.m_vna_data.freq_threshold_Hz, true, true, 6, false);
