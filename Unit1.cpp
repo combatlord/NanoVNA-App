@@ -50,6 +50,7 @@ const int NUM_POINTS_DEFAULT[]   = {51, 101, 201, 401, 801, 1024, 1601, 3201, 45
 const int NUM_POINTS_V1[]        = {51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601};
 //const int NUM_POINTS_V2[]      = {11, 21, 51, 101, 201, 401, 801, 1024, 1601, 3201, 6401, 12801, 25601};
 const int NUM_POINTS_V2[]        = {11, 21, 51, 101, 201, 401, 801, 1024};	// the V2 does not handle segments very well - they half it's scan speed
+const int NUM_POINTS_V2LITE[]    = {101, 201, 401, 801, 1001, 3201, 6401, 12801, 25601 };	//
 const int NUM_POINTS_V2PLUS4[]   = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601};
 const int NUM_POINTS_JANVNA_V2[] = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 4501};
 const int NUM_POINTS_TINYSA[]    = {51, 101, 145, 290, 500, 750, 1000, 2000, 5000};
@@ -3533,6 +3534,11 @@ void __fastcall TForm1::WMComDeviceChanged(TMessage &msg)
 void __fastcall TForm1::WMUpdateEDelay(TMessage &msg)
 {
 	updateEDelayEdit();
+}
+
+void __fastcall TForm1::WMUpdateS21Offset(TMessage &msg)
+{
+	updateS21OffsetEdit();
 }
 
 void __fastcall TForm1::WMUpdateThresholdHz(TMessage &msg)
@@ -7363,23 +7369,33 @@ void __fastcall TForm1::updateNumberOfPointsComboBox(const bool process)
 			break;
 
 		case UNIT_TYPE_NANOVNA_V2:
-			if (data_unit.m_vna_data.hardware_revision != REG_V2_HARDWARE_REVISION_ACK_2_4)
+			if (data_unit.m_vna_data.hardware_revision == REG_V2_HARDWARE_REVISION_ACK_2_4)
 			{
-				for (unsigned int i = 0; i < ARRAY_SIZE(NUM_POINTS_V2); i++)
-				{
-					const int num = NUM_POINTS_V2[i];
-					cb->AddItem(IntToStr(num), (TObject *)num);
-				}
-			}
-			else
-			{
 				for (unsigned int i = 0; i < ARRAY_SIZE(NUM_POINTS_V2PLUS4); i++)
 				{
 					const int num = NUM_POINTS_V2PLUS4[i];
 					cb->AddItem(IntToStr(num), (TObject *)num);
 				}
-			}
-			break;
+			} else if (data_unit.m_vna_data.firmware_major == 2) {
+				for (unsigned int i = 0; i < ARRAY_SIZE(NUM_POINTS_V2LITE); i++)
+				{
+
+					const int num = NUM_POINTS_V2LITE[i];
+
+					cb->AddItem(IntToStr(num), (TObject *)num);
+
+				}
+
+			} else {
+				for (unsigned int i = 0; i < ARRAY_SIZE(NUM_POINTS_V2); i++)
+				{
+
+					const int num = NUM_POINTS_V2[i];
+
+					cb->AddItem(IntToStr(num), (TObject *)num);
+
+				}
+			}			break;
 
 		case UNIT_TYPE_JANVNA_V2:
 			{

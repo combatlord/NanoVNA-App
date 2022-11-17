@@ -151,7 +151,7 @@ void __fastcall CData::resetUnitData()
 	m_vna_data.deviceid            = -1;
 	m_vna_data.cal                 = false;
 	m_vna_data.edelay              = 0.0f;
-
+	m_vna_data.s21_offset          = 0.0f;
 	m_vna_data.num_points          = 0;
 
 	m_vna_data.freq_max_Hz         = 0;

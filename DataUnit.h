@@ -78,6 +78,7 @@ class CData
 			int64_t deviceid;
 			bool cal;
 			float edelay;
+			float s21_offset;
 
 			int num_points;
 

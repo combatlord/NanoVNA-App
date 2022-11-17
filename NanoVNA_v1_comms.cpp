@@ -60,11 +60,12 @@ String __fastcall CNanoVNA1Comms::getSerialStateString(t_serial_state state)
 		case SERIAL_STATE_BANDWIDTH:			s = "bandwidth";      break;
 		case SERIAL_STATE_THRESHOLD:			s = "threshold";      break;
 		case SERIAL_STATE_EDELAY:				s = "edelay";         break;
+		case SERIAL_STATE_S21OFFSET:			s = "s21offset";      break;
 		case SERIAL_STATE_DEVICE_ID:			s = "deviceid";       break;
 		case SERIAL_STATE_CAL:					s = "cal";            break;
 		case SERIAL_STATE_POWER:				s = "power";          break;
-      case SERIAL_STATE_USART:            s = "uart";           break;
-      case SERIAL_STATE_USART_CFG:        s = "uart_cfg";       break;
+		case SERIAL_STATE_USART:				s = "uart";           break;
+		case SERIAL_STATE_USART_CFG:			s = "uart_cfg";       break;
 		case SERIAL_STATE_CLEARCONFIG:		s = "clearconfig";    break;
 		case SERIAL_STATE_SAVECONFIG:			s = "saveconfig";     break;
 		case SERIAL_STATE_SCAN:					s = "scan";           break;
@@ -1394,14 +1395,34 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 								if (TryStrToFloat(s2, value))
 								{
 									data_unit.m_vna_data.edelay = value;
-									settings.eDelaySecs = value;
+									settings.eDelaySecs = value * 1e-12;
 									::PostMessage(Form1->Handle, WM_UPDATE_EDELAY, 0, 0);
 								}
 							}
 
 						}
 						break;
+					case SERIAL_STATE_S21OFFSET:
+  						for (unsigned int i = 0; i < m_rx_block.lines.size(); i++)
+						{
+							// 0.000000
+							// ch>
 
+							String s2 = m_rx_block.lines[i].Trim().LowerCase();
+
+							if (!s2.IsEmpty())
+							{
+								float value;
+								if (TryStrToFloat(s2, value))
+								{
+									data_unit.m_vna_data.s21_offset = value;
+									settings.s21OffsetdB = value;
+									::PostMessage(Form1->Handle, WM_UPDATE_S21_OFFSET, 0, 0);
+								}
+							}
+
+						}
+						break;
 					case SERIAL_STATE_DEVICE_ID:
 						for (unsigned int i = 0; i < m_rx_block.lines.size(); i++)
 						{
@@ -2250,6 +2271,11 @@ bool __fastcall CNanoVNA1Comms::processRxLine()
 	if (cmd == "edelay")
 	{
 		block_type = SERIAL_STATE_EDELAY;
+	}
+	else
+	if (cmd == "s21offset")
+	{
+		block_type = SERIAL_STATE_S21OFFSET;
 	}
 	else
 	if (cmd == "deviceid")

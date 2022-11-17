@@ -671,6 +671,7 @@ private:
 	void __fastcall WMScreenCapture(TMessage &msg);
 	void __fastcall WMComDeviceChanged(TMessage &msg);
 	void __fastcall WMUpdateEDelay(TMessage &msg);
+	void __fastcall WMUpdateS21Offset(TMessage &msg);	
 	void __fastcall WMUpdateThresholdHz(TMessage &msg);
 	void __fastcall WMUpdatePointBandwidth(TMessage &msg);
 	void __fastcall WMUpdateOutputPower(TMessage &msg);
@@ -746,6 +747,7 @@ protected:
 
 		VCL_MESSAGE_HANDLER(WM_COM_DEVICE_CHANGED, TMessage, WMComDeviceChanged);
 		VCL_MESSAGE_HANDLER(WM_UPDATE_EDELAY, TMessage, WMUpdateEDelay);
+		VCL_MESSAGE_HANDLER(WM_UPDATE_S21_OFFSET, TMessage, WMUpdateS21Offset);
 		VCL_MESSAGE_HANDLER(WM_UPDATE_THRESHOLD_HZ, TMessage, WMUpdateThresholdHz);
 		VCL_MESSAGE_HANDLER(WM_UPDATE_POINT_BANDWIDTH, TMessage, WMUpdatePointBandwidth);
 		VCL_MESSAGE_HANDLER(WM_UPDATE_OUTPUT_POWER, TMessage, WMUpdateOutputPower);
