@@ -779,10 +779,16 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 	// Port Info: Preemption through NMI
 	// Platform: STM32F072xB Entry Level Medium Density devices
 
+	// tinySA ULTRA
+	// 2019-2022 Copyright @Erik Kaashoek
+	// 2016-2020 Copyright @edy555
+	// SW licensed under GPL. See: https://github.com/erikkaashoek/tinySA
+	// Version: tinySA4_v1.2-647-g63a26eb
+	// Build Time: Dec 11 2022 - 13:29:01
 
 	// remember the current unit type
 	const int prev_unit_type = data_unit.m_vna_data.type;
-
+	int ultra = 0;
 	for (unsigned int i = 0; i < m_rx_block.lines.size(); i++)
 	{
 		String s = m_rx_block.lines[i].Trim().LowerCase();
@@ -808,6 +814,7 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 		if (s.Pos("tinysa") > 0)
 		{
 			data_unit.m_vna_data.type = UNIT_TYPE_TINYSA;
+			if (s.Pos("ultra") > 0) ultra = 1;
 			break;
 		}
 	}
@@ -910,9 +917,14 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 //			break;
 
 		case UNIT_TYPE_TINYSA:
+			if (ultra) {
+				data_unit.m_vna_data.lcd_width  = 480;
+				data_unit.m_vna_data.lcd_height = 320;
+			} else {
 				data_unit.m_vna_data.lcd_width  = 320;
 				data_unit.m_vna_data.lcd_height = 240;
-				break;
+			}
+			break;
 	}
 
 	::PostMessage(Form1->Handle, WM_NEW_UNIT_TYPE, 0, 0);
