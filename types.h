@@ -104,7 +104,10 @@
 #define MIN_VNA_JANVNAV2_FREQ_HZ       1LL
 
 #define MAX_TINYSA_FREQ_HZ             950000000LL
-#define MIN_TINYSA_FREQ_HZ             1000LL
+#define MIN_TINYSA_FREQ_HZ             0LL
+
+#define MAX_TINYSA_ULTRA_FREQ_HZ       12000000000LL
+#define MIN_TINYSA_ULTRA_FREQ_HZ       0LL
 
 #define MAX_FREQ_STEPS                 10000
 

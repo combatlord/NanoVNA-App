@@ -77,6 +77,8 @@ class CData
 			int usart_speed;
 			int64_t deviceid;
 			bool cal;
+			bool ultra;
+			float ext_zero_level;
 			float edelay;
 			float s21_offset;
 

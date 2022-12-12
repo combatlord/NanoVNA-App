@@ -318,9 +318,9 @@ void __fastcall CNanoVNA1Comms::requestScan()
 	if (segments <= 0)
 		return;
 
-	const uint32_t seg_span  = data_unit.m_freq_span_Hz / segments;
-	const uint32_t seg_start = data_unit.m_freq_start_Hz + (seg_span * data_unit.m_segment);
-	const uint32_t seg_stop  = seg_start + seg_span;
+	const uint64_t seg_span  = data_unit.m_freq_span_Hz / segments;
+	const uint64_t seg_start = data_unit.m_freq_start_Hz + (seg_span * data_unit.m_segment);
+	const uint64_t seg_stop  = seg_start + seg_span;
 
 	if (m_poll_timer.millisecs(false) >= m_poll_ms)
 		poll();
@@ -335,9 +335,9 @@ void __fastcall CNanoVNA1Comms::requestScan()
 		uint16_t mask = 0x07;
 		String s;
 		if (data_unit.m_vna_data.cmd_scanraw)
-			s.printf(L"scanraw %u %u %d", seg_start, seg_stop, data_unit.m_points);
+			s.printf(L"scanraw %llu %llu %d", seg_start, seg_stop, data_unit.m_points);
 		else
-			s.printf(L"scan %u %u %d %u", seg_start, seg_stop, data_unit.m_points, mask);
+			s.printf(L"scan %llu %llu %d %u", seg_start, seg_stop, data_unit.m_points, mask);
 		addSerialTxCommand(s);
 	}
 	else
@@ -372,7 +372,7 @@ void __fastcall CNanoVNA1Comms::requestScan()
 				mask |= SCAN_MASK_OUT_FREQ;
 
 		String s;
-		s.printf(L"%u %u %d %u", seg_start, seg_stop, data_unit.m_points_per_segment, mask);
+		s.printf(L"%llu %llu %d %u", seg_start, seg_stop, data_unit.m_points_per_segment, mask);
 //		s = "scan " + s;
 		s = (data_unit.m_vna_data.cmd_scan_bin ? "scan_bin " : "scan ") + s;
 
@@ -788,7 +788,7 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 
 	// remember the current unit type
 	const int prev_unit_type = data_unit.m_vna_data.type;
-	int ultra = 0;
+	data_unit.m_vna_data.ultra = false;
 	for (unsigned int i = 0; i < m_rx_block.lines.size(); i++)
 	{
 		String s = m_rx_block.lines[i].Trim().LowerCase();
@@ -814,7 +814,7 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 		if (s.Pos("tinysa") > 0)
 		{
 			data_unit.m_vna_data.type = UNIT_TYPE_TINYSA;
-			if (s.Pos("ultra") > 0) ultra = 1;
+			if (s.Pos("ultra") > 0) data_unit.m_vna_data.ultra = true;
 			break;
 		}
 	}
@@ -829,7 +829,9 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 		case UNIT_TYPE_NANOVNA_H7: data_unit.m_vna_data.name = "NanoVNA-H7";        break;
 		case UNIT_TYPE_NANOVNA_V2: data_unit.m_vna_data.name = "NanoVNA-V2";        break;
 		case UNIT_TYPE_JANVNA_V2:  data_unit.m_vna_data.name = "JanVNA-V2";         break;
-		case UNIT_TYPE_TINYSA:     data_unit.m_vna_data.name = "tinySA";            break;
+		case UNIT_TYPE_TINYSA:
+			if (data_unit.m_vna_data.ultra) data_unit.m_vna_data.name = "tinySA ULTRA";
+			else                            data_unit.m_vna_data.name = "tinySA";       break;
 		default:                	data_unit.m_vna_data.name = "ERROR-unit-type";   break;
 	}
 
@@ -917,12 +919,14 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 //			break;
 
 		case UNIT_TYPE_TINYSA:
-			if (ultra) {
+			if (data_unit.m_vna_data.ultra) {
 				data_unit.m_vna_data.lcd_width  = 480;
 				data_unit.m_vna_data.lcd_height = 320;
+				data_unit.m_vna_data.ext_zero_level = 174;
 			} else {
 				data_unit.m_vna_data.lcd_width  = 320;
 				data_unit.m_vna_data.lcd_height = 240;
+				data_unit.m_vna_data.ext_zero_level = 128;
 			}
 			break;
 	}
@@ -2056,7 +2060,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 
 									const int64_t freq = data_unit.m_freq_start_Hz + I64ROUND(((double)data_unit.m_freq_span_Hz * Form1->m_freq_data_list.size()) / (num_points - 1));
 
-									const float dBm = ((float)data / 32) - 128;
+									const float dBm = ((float)data / 32) - data_unit.m_vna_data.ext_zero_level;
 									const float lin = powf(10.0f, dBm / 20.0f);
 
 									t_data_point fp;
