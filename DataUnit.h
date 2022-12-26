@@ -42,11 +42,12 @@ class CData
 			bool cmd_scan_bin;
 			bool cmd_scanraw;
 			bool cmd_sd_list;
-			bool cmd_sd_readfile;
+			bool cmd_sd_read;
+			bool cmd_sd_delete;
 			bool cmd_bandwidth;
 			bool cmd_vbat;
 			bool cmd_vbat_offset;
-         bool cmd_marker;
+			bool cmd_marker;
 			bool cmd_time;
 			bool cmd_threshold;
 			bool cmd_pause;
@@ -60,6 +61,7 @@ class CData
 			bool cmd_sweep;
 			bool cmd_mode;
 			bool cmd_edelay;
+			bool cmd_s21offset;
 
 			t_unit_type type;
 			int lcd_width;

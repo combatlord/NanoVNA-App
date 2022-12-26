@@ -357,6 +357,12 @@ __published:
 	TComboBox *CalibrationSelectComboBox;
 	TSpeedButton *CWModeSpeedButton;
 	TPanel *GLPanel;
+	TLabel *Label7;
+	TToggleSwitch *SDPanelToggleSwitch;
+	TPanel *SDPanel;
+	TListBox *file_list;
+	TComboBox *sd_pattern;
+	TButton *SD_list_update;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
@@ -533,6 +539,10 @@ __published:
 	void __fastcall GLPanelMouseEnter(TObject *Sender);
 	void __fastcall GLPanelMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+	void __fastcall InfoPanelToggleSDClick(TObject *Sender);
+	void __fastcall SD_list_updateClick(TObject *Sender);
+	void __fastcall sd_patternSelect(TObject *Sender);
+	void __fastcall sd_patternKeyPress(TObject *Sender, System::WideChar &Key);
 
 
 

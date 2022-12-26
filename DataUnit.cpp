@@ -113,13 +113,14 @@ void __fastcall CData::resetUnitData()
 	m_vna_data.cmd_capture         = false;
 	m_vna_data.cmd_vbat            = false;
 	m_vna_data.cmd_vbat_offset     = false;
-   m_vna_data.cmd_marker          = false;
+	m_vna_data.cmd_marker          = false;
 	m_vna_data.cmd_bandwidth       = false;
 	m_vna_data.cmd_integrator      = false;
 	m_vna_data.cmd_scan_bin        = false;
 	m_vna_data.cmd_scanraw         = false;
 	m_vna_data.cmd_sd_list         = false;
-	m_vna_data.cmd_sd_readfile     = false;
+	m_vna_data.cmd_sd_read         = false;
+	m_vna_data.cmd_sd_delete       = false;
 	m_vna_data.cmd_time            = false;
 	m_vna_data.cmd_threshold       = false;
 	m_vna_data.cmd_pause           = false;
@@ -133,6 +134,7 @@ void __fastcall CData::resetUnitData()
 	m_vna_data.cmd_sweep           = false;
 	m_vna_data.cmd_mode            = false;
 	m_vna_data.cmd_edelay          = false;
+	m_vna_data.cmd_s21offset       = false;
 
    m_vna_data.type                = UNIT_TYPE_NONE;
 	m_vna_data.lcd_width           = 320;

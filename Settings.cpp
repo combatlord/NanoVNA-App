@@ -173,6 +173,7 @@ CSettings::CSettings()
 	m_lc_matching_enable = false;
 
 	m_info_panel = false;
+	m_sd_panel = false;
 
 	m_start_Hz = 50000;
 	m_stop_Hz  = 900000000;
@@ -729,6 +730,13 @@ void __fastcall CSettings::load()
 		{
 			if (params.size() >= 2)
 				m_info_panel = (params[1].LowerCase() == "true") ? true : false;
+			continue;
+		}
+
+		if (params[0] == "sd_panel_enable")
+		{
+			if (params.size() >= 2)
+				m_sd_panel = (params[1].LowerCase() == "true") ? true : false;
 			continue;
 		}
 
@@ -1585,6 +1593,9 @@ void __fastcall CSettings::save()
 	buffer.push_back(s);
 
 	s.printf(L"info_panel_enable %s", String(m_info_panel ? "true" : "false").c_str());
+	buffer.push_back(s);
+
+	s.printf(L"sd_panel_enable %s", String(m_sd_panel ? "true" : "false").c_str());
 	buffer.push_back(s);
 
 	s.printf(L"serial_port %d", m_serial_port.baudrate);

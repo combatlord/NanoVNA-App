@@ -71,6 +71,7 @@ private:
 	t_graph_arrange m_graph_arrangement;
 
 	bool m_info_panel;
+	bool m_sd_panel;
 
 	struct
 	{
@@ -219,6 +220,7 @@ public:
 	__property float velocityFactor        = {read = m_velocity_factor.value, write = m_velocity_factor.value};
 	__property String velocityFactorName   = {read = m_velocity_factor.name, write = m_velocity_factor.name};
 	__property bool infoPanel              = {read = m_info_panel, write = m_info_panel};
+	__property bool SDPanel                = {read = m_sd_panel, write = m_sd_panel};
 
 	__property String serialPortName       = {read = m_serial_port.name, write = m_serial_port.name};
 	__property int serialPortBaudrate      = {read = m_serial_port.baudrate, write = m_serial_port.baudrate};

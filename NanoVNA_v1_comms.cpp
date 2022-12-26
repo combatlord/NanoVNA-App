@@ -19,6 +19,8 @@
 #define SCAN_MASK_OUT_DATA0      (1u << 1)
 #define SCAN_MASK_OUT_DATA1      (1u << 2)
 #define SCAN_MASK_NO_CALIBRATION (1u << 3)
+#define SCAN_MASK_NO_EDELAY      (1u << 4)
+#define SCAN_MASK_NO_S21OFFSET   (1u << 5)
 #define SCAN_MASK_BINARY         (1u << 7)
 
 #define COMMAND_PROMPT "ch>"
@@ -89,9 +91,10 @@ String __fastcall CNanoVNA1Comms::getSerialStateString(t_serial_state state)
 		case SERIAL_STATE_SCREEN_FILL:      s = "fill"; break;
 		case SERIAL_STATE_SCREEN_BULK:      s = "bulk"; break;
 		case SERIAL_STATE_SD_LIST:				s = "sd_list";        break;
-		case SERIAL_STATE_SD_READFILE:		s = "sd_readfile";    break;
+		case SERIAL_STATE_SD_READ:	 			s = "sd_read";		  break;
+		case SERIAL_STATE_SD_DELETE: 			s = "sd_delete";	  break;
 		case SERIAL_STATE_MODE:					s = "mode";           break;
-		default:										s = "unknown";        break;
+		default:								s = "unknown";        break;
 	}
 	return s;
 }
@@ -360,8 +363,8 @@ void __fastcall CNanoVNA1Comms::requestScan()
 			mask |= SCAN_MASK_OUT_DATA1;
 		#endif
 
-		if (settings.calibrationSelection != CAL_SELECT_VNA)
-			mask |= SCAN_MASK_NO_CALIBRATION;	// don't use the VNA's own calibration
+		if (settings.calibrationSelection != CAL_SELECT_VNA)  	// don't use the VNA's own calibration
+			mask |= SCAN_MASK_NO_CALIBRATION | SCAN_MASK_NO_EDELAY | SCAN_MASK_NO_S21OFFSET;
 
 		//mask |= SCAN_MASK_BINARY;
 
@@ -496,8 +499,11 @@ void __fastcall CNanoVNA1Comms::poll()
 			if (data_unit.m_vna_data.cmd_deviceid)
 				addSerialTxCommand("deviceid");
 
-			if (data_unit.m_vna_data.cmd_edelay)
-				addSerialTxCommand("edelay");
+//			if (data_unit.m_vna_data.cmd_edelay)
+//				addSerialTxCommand("edelay");
+
+//			if (data_unit.m_vna_data.cmd_s21offset)
+//				addSerialTxCommand("s21offset");
 
 			if (data_unit.m_vna_data.cmd_vbat_offset)
 				addSerialTxCommand("vbat_offset");
@@ -554,8 +560,8 @@ void __fastcall CNanoVNA1Comms::poll()
 			if (data_unit.m_vna_data.cmd_vbat)
 				addSerialTxCommand("vbat");
 
-			if (data_unit.m_vna_data.cmd_marker)
-				addSerialTxCommand("marker");
+	//		if (data_unit.m_vna_data.cmd_marker)
+	//			addSerialTxCommand("marker");
 
 			if (data_unit.m_vna_data.cmd_sweep)
 				addSerialTxCommand("sweep");
@@ -1029,7 +1035,8 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 											data_unit.m_vna_data.cmd_scan_bin      = (s2.Pos(" scan_bin ")    > 1) ? true : false;
 											data_unit.m_vna_data.cmd_scanraw       = (s2.Pos(" scanraw ")     > 1) ? true : false;
 											data_unit.m_vna_data.cmd_sd_list       = (s2.Pos(" sd_list ")     > 1) ? true : false;
-											data_unit.m_vna_data.cmd_sd_readfile   = (s2.Pos(" sd_readfile ") > 1) ? true : false;
+											data_unit.m_vna_data.cmd_sd_read       = (s2.Pos(" sd_read ")     > 1) ? true : false;
+											data_unit.m_vna_data.cmd_sd_delete     = (s2.Pos(" sd_delete ")   > 1) ? true : false;
 											data_unit.m_vna_data.cmd_time          = (s2.Pos(" time ")        > 1) ? true : false;
 											data_unit.m_vna_data.cmd_threshold     = (s2.Pos(" threshold ")   > 1) ? true : false;
 											data_unit.m_vna_data.cmd_pause         = (s2.Pos(" pause ")       > 1) ? true : false;
@@ -1041,7 +1048,9 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 											data_unit.m_vna_data.cmd_usart_cfg     = (s2.Pos(" usart_cfg ")   > 1) ? true : false;
 											data_unit.m_vna_data.cmd_deviceid      = (s2.Pos(" deviceid ")    > 1) ? true : false;
 											data_unit.m_vna_data.cmd_sweep         = (s2.Pos(" sweep ")       > 1) ? true : false;
-											data_unit.m_vna_data.cmd_mode          = (s2.Pos(" mode ")        > 1) ? true : false;
+											data_unit.m_vna_data.cmd_mode          = (s2.Pos(" mode ")        > 1) ? true : false;					
+											data_unit.m_vna_data.cmd_edelay        = (s2.Pos(" edelay ")      > 1) ? true : false;
+											data_unit.m_vna_data.cmd_s21offset     = (s2.Pos(" s21offset ")   > 1) ? true : false;
 										}
 									}
 								}
@@ -1507,7 +1516,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 					case SERIAL_STATE_USART_CFG:
 						for (unsigned int i = 0; i < m_rx_block.lines.size(); i++)
 						{
-							// Serial: 38400 baud
+							// current: 38400   or    Serial: 38400 baud
 							// ch>
 
 							String s2 = m_rx_block.lines[i].Trim();
@@ -1516,9 +1525,9 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 							s2 = common.localiseDecimalPoint(s2);
 							common.parseString(s2, " ", params);
 
-							if (params.size() >= 3)
+							if (params.size() >= 2)
 							{
-								if (params[0].LowerCase() == "serial:" && params[2].LowerCase() == "baud")
+								if (params[0].LowerCase() == "current:" || params[0].LowerCase() == "serial:")
 								{
 									int baudrate;
 									if (TryStrToInt(params[1], baudrate))
@@ -1527,7 +1536,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 
 										if (VNAUsartCommsForm)
 											VNAUsartCommsForm->setBaudrate(baudrate);
-                           }
+									}
 								}
 							}
 						}
@@ -2147,9 +2156,21 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 						break;
 
 					case SERIAL_STATE_SD_LIST:
+					{
+						const unsigned int bins = m_rx_block.lines.size();
+						Form1->file_list->Items->Clear();
+						for (unsigned int i = 0; i < bins; i++) {
+							std::vector <String> params;
+							common.parseString(m_rx_block.lines[i].Trim(), " ", params);
+							if (params.size() > 0)
+								Form1->file_list->Items->Add(params[0]);
+                        }
 						break;
-
-					case SERIAL_STATE_SD_READFILE:
+					}
+					case SERIAL_STATE_SD_READ:
+						break;
+						
+					case SERIAL_STATE_SD_DELETE:
 						break;
 
 					case SERIAL_STATE_MODE:
@@ -2502,13 +2523,18 @@ bool __fastcall CNanoVNA1Comms::processRxLine()
 	else
 	if (cmd == "sd_list")
 	{
-		//block_type = SERIAL_STATE_SD_LIST;
+		block_type = SERIAL_STATE_SD_LIST;
+	}
+	else
+	if (cmd == "sd_read")
+	{
+		//block_type = SERIAL_STATE_SD_READ;
 		return true;
 	}
 	else
-	if (cmd == "sd_readfile")
+	if (cmd == "sd_delete")
 	{
-		//block_type = SERIAL_STATE_SD_READFILE;
+		//block_type = SERIAL_STATE_SD_DELETE;
 		return true;
 	}
 	else
@@ -2611,7 +2637,7 @@ int __fastcall CNanoVNA1Comms::processRx(t_serial_buffer &serial_buffer)
 				break;
 
 			}
-			case SERIAL_STATE_SD_READFILE:
+			case SERIAL_STATE_SD_READ:
 			case SERIAL_STATE_SCREEN_CAPTURE:
 			case SERIAL_STATE_FREQDATA_RAW:
 				{
@@ -2801,7 +2827,7 @@ int __fastcall CNanoVNA1Comms::processRx(t_serial_buffer &serial_buffer)
 		//k = 0;
 	}
 
-	if (	m_rx_block.type == SERIAL_STATE_SD_READFILE ||
+	if (	m_rx_block.type == SERIAL_STATE_SD_READ ||
 			m_rx_block.type == SERIAL_STATE_SCREEN_CAPTURE ||
 			m_rx_block.type == SERIAL_STATE_SCREEN_FILL ||
 			m_rx_block.type == SERIAL_STATE_SCREEN_BULK ||

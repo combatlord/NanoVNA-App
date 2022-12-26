@@ -7,8 +7,8 @@ object Form1: TForm1
   VertScrollBar.Visible = False
   AlphaBlendValue = 128
   Caption = 'Form1'
-  ClientHeight = 661
-  ClientWidth = 884
+  ClientHeight = 662
+  ClientWidth = 987
   Color = clBtnFace
   Constraints.MinHeight = 700
   Constraints.MinWidth = 900
@@ -30,8 +30,8 @@ object Form1: TForm1
   OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   DesignSize = (
-    884
-    661)
+    987
+    662)
   PixelsPerInch = 96
   TextHeight = 13
   object Label12: TLabel
@@ -274,7 +274,7 @@ object Form1: TForm1
     Visible = False
   end
   object LCMatchingLabel: TLabel
-    Left = 565
+    Left = 556
     Top = 35
     Width = 61
     Height = 13
@@ -470,7 +470,7 @@ object Form1: TForm1
     OnClick = ScanSpeedButtonClick
   end
   object InfoPanelLabel2: TLabel
-    Left = 811
+    Left = 914
     Top = 35
     Width = 23
     Height = 13
@@ -483,6 +483,7 @@ object Form1: TForm1
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
+    ExplicitLeft = 811
   end
   object EDelayLabel: TLabel
     Left = 80
@@ -628,6 +629,21 @@ object Form1: TForm1
     ShowHint = True
     OnClick = CWModeSpeedButtonClick
   end
+  object Label7: TLabel
+    Left = 816
+    Top = 35
+    Width = 39
+    Height = 13
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    Caption = 'SD Card'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clNavy
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
   object TimeAverageLevelTrackBar: TTrackBar
     Left = 136
     Top = 304
@@ -647,7 +663,7 @@ object Form1: TForm1
     OnChange = TimeAverageLevelTrackBarChange
   end
   object CloseBitBtn: TBitBtn
-    Left = 840
+    Left = 943
     Top = 4
     Width = 36
     Height = 21
@@ -699,6 +715,7 @@ object Form1: TForm1
     TabOrder = 11
     Visible = False
     OnClick = CloseBitBtnClick
+    ExplicitLeft = 840
   end
   object SerialPortBaudrateComboBox: TComboBox
     Left = 220
@@ -736,8 +753,8 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 642
-    Width = 884
+    Top = 643
+    Width = 987
     Height = 19
     Font.Charset = ANSI_CHARSET
     Font.Color = clBtnText
@@ -782,11 +799,12 @@ object Form1: TForm1
     UseSystemFont = False
     StyleElements = [seClient, seBorder]
     OnMouseDown = StatusBarMouseDown
+    ExplicitWidth = 884
   end
   object VelocityFactorComboBox: TComboBox
     Left = 684
     Top = 4
-    Width = 131
+    Width = 234
     Height = 21
     Cursor = crHandPoint
     Hint = ' TDR \n Velocity factor '
@@ -799,9 +817,10 @@ object Form1: TForm1
     ShowHint = True
     TabOrder = 14
     OnChange = VelocityFactorComboBoxChange
+    ExplicitWidth = 131
   end
   object VelocityFactorEdit: TEdit
-    Left = 821
+    Left = 924
     Top = 4
     Width = 55
     Height = 21
@@ -813,6 +832,7 @@ object Form1: TForm1
     Text = '0.66'
     TextHint = 'Enter velocity factor'
     OnChange = VelocityFactorEditChange
+    ExplicitLeft = 821
   end
   object TDRWindowTrackBar: TTrackBar
     Left = 136
@@ -899,7 +919,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 228
     Top = 57
-    Width = 653
+    Width = 756
     Height = 563
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvNone
@@ -909,10 +929,11 @@ object Form1: TForm1
     ParentDoubleBuffered = False
     ShowCaption = False
     TabOrder = 39
+    ExplicitWidth = 653
     object GraphPaintBox: TPaintBox
       Left = 0
       Top = 0
-      Width = 358
+      Width = 344
       Height = 536
       Cursor = crArrow
       Hint = 'No hint'
@@ -938,14 +959,13 @@ object Form1: TForm1
       OnMouseMove = GraphPaintBoxMouseMove
       OnMouseUp = GraphPaintBoxMouseUp
       OnPaint = GraphPaintBoxPaint
-      ExplicitLeft = 188
-      ExplicitWidth = 170
-      ExplicitHeight = 543
+      ExplicitLeft = 387
+      ExplicitWidth = 46
     end
     object InfoPanel: TPanel
-      Left = 358
+      Left = 544
       Top = 0
-      Width = 295
+      Width = 212
       Height = 536
       Align = alRight
       BevelOuter = bvLowered
@@ -1743,7 +1763,7 @@ object Form1: TForm1
     object Panel2: TPanel
       Left = 0
       Top = 536
-      Width = 653
+      Width = 756
       Height = 27
       Margins.Left = 0
       Margins.Right = 0
@@ -1753,10 +1773,11 @@ object Form1: TForm1
       ParentColor = True
       ShowCaption = False
       TabOrder = 1
+      ExplicitWidth = 653
       object HistoryTrackBar: TTrackBar
         Left = 46
         Top = 0
-        Width = 607
+        Width = 710
         Height = 27
         Cursor = crHandPoint
         Hint = 'History position'
@@ -1775,6 +1796,7 @@ object Form1: TForm1
         TickStyle = tsNone
         StyleElements = [seFont, seBorder]
         OnChange = HistoryTrackBarChange
+        ExplicitWidth = 607
       end
       object BitBtn1: TBitBtn
         Left = 0
@@ -1807,7 +1829,7 @@ object Form1: TForm1
     object GLPanel: TPanel
       Left = 0
       Top = 0
-      Width = 358
+      Width = 344
       Height = 536
       Align = alClient
       BevelOuter = bvLowered
@@ -1835,6 +1857,58 @@ object Form1: TForm1
       OnMouseMove = GLPanelMouseMove
       OnMouseUp = GLPanelMouseUp
       OnResize = GLPanelResize
+      ExplicitWidth = 387
+    end
+    object SDPanel: TPanel
+      Left = 344
+      Top = 0
+      Width = 200
+      Height = 536
+      Align = alRight
+      Caption = 'SDPanel'
+      TabOrder = 3
+      Visible = False
+      ExplicitLeft = 338
+      ExplicitTop = 1
+      object file_list: TListBox
+        Left = 1
+        Top = 48
+        Width = 198
+        Height = 487
+        Align = alBottom
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        ItemHeight = 13
+        TabOrder = 0
+      end
+      object sd_pattern: TComboBox
+        Left = 6
+        Top = 21
+        Width = 115
+        Height = 21
+        AutoComplete = False
+        ItemIndex = 0
+        TabOrder = 1
+        Text = '*.*'
+        OnKeyPress = sd_patternKeyPress
+        OnSelect = sd_patternSelect
+        Items.Strings = (
+          '*.*'
+          '*.bmp'
+          '*.s1p'
+          '*.s2p'
+          '*.bin'
+          '*.cal'
+          '*.cmd')
+      end
+      object SD_list_update: TButton
+        Left = 127
+        Top = 21
+        Width = 67
+        Height = 21
+        Caption = 'Update'
+        TabOrder = 2
+        OnClick = SD_list_updateClick
+      end
     end
   end
   object FreqBandEnableToggleSwitch: TToggleSwitch
@@ -1859,9 +1933,9 @@ object Form1: TForm1
     OnClick = FreqBandEnableToggleSwitchClick
   end
   object SweepNameEdit: TEdit
-    Left = 684
+    Left = 675
     Top = 31
-    Width = 117
+    Width = 135
     Height = 21
     Hint = 'Sweep name - added to top of saved image'
     Anchors = [akLeft, akTop, akRight]
@@ -1903,7 +1977,7 @@ object Form1: TForm1
     OnKeyDown = PointBandwidthHzComboBoxKeyDown
   end
   object LCMatchingToggleSwitch: TToggleSwitch
-    Left = 630
+    Left = 621
     Top = 31
     Width = 40
     Height = 20
@@ -2534,7 +2608,7 @@ object Form1: TForm1
     OnClick = CalibrationBitBtnClick
   end
   object InfoPanelToggleSwitch: TToggleSwitch
-    Left = 836
+    Left = 939
     Top = 31
     Width = 40
     Height = 20
@@ -2554,6 +2628,7 @@ object Form1: TForm1
     ThumbColor = clNavy
     ThumbWidth = 20
     OnClick = InfoPanelToggleSwitchClick
+    ExplicitLeft = 836
   end
   object SetNormaliseButton: TButton
     Left = 5
@@ -2891,8 +2966,8 @@ object Form1: TForm1
   end
   object StatusBar2: TStatusBar
     Left = 0
-    Top = 623
-    Width = 884
+    Top = 624
+    Width = 987
     Height = 19
     Font.Charset = ANSI_CHARSET
     Font.Color = clBtnText
@@ -2935,6 +3010,7 @@ object Form1: TForm1
     UseSystemFont = False
     StyleElements = [seClient, seBorder]
     OnMouseDown = StatusBarMouseDown
+    ExplicitWidth = 884
   end
   object CalibrationSelectComboBox: TComboBox
     Left = 363
@@ -2955,6 +3031,28 @@ object Form1: TForm1
     ShowHint = True
     TabOrder = 47
     OnChange = CalibrationSelectComboBoxChange
+  end
+  object SDPanelToggleSwitch: TToggleSwitch
+    Left = 861
+    Top = 31
+    Width = 40
+    Height = 20
+    Cursor = crHandPoint
+    Hint = 'SD Card panel'
+    Anchors = [akTop, akRight]
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    FrameColor = clBtnFace
+    ParentFont = False
+    ShowStateCaption = False
+    SwitchWidth = 40
+    TabOrder = 48
+    ThumbColor = clNavy
+    ThumbWidth = 20
+    OnClick = InfoPanelToggleSDClick
   end
   object GraphPopupMenu: TPopupMenu
     AutoHotkeys = maManual

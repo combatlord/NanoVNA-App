@@ -757,6 +757,9 @@ void __fastcall TForm1::FormCreate(TObject *Sender)
 	InfoPanel->Visible = settings.infoPanel;
 	updateInfoPanel();
 
+	SDPanelToggleSwitch->State = settings.SDPanel ? tssOn : tssOff;
+	SDPanel->Visible = settings.SDPanel;
+
 	// move to the saved position
 	this->Top    = settings.mainWindowPos.top;
 	this->Left   = settings.mainWindowPos.left;
@@ -9724,6 +9727,44 @@ void __fastcall TForm1::ScanOnceSpeedButtonClick(TObject *Sender)
 	}
 }
 
+void __fastcall TForm1::SD_list_updateClick(TObject *Sender)
+{
+	if (!connected())
+		return;
+	if (data_unit.m_vna_data.type == UNIT_TYPE_JANVNA_V2)
+	{
+		return;
+	}
+	else
+	if (data_unit.m_vna_data.type == UNIT_TYPE_NANOVNA_V2)
+	{	// V2
+		return;
+	}
+	else
+	{	// V1
+		if (data_unit.m_vna_data.cmd_sd_list)
+		{
+			String s;
+			s.printf(L"sd_list %s", sd_pattern->Text);
+			Form1->addSerialTxCommand(s);
+		}
+	}
+}
+
+void __fastcall TForm1::sd_patternSelect(TObject *Sender)
+{
+	SD_list_updateClick(Sender);
+}
+
+void __fastcall TForm1::sd_patternKeyPress(TObject *Sender, System::WideChar &Key)
+
+{
+	if (Key == VK_RETURN)
+		SD_list_updateClick(Sender);
+}
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+
 void __fastcall TForm1::CurveSmoothingTrackBarChange(TObject *Sender)
 {
 	settings.curveSmoothingLevel = CurveSmoothingTrackBar->Position;
@@ -10396,6 +10437,13 @@ void __fastcall TForm1::InfoPanelToggleSwitchClick(TObject *Sender)
 	settings.infoPanel = (InfoPanelToggleSwitch->State == tssOn) ? true : false;
 	InfoPanel->Visible = settings.infoPanel;
 }
+
+void __fastcall TForm1::InfoPanelToggleSDClick(TObject *Sender)
+{
+	settings.SDPanel = (SDPanelToggleSwitch->State == tssOn) ? true : false;
+	SDPanel->Visible = settings.SDPanel;
+}
+//---------------------------------------------------------------------------
 
 void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta,
 			 TPoint &MousePos, bool &Handled)
