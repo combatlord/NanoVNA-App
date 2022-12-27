@@ -715,7 +715,6 @@ object Form1: TForm1
     TabOrder = 11
     Visible = False
     OnClick = CloseBitBtnClick
-    ExplicitLeft = 840
   end
   object SerialPortBaudrateComboBox: TComboBox
     Left = 220
@@ -799,7 +798,6 @@ object Form1: TForm1
     UseSystemFont = False
     StyleElements = [seClient, seBorder]
     OnMouseDown = StatusBarMouseDown
-    ExplicitWidth = 884
   end
   object VelocityFactorComboBox: TComboBox
     Left = 684
@@ -817,7 +815,6 @@ object Form1: TForm1
     ShowHint = True
     TabOrder = 14
     OnChange = VelocityFactorComboBoxChange
-    ExplicitWidth = 131
   end
   object VelocityFactorEdit: TEdit
     Left = 924
@@ -832,7 +829,6 @@ object Form1: TForm1
     Text = '0.66'
     TextHint = 'Enter velocity factor'
     OnChange = VelocityFactorEditChange
-    ExplicitLeft = 821
   end
   object TDRWindowTrackBar: TTrackBar
     Left = 136
@@ -929,7 +925,6 @@ object Form1: TForm1
     ParentDoubleBuffered = False
     ShowCaption = False
     TabOrder = 39
-    ExplicitWidth = 653
     object GraphPaintBox: TPaintBox
       Left = 0
       Top = 0
@@ -1773,7 +1768,6 @@ object Form1: TForm1
       ParentColor = True
       ShowCaption = False
       TabOrder = 1
-      ExplicitWidth = 653
       object HistoryTrackBar: TTrackBar
         Left = 46
         Top = 0
@@ -1796,7 +1790,6 @@ object Form1: TForm1
         TickStyle = tsNone
         StyleElements = [seFont, seBorder]
         OnChange = HistoryTrackBarChange
-        ExplicitWidth = 607
       end
       object BitBtn1: TBitBtn
         Left = 0
@@ -1857,7 +1850,6 @@ object Form1: TForm1
       OnMouseMove = GLPanelMouseMove
       OnMouseUp = GLPanelMouseUp
       OnResize = GLPanelResize
-      ExplicitWidth = 387
     end
     object SDPanel: TPanel
       Left = 344
@@ -1865,11 +1857,11 @@ object Form1: TForm1
       Width = 200
       Height = 536
       Align = alRight
+      BevelOuter = bvLowered
       Caption = 'SDPanel'
+      DragMode = dmAutomatic
       TabOrder = 3
       Visible = False
-      ExplicitLeft = 338
-      ExplicitTop = 1
       object file_list: TListBox
         Left = 1
         Top = 48
@@ -1878,7 +1870,10 @@ object Form1: TForm1
         Align = alBottom
         Anchors = [akLeft, akTop, akRight, akBottom]
         ItemHeight = 13
+        PopupMenu = FilePopupMenu
         TabOrder = 0
+        OnDblClick = file_listDblClick
+        OnKeyPress = file_listKeyPress
       end
       object sd_pattern: TComboBox
         Left = 6
@@ -2628,7 +2623,6 @@ object Form1: TForm1
     ThumbColor = clNavy
     ThumbWidth = 20
     OnClick = InfoPanelToggleSwitchClick
-    ExplicitLeft = 836
   end
   object SetNormaliseButton: TButton
     Left = 5
@@ -3010,7 +3004,6 @@ object Form1: TForm1
     UseSystemFont = False
     StyleElements = [seClient, seBorder]
     OnMouseDown = StatusBarMouseDown
-    ExplicitWidth = 884
   end
   object CalibrationSelectComboBox: TComboBox
     Left = 363
@@ -4609,6 +4602,29 @@ object Form1: TForm1
     end
     object Cancel3: TMenuItem
       Caption = 'Cancel'
+    end
+  end
+  object FilePopupMenu: TPopupMenu
+    OnPopup = FilePopupMenuPopup
+    Left = 476
+    Top = 329
+    object Showimage: TMenuItem
+      Caption = 'Show image'
+    end
+    object LoadM1: TMenuItem
+      Caption = 'Load to slot 1'
+    end
+    object LoadM2: TMenuItem
+      Caption = 'Load to slot 2'
+    end
+    object LoadM3: TMenuItem
+      Caption = 'Load to slot 3'
+    end
+    object LoadM4: TMenuItem
+      Caption = 'Load to slot 4'
+    end
+    object Savetodisk: TMenuItem
+      Caption = 'Save to disk'
     end
   end
 end

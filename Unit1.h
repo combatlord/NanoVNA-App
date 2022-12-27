@@ -363,6 +363,13 @@ __published:
 	TListBox *file_list;
 	TComboBox *sd_pattern;
 	TButton *SD_list_update;
+	TPopupMenu *FilePopupMenu;
+	TMenuItem *Showimage;
+	TMenuItem *LoadM1;
+	TMenuItem *LoadM2;
+	TMenuItem *LoadM3;
+	TMenuItem *LoadM4;
+	TMenuItem *Savetodisk;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
@@ -543,11 +550,9 @@ __published:
 	void __fastcall SD_list_updateClick(TObject *Sender);
 	void __fastcall sd_patternSelect(TObject *Sender);
 	void __fastcall sd_patternKeyPress(TObject *Sender, System::WideChar &Key);
-
-
-
-
-
+	void __fastcall file_listKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall FilePopupMenuPopup(TObject *Sender);
+	void __fastcall file_listDblClick(TObject *Sender);
 private:
 	int         m_screen_width;
 	int         m_screen_height;

@@ -9729,26 +9729,12 @@ void __fastcall TForm1::ScanOnceSpeedButtonClick(TObject *Sender)
 
 void __fastcall TForm1::SD_list_updateClick(TObject *Sender)
 {
-	if (!connected())
+	if (!connected() || !data_unit.m_vna_data.cmd_sd_read)
 		return;
-	if (data_unit.m_vna_data.type == UNIT_TYPE_JANVNA_V2)
-	{
-		return;
-	}
-	else
-	if (data_unit.m_vna_data.type == UNIT_TYPE_NANOVNA_V2)
-	{	// V2
-		return;
-	}
-	else
-	{	// V1
-		if (data_unit.m_vna_data.cmd_sd_list)
-		{
-			String s;
-			s.printf(L"sd_list %s", sd_pattern->Text);
-			Form1->addSerialTxCommand(s);
-		}
-	}
+
+	String s;
+	s.printf(L"sd_list %s", sd_pattern->Text);
+	Form1->addSerialTxCommand(s);
 }
 
 void __fastcall TForm1::sd_patternSelect(TObject *Sender)
@@ -9762,7 +9748,37 @@ void __fastcall TForm1::sd_patternKeyPress(TObject *Sender, System::WideChar &Ke
 	if (Key == VK_RETURN)
 		SD_list_updateClick(Sender);
 }
-//---------------------------------------------------------------------------
+
+void __fastcall TForm1::file_listDblClick(TObject *Sender)
+{
+	if (!connected() || !data_unit.m_vna_data.cmd_sd_read)
+		return;
+	int index = file_list->ItemIndex;
+	if (index < 0) return;
+	String ext  = ExtractFileExt(file_list->Items->Strings[index]).LowerCase();
+	int format = -1;
+	if (ext == ".bmp") format = SD_FILE_BITMAP;
+	if (format >= 0)
+		nanovna1_comms.sd_read(file_list->Items->Strings[index], format);
+}
+
+void __fastcall TForm1::file_listKeyPress(TObject *Sender, System::WideChar &Key)
+{
+	if (Key != VK_RETURN) return;
+	file_listDblClick(Sender);
+}
+
+void __fastcall TForm1::FilePopupMenuPopup(TObject *Sender)
+{
+	int index = file_list->ItemIndex;
+	if (index < 0) return;
+	FilePopupMenu->Items->Items[0]->Visible = false;// Show image
+	FilePopupMenu->Items->Items[1]->Visible = false;// Load M1
+	FilePopupMenu->Items->Items[2]->Visible = false;// Load M2
+	FilePopupMenu->Items->Items[3]->Visible = false;// Load M3
+	FilePopupMenu->Items->Items[4]->Visible = false;// Load M4
+ //	FilePopupMenu->Items->Items[5]->Visible = false;// Save to disk
+}
 //---------------------------------------------------------------------------
 
 void __fastcall TForm1::CurveSmoothingTrackBarChange(TObject *Sender)

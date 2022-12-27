@@ -34,6 +34,7 @@ CNanoVNA1Comms::CNanoVNA1Comms()
 	m_get_screen_capture = false;
 	m_mode               = MODE_NONE;
 	m_rx_block.type      = SERIAL_STATE_IDLE;
+    sd_read_mode = -1;
 }
 
 CNanoVNA1Comms::~CNanoVNA1Comms()
@@ -231,6 +232,11 @@ void __fastcall CNanoVNA1Comms::addSerialTxCommand(String s, const int command_e
 		case 3: s += "\r";   break;
 	}
 	m_tx_commands.push_back(s);
+}
+
+void __fastcall CNanoVNA1Comms::sd_read(String filename, int read_mode) {
+	sd_read_mode = read_mode;
+	addSerialTxCommand(L"sd_read " + filename);
 }
 
 void __fastcall CNanoVNA1Comms::sendOutputPowerCommand(int power)
@@ -2168,8 +2174,37 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 						break;
 					}
 					case SERIAL_STATE_SD_READ:
+						if (m_rx_block.bin_data_index == m_rx_block.bin_data.size())
+						{
+							if(sd_read_mode == SD_FILE_BITMAP)
+							{
+								BITMAPFILEHEADER *bm = (BITMAPFILEHEADER *)&m_rx_block.bin_data[4];
+								BITMAPINFOHEADER *info = (BITMAPINFOHEADER *)&m_rx_block.bin_data[sizeof(BITMAPFILEHEADER)+4];
+								if (info->biHeight > 800 || info->biWidth > 1024 || info->biBitCount != 16) break;
+								if (m_capture_bm == NULL) {
+									m_capture_bm = new Graphics::TBitmap();
+									m_capture_bm->Monochrome  = false;
+									m_capture_bm->Transparent = false;
+									m_capture_bm->PixelFormat = pf16bit;
+								}
+								if (m_capture_bm == NULL) break;
+
+								if (m_capture_bm->Width  != info->biWidth) m_capture_bm->Width = info->biWidth;
+								if (m_capture_bm->Height != info->biHeight) m_capture_bm->Height = info->biHeight;
+
+								uint8_t *data = (uint8_t *)&m_rx_block.bin_data[bm->bfOffBits+4];
+
+								for (int16_t y = info->biHeight - 1; y >= 0; y--) {
+									uint16_t *dst = (uint16_t *)m_capture_bm->ScanLine[y];
+									int linesize = info->biWidth * info->biBitCount / 8;
+									memcpy(dst, data, linesize);
+									data+= linesize;
+								}
+								::PostMessage(Form1->Handle, WM_SCREEN_CAPTURE, 0, 0);
+							}
+							sd_read_mode = -1;
+						}
 						break;
-						
 					case SERIAL_STATE_SD_DELETE:
 						break;
 
@@ -2528,8 +2563,7 @@ bool __fastcall CNanoVNA1Comms::processRxLine()
 	else
 	if (cmd == "sd_read")
 	{
-		//block_type = SERIAL_STATE_SD_READ;
-		return true;
+		block_type = SERIAL_STATE_SD_READ;
 	}
 	else
 	if (cmd == "sd_delete")
@@ -2637,7 +2671,52 @@ int __fastcall CNanoVNA1Comms::processRx(t_serial_buffer &serial_buffer)
 				break;
 
 			}
+
 			case SERIAL_STATE_SD_READ:
+			{
+				const uint8_t b = serial_buffer.buffer[k];
+				if (m_rx_block.bin_data_index < sizeof(uint32_t))
+				{
+					((uint8_t *)&sd_filesize)[m_rx_block.bin_data_index++] = b;
+					k++;
+					if (m_rx_block.bin_data_index >= sizeof(uint32_t))
+					{
+						if (sd_filesize == (uint32_t)-1 ||
+							sd_filesize == 0x67617375 || // 'usag' text
+							sd_filesize == 0x3A727265) { // 'err:' text
+							sd_filesize = 0;
+							sd_read_mode = -1;
+							return 0;
+						}
+						m_rx_block.bin_data.resize(sizeof(uint32_t) + sd_filesize);												// make room for the following data
+					}
+				} else {
+					int available_bytes = serial_buffer.buffer_wr - k;
+					int available_space = (int)m_rx_block.bin_data.size() - (int)m_rx_block.bin_data_index;
+					if (available_bytes > available_space)
+						available_bytes  = available_space;
+					if (available_bytes > 0)
+					{	// copy the rx'ed data into the rx binary buffer
+						memcpy(&m_rx_block.bin_data[m_rx_block.bin_data_index], &serial_buffer.buffer[k], available_bytes);
+						m_rx_block.bin_data_index += available_bytes;
+						k += available_bytes;
+					}
+
+					if (m_rx_block.bin_data_index >= m_rx_block.bin_data.size())
+					{	// done
+						if (k > 0)
+						{	// remove used data from the rx serial buffer
+							if (k < serial_buffer.buffer_wr)
+								memmove(&serial_buffer.buffer[0], &serial_buffer.buffer[k], serial_buffer.buffer_wr - k);
+							serial_buffer.buffer_wr -= k;
+							k = 0;
+						}
+						processRxBlock();
+					}
+				}
+				break;
+
+			}
 			case SERIAL_STATE_SCREEN_CAPTURE:
 			case SERIAL_STATE_FREQDATA_RAW:
 				{
