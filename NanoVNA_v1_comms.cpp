@@ -236,6 +236,7 @@ void __fastcall CNanoVNA1Comms::addSerialTxCommand(String s, const int command_e
 
 void __fastcall CNanoVNA1Comms::sd_read(String filename, int read_mode) {
 	sd_read_mode = read_mode;
+	sd_read_filename = filename;
 	addSerialTxCommand(L"sd_read " + filename);
 }
 
@@ -2222,7 +2223,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 								} while (i < size);
 								int num = sd_read_mode == SD_FILE_S1P ? 1 : 2;
 								std::vector <t_data_point> s_params;
-								String fn = common.parceSxPFile("device", num, s_params, lines);
+								String fn = common.parceSxPFile("VNA: " + sd_read_filename, num, s_params, lines);
 
 								if (!fn.IsEmpty())
 									Form1->applyMemoryFile(fn, 1, s_params);

@@ -16,7 +16,8 @@ class CNanoVNA1Comms
 	private:
 		t_mode m_mode;		// current mode of operation .. idle mode, initialisation mode, scanning/sweeping mode etc
 		int sd_read_mode;
-
+		int sd_read_slot;
+		String sd_read_filename;
 		bool __fastcall processRxLine();
 		void __fastcall processRxBlock();
 

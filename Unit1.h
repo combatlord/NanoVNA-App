@@ -553,7 +553,6 @@ __published:
 	void __fastcall file_listKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall FilePopupMenuPopup(TObject *Sender);
 	void __fastcall file_listDblClick(TObject *Sender);
-	void __fastcall applyMemoryFile(String &fn, const int mem, std::vector <t_data_point> &s_params);
 private:
 	int         m_screen_width;
 	int         m_screen_height;
@@ -971,6 +970,8 @@ public:
 	void __fastcall setCalibrationSelection(t_calibration_selection cal_select);
 
 	void __fastcall updateHistoryFramesInfo(const bool update = false);
+
+	void __fastcall applyMemoryFile(String &fn, const int mem, std::vector <t_data_point> &s_params);
 };
 
 extern PACKAGE TForm1 *Form1;
