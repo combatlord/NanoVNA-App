@@ -2070,7 +2070,11 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 		//Memo1->Lines->Add("loaded OK");
 		//Memo1->Lines->Add("");
 	}
+	return parceSxPFile(name, num_chans, s_params, lines);
+}
 
+String __fastcall CCommon::parceSxPFile(String filename, int num_chans, std::vector <t_data_point> &s_params, std::vector <String> &lines)
+{
 	unsigned int line = 0;
 
 	bool db_format    = false;
@@ -2202,43 +2206,17 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 			return "";
 		}
 
-		freq *= freq_mult;
-
 		if (num_chans == 1)
 		{
 			//   50000 +0.997205257416 -0.000746459002
 			//	9049500 +0.997326910496 -0.008030370809
 
-			if (params.size() < 3)
+			if (params.size() < 3 ||
+			    !TryStrToFloat(params[1], s11_real) ||
+				!TryStrToFloat(params[2], s11_imag))
 			{
 				String s3;
 				s3.printf(L"Format error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[1], s11_real))
-			{
-				String s3;
-				s3.printf(L"S11.real error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[2], s11_imag))
-			{
-				String s3;
-				s3.printf(L"S11.imag error on line %u\r\n\n\"%s\"", line, s.c_str());
 				if (filename.IsEmpty())
 				{
 					Application->NormalizeTopMosts();
@@ -2254,7 +2232,11 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 			//   50000 +0.997205257416 -0.000746459002 -0.000119486998 +0.000624242995 0 0 0 0
 			//	9049500 +0.997326910496 -0.008030370809 +0.000366301014 +0.000065216002 0 0 0 0
 
-			if (params.size() < 5)
+			if (params.size() < 5 ||
+			    !TryStrToFloat(params[1], s11_real) ||
+				!TryStrToFloat(params[2], s11_imag) ||
+				!TryStrToFloat(params[3], s21_real) ||
+				!TryStrToFloat(params[4], s21_imag))
 			{
 				String s3;
 				s3.printf(L"Format error on line %u\r\n\n\"%s\"", line, s.c_str());
@@ -2266,59 +2248,8 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 				}
 				return "";
 			}
-
-			if (!TryStrToFloat(params[1], s11_real))
-			{
-				String s3;
-				s3.printf(L"S11.real error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[2], s11_imag))
-			{
-				String s3;
-				s3.printf(L"S11.imag error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[3], s21_real))
-			{
-				String s3;
-				s3.printf(L"S21.real error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[4], s21_imag))
-			{
-				String s3;
-				s3.printf(L"S21.imag error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
 		}
+
 
 		if (db_format || ma_format)
 		{
@@ -2359,7 +2290,7 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 		}
 
 		t_data_point fp;
-		fp.Hz  = I64ROUND(freq);
+		fp.Hz  = I64ROUND(freq * freq_mult);
 		fp.s11 = complexf (s11_real, s11_imag);
 		fp.s21 = complexf (s21_real, s21_imag);
 
@@ -2414,7 +2345,7 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 		return "";
 	}
 
-	return name;
+	return filename;
 }
 
 bool __fastcall CCommon::saveSParams(std::vector <t_data_point> &points, int num_chans, String filename)

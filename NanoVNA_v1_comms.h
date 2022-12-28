@@ -7,7 +7,8 @@
 
 enum {
 	SD_FILE_BITMAP,
-	SD_FILE_SxP,
+	SD_FILE_S1P,
+	SD_FILE_S2P
 };
 
 class CNanoVNA1Comms

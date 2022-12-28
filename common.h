@@ -138,6 +138,7 @@ class CCommon
 
 		String __fastcall valueToStr(double value, const bool space_units, const bool trim_trailing_zeros, String fmt = "", const bool decimal_units = false);
 
+		String __fastcall parceSxPFile(String filename, int num_chans, std::vector <t_data_point> &s_params, std::vector <String> &lines);
 		String __fastcall loadSParams(std::vector <t_data_point> &s_params, String filename = "");
 		bool __fastcall saveSParams(std::vector <t_data_point> &points, int num_chans, String filename = "");
 

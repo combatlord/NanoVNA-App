@@ -7596,18 +7596,8 @@ void __fastcall TForm1::clearMemory(const int mem)
 		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
 }
 
-void __fastcall TForm1::loadMemoryFile(const int mem)
+void __fastcall TForm1::applyMemoryFile(String &fn, const int mem, std::vector <t_data_point> &s_params)
 {
-	if (mem <= 0 || mem >= MAX_MEMORIES)
-		return;
-
-	std::vector <t_data_point> s_params;
-
-	String fn = common.loadSParams(s_params, "");
-
-	if (fn.IsEmpty())
-		return;
-
 	data_unit.m_point_mem[mem] = s_params;
 
 	data_unit.m_point_filt[mem].resize(0);
@@ -7643,6 +7633,21 @@ void __fastcall TForm1::loadMemoryFile(const int mem)
 		sb->Down    = settings.memoryEnable[mem];
 		sb->Hint = s;
 	}
+ 	if (Application->MainForm)
+		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
+}
+
+void __fastcall TForm1::loadMemoryFile(const int mem)
+{
+	if (mem <= 0 || mem >= MAX_MEMORIES)
+		return;
+
+	std::vector <t_data_point> s_params;
+
+	String fn = common.loadSParams(s_params, "");
+
+	if (!fn.IsEmpty())
+		applyMemoryFile(fn, mem, s_params);
 }
 
 void __fastcall TForm1::setMemory(const int mem)
@@ -9757,7 +9762,9 @@ void __fastcall TForm1::file_listDblClick(TObject *Sender)
 	if (index < 0) return;
 	String ext  = ExtractFileExt(file_list->Items->Strings[index]).LowerCase();
 	int format = -1;
-	if (ext == ".bmp") format = SD_FILE_BITMAP;
+	     if (ext == ".bmp") format = SD_FILE_BITMAP;
+	else if (ext == ".s1p") format = SD_FILE_S1P;
+	else if (ext == ".s2p") format = SD_FILE_S2P;
 	if (format >= 0)
 		nanovna1_comms.sd_read(file_list->Items->Strings[index], format);
 }

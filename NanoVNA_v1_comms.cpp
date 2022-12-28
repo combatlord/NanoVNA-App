@@ -2201,6 +2201,31 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 									data+= linesize;
 								}
 								::PostMessage(Form1->Handle, WM_SCREEN_CAPTURE, 0, 0);
+							} else if (sd_read_mode == SD_FILE_S1P || sd_read_mode == SD_FILE_S2P) {
+								std::vector <String> lines;
+								unsigned int i = 0, size = m_rx_block.bin_data.size();
+								if (size <= 4) break;
+								size-= 4;
+								char *data = (uint8_t *)&m_rx_block.bin_data[4];
+								String s = "";
+								do {
+									char c = data[i++];
+									if (c == '\t') c = ' ';
+									if (c == '\r' || c == '\n' || i >= size) {
+										if (!s.IsEmpty()) {
+											lines.push_back(s);
+											s = "";
+										}
+										if (c == '\r' && data[i] == '\n') i++;	// skip over the following '\n'
+									} else if (c >= 32)
+										s += c;
+								} while (i < size);
+								int num = sd_read_mode == SD_FILE_S1P ? 1 : 2;
+								std::vector <t_data_point> s_params;
+								String fn = common.parceSxPFile("device", num, s_params, lines);
+
+								if (!fn.IsEmpty())
+									Form1->applyMemoryFile(fn, 1, s_params);
 							}
 							sd_read_mode = -1;
 						}
@@ -2711,6 +2736,9 @@ int __fastcall CNanoVNA1Comms::processRx(t_serial_buffer &serial_buffer)
 							serial_buffer.buffer_wr -= k;
 							k = 0;
 						}
+						String s;
+						s.printf(L"%u bytes received", m_rx_block.bin_data_index);
+						Form1->pushCommMessage("rx: " + s);
 						processRxBlock();
 					}
 				}
