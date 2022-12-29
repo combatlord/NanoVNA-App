@@ -982,7 +982,7 @@ object SettingsForm: TSettingsForm
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    Options = [fdFixedPitchOnly, fdForceFontExist, fdNoVectorFonts, fdWysiwyg, fdApplyButton]
+    Options = [fdForceFontExist, fdWysiwyg, fdApplyButton]
     OnApply = FontDialog1Apply
     Left = 192
     Top = 178

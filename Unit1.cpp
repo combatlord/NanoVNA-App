@@ -50,8 +50,8 @@ const int NUM_POINTS_DEFAULT[]   = {51, 101, 201, 401, 801, 1024, 1601, 3201, 45
 const int NUM_POINTS_V1[]        = {51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601};
 //const int NUM_POINTS_V2[]      = {11, 21, 51, 101, 201, 401, 801, 1024, 1601, 3201, 6401, 12801, 25601};
 const int NUM_POINTS_V2[]        = {11, 21, 51, 101, 201, 401, 801, 1024};	// the V2 does not handle segments very well - they half it's scan speed
-const int NUM_POINTS_V2LITE[]    = {101, 201, 401, 801, 1001, 3201, 6401, 12801, 25601 };	//
-const int NUM_POINTS_V2PLUS4[]   = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601};
+const int NUM_POINTS_V2LITE[]    = {101, 201, 401, 801, 1001, 3201, 6401, 12801, 25601, 65535 };	//
+const int NUM_POINTS_V2PLUS4[]   = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601, 65535};
 const int NUM_POINTS_JANVNA_V2[] = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 4501};
 const int NUM_POINTS_TINYSA[]    = {51, 101, 145, 290, 500, 750, 1000, 2000, 5000};
 
@@ -13519,5 +13519,6 @@ void __fastcall TForm1::GLPanelMouseUp(TObject *Sender, TMouseButton Button,
 	if (Application->MainForm)
 		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
 }
+
 
 

@@ -76,7 +76,7 @@ CData::CData()
 	resetUnitData();
 
 	// running out of memory here
-	const int reserve_size = 32768;
+	const int reserve_size = 65536;
 	try
 	{
 		m_point_incoming.reserve(reserve_size);

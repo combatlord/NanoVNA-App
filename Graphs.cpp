@@ -48,8 +48,8 @@ String __fastcall glErrorStr(GLenum err)
 
 bool WGLExtensionSupported(const char *extension_name)
 {
-	PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) wglGetProcAddress("wglGetExtensionsStringEXT");
-	return (_wglGetExtensionsStringEXT == NULL) ? false : (strstr(_wglGetExtensionsStringEXT(), extension_name) == NULL) ? false : true;
+//	PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC) wglGetProcAddress("wglGetExtensionsStringEXT");
+	return false;//(_wglGetExtensionsStringEXT == NULL) ? false : (strstr(_wglGetExtensionsStringEXT(), extension_name) == NULL) ? false : true;
 }
 #endif
 
@@ -484,7 +484,7 @@ void __fastcall CGraphs::glInit(TWinControl *win_control)
 	// turn the vsync off/on
 
 //	wglSwapIntervalEXT(0);
-
+#if 0
 //	if (WGLExtensionSupported("WGL_EXT_swap_control"))
 	{
 		PFNWGLSWAPINTERVALEXTPROC    wglSwapIntervalEXT    = (PFNWGLSWAPINTERVALEXTPROC   ) wglGetProcAddress("wglSwapIntervalEXT");
@@ -494,7 +494,7 @@ void __fastcall CGraphs::glInit(TWinControl *win_control)
 //			wglSwapIntervalEXT(1);	// wait .. turn the vsync on
 //			wglSwapIntervalEXT(-1);	// wait .. turn the automatic vsync on
 	}
-
+#endif
 	typedef int (APIENTRY *PFNWGLSWAPINTERVALFARPROC)(int);
 //	typedef int (__stdcall *PFNWGLSWAPINTERVALFARPROC)(int);
 	PFNWGLSWAPINTERVALFARPROC wglSwapInterval = (PFNWGLSWAPINTERVALFARPROC)wglGetProcAddress("wglSwapInterval");
@@ -3294,7 +3294,7 @@ void __fastcall CGraphs::drawMouse(const int graph, const int graph_type, const 
 					glColor3ub(font_red, font_grn, font_blu);
 					// index text
 					if (tw1 > 0)
-						glTextOut(1, tx1, ty, s1);
+						glTextOut(1, tx1, gy - th + 3, s1);
 					// frequency text
 					if (tw2 > 0)
 						glTextOut(1, tx2, ty + th, s2);

@@ -6,7 +6,7 @@
 #ifndef GraphsH
 #define GraphsH
 
-//#define USE_OPENGL
+#define USE_OPENGL
 
 #define VC_EXTRALEAN
 #define WIN32_EXTRA_LEAN
@@ -24,7 +24,7 @@
 	#include <gl/glext.h>
 	#include <gl/glu.h>
 	#include <gl/glaux.h>
-	#include <gl/wglext.h>
+//	#include <gl/wglext.h>
 #endif
 
 // GDI+ system
