@@ -700,6 +700,7 @@ void __fastcall CNanoVNA2Comms::poll()
 				addTxRead1(REG_V2_HARDWARE_REVISION);
 				addTxRead1(REG_V2_FIRMWARE_MAJOR);
 				addTxRead1(REG_V2_FIRMWARE_MINOR);
+				addTxRead1(REG_V2_AVERAGE_SETTING);
 				sendData();
 				m_tx_cmd.resize(0);
 				m_retries++;
@@ -939,18 +940,19 @@ int __fastcall CNanoVNA2Comms::processRx(t_serial_buffer &serial_buffer)
 	if (m_mode == MODE_INIT4)
 	{	// fetching the hardware revision
 
-		if (size >= 3)
+		if (size >= 4)
 		{	// we have received enough bytes
 
 			// fetch them
 			const uint8_t b1 = serial_buffer.buffer[k++];
 			const uint8_t b2 = serial_buffer.buffer[k++];
 			const uint8_t b3 = serial_buffer.buffer[k++];
+			const uint8_t b4 = serial_buffer.buffer[k++];
 
 			data_unit.m_vna_data.hardware_revision = b1;
 			data_unit.m_vna_data.firmware_major    = b2;
 			data_unit.m_vna_data.firmware_minor    = b3;
-
+			data_unit.m_bandwidth_Hz               = b4;
 			newUnit();
 		}
 	}
