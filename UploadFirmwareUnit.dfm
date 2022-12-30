@@ -196,28 +196,20 @@ object UploadFirmwareForm: TUploadFirmwareForm
     Caption = 'GridPanel1'
     ColumnCollection = <
       item
-        Value = 33.333333333333340000
+        Value = 50.000000000000020000
       end
       item
-        Value = 33.333333333333340000
-      end
-      item
-        Value = 33.333333333333340000
+        Value = 49.999999999999980000
       end>
     ControlCollection = <
       item
         Column = 0
-        Control = OneOfElevenFirmwareButton
+        Control = NanoVNA_H_button
         Row = 0
       end
       item
         Column = 1
-        Control = Button2
-        Row = 0
-      end
-      item
-        Column = 2
-        Control = Button1
+        Control = NanoVNA_H4_button
         Row = 0
       end>
     RowCollection = <
@@ -226,14 +218,14 @@ object UploadFirmwareForm: TUploadFirmwareForm
       end>
     ShowCaption = False
     TabOrder = 6
-    object OneOfElevenFirmwareButton: TButton
+    object NanoVNA_H_button: TButton
       Left = 0
       Top = 0
-      Width = 130
+      Width = 195
       Height = 21
       Cursor = crHandPoint
       Align = alClient
-      Caption = '1-of-11 H LSI'
+      Caption = 'NanoVNA H v1.2.18'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -241,16 +233,18 @@ object UploadFirmwareForm: TUploadFirmwareForm
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 0
-      OnClick = OneOfElevenFirmwareButtonClick
+      OnClick = NanoVNA_H_buttonClick
+      ExplicitLeft = -4
+      ExplicitTop = 1
     end
-    object Button2: TButton
-      Left = 130
+    object NanoVNA_H4_button: TButton
+      Left = 195
       Top = 0
-      Width = 130
+      Width = 195
       Height = 21
       Cursor = crHandPoint
       Align = alClient
-      Caption = 'DiSlord H v1.0.39'
+      Caption = 'NanoVNA H4 v1.2.18'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -258,24 +252,7 @@ object UploadFirmwareForm: TUploadFirmwareForm
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
-      OnClick = Button2Click
-    end
-    object Button1: TButton
-      Left = 260
-      Top = 0
-      Width = 130
-      Height = 21
-      Cursor = crHandPoint
-      Align = alClient
-      Caption = 'DiSlord H4 v1.0.39'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 2
-      OnClick = Button1Click
+      OnClick = NanoVNA_H4_buttonClick
     end
   end
   object CloseBitBtn: TBitBtn

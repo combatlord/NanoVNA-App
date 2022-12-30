@@ -1076,7 +1076,8 @@ bool __fastcall TUploadFirmwareForm::openDFUDevice(String device_path)
 
 		m_flash_addr = address;
 		m_flash_size = sectors * size;
-
+		NanoVNA_H_button->Enabled  = m_flash_size > 128*1024 ? false : true;
+		NanoVNA_H4_button->Enabled = m_flash_size > 128*1024 ? true  : false;
 		m_desc_string.push_back(s);
 
 //		if (m_flash_addr > 0 && m_flash_size > 0)
@@ -2363,7 +2364,7 @@ void __fastcall TUploadFirmwareForm::OneOfElevenFirmwareButtonClick(TObject *Sen
 	uploadFirmwareFile(firmware, ".dfu", UNIT_TYPE_NANOVNA_H);
 }
 
-void __fastcall TUploadFirmwareForm::Button1Click(TObject *Sender)
+void __fastcall TUploadFirmwareForm::NanoVNA_H4_buttonClick(TObject *Sender)
 {
 	std::vector <uint8_t> firmware;
 
@@ -2382,7 +2383,7 @@ void __fastcall TUploadFirmwareForm::Button1Click(TObject *Sender)
 	uploadFirmwareFile(firmware, ".dfu", UNIT_TYPE_NANOVNA_H4);
 }
 
-void __fastcall TUploadFirmwareForm::Button2Click(TObject *Sender)
+void __fastcall TUploadFirmwareForm::NanoVNA_H_buttonClick(TObject *Sender)
 {
 	std::vector <uint8_t> firmware;
 
