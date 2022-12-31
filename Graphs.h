@@ -6,7 +6,7 @@
 #ifndef GraphsH
 #define GraphsH
 
-#define USE_OPENGL
+//#define USE_OPENGL
 
 #define VC_EXTRALEAN
 #define WIN32_EXTRA_LEAN

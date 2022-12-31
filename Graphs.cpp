@@ -563,8 +563,8 @@ void __fastcall CGraphs::glRebuildFonts()
 
 	wglMakeCurrent(m_gl.hdc, m_gl.hrc);	// set current rendering context
 
-	glBuildFont(m_gl.hdc, "Consolas", 8, false);
-	glBuildFont(m_gl.hdc, "Consolas", 8, true);
+	glBuildFont(m_gl.hdc, "Tahoma", 8, false);
+	glBuildFont(m_gl.hdc, "Tahoma", 8, true);
 
 	wglMakeCurrent(hOldDC, hOldRC);
 
@@ -3294,7 +3294,7 @@ void __fastcall CGraphs::drawMouse(const int graph, const int graph_type, const 
 					glColor3ub(font_red, font_grn, font_blu);
 					// index text
 					if (tw1 > 0)
-						glTextOut(1, tx1, gy - th + 3, s1);
+						glTextOut(1, tx1, gy + th, s1);
 					// frequency text
 					if (tw2 > 0)
 						glTextOut(1, tx2, ty + th, s2);
@@ -7208,13 +7208,10 @@ void __fastcall CGraphs::drawPoints(const int graph, const int graph_type, std::
 		const Gdiplus::CompositingMode cm    = m_gdi_plus->GetCompositingMode();
 		const Gdiplus::CompositingQuality cq = m_gdi_plus->GetCompositingQuality();
 
-		//m_gdi_plus->SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
-		m_gdi_plus->SetCompositingMode(Gdiplus::CompositingModeSourceOver);
-
 		if (settings.lineAlpha >= 255)
 		{	// no transparency
-			//m_gdi_plus->SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed);
-			m_gdi_plus->SetCompositingQuality(Gdiplus::CompositingQualityGammaCorrected);
+			m_gdi_plus->SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed);
+			//m_gdi_plus->SetCompositingQuality(Gdiplus::CompositingQualityGammaCorrected);
 			//m_gdi_plus->SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
 			//m_gdi_plus->SetCompositingQuality(Gdiplus::CompositingQualityAssumeLinear);
 		}
@@ -7226,9 +7223,15 @@ void __fastcall CGraphs::drawPoints(const int graph, const int graph_type, std::
 			//m_gdi_plus->SetCompositingQuality(Gdiplus::CompositingQualityAssumeLinear);
 		}
 
-		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
-		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
-		m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		if (settings.linesAntialiasing && points_f.size() < 10000) {
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
+			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+
+			m_gdi_plus->SetCompositingMode(Gdiplus::CompositingModeSourceOver);
+		} else {
+			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			m_gdi_plus->SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
+		}
 	#else
 	#endif
 
@@ -7420,8 +7423,11 @@ void __fastcall CGraphs::drawPoints(const int graph, const int graph_type, std::
 			m_gdi_plus->DrawLines(&pen, &m_gdi_points[0], m_gdi_points.size());
 		#else
 			glColor4ub(red, grn, blu, alpha);
-			//glDisable(GL_LINE_SMOOTH);
-			glEnable(GL_LINE_SMOOTH);
+			if (settings.linesAntialiasing)
+				glEnable(GL_LINE_SMOOTH);
+			else
+				glDisable(GL_LINE_SMOOTH);
+
 			glLineWidth(line_width);
 			glBegin(GL_LINE_STRIP);
 				glVertex2f(m_gdi_points[0].X, m_gdi_points[0].Y);

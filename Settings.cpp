@@ -162,6 +162,8 @@ CSettings::CSettings()
 	m_auto_scale_peak_hold  = false;
 
 	m_smith_both_scales = false;
+	
+	m_line_antialiasing = true;
 
 	m_show_freq_bands = true;
 
@@ -634,6 +636,13 @@ void __fastcall CSettings::load()
 		{
 			if (params.size() >= 2)
 				m_smith_both_scales = (params[1].LowerCase() == "true") ? true : false;
+			continue;
+		}
+
+		if (params[0] == "lines_antialiasing_enable")
+		{
+			if (params.size() >= 2)
+				m_line_antialiasing = (params[1].LowerCase() == "true") ? true : false;
 			continue;
 		}
 
@@ -1563,6 +1572,9 @@ void __fastcall CSettings::save()
 	buffer.push_back(s);
 
 	s.printf(L"smith_both_scales_enable %s", String(m_smith_both_scales ? "true" : "false").c_str());
+	buffer.push_back(s);
+
+	s.printf(L"lines_antialiasing_enable %s", String(m_line_antialiasing ? "true" : "false").c_str());
 	buffer.push_back(s);
 
 	s.printf(L"line_width %d", m_line_width);

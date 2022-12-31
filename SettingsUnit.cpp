@@ -419,6 +419,11 @@ void __fastcall TSettingsForm::update()
 	SmithBothScalesToggleSwitch->State   = settings.smithBothScales ? tssOn : tssOff;
 	SmithBothScalesToggleSwitch->OnClick = ne;
 
+	ne = linesAntialiasingSwitch->OnClick;
+	linesAntialiasingSwitch->OnClick = NULL;
+	linesAntialiasingSwitch->State   = settings.linesAntialiasing ? tssOn : tssOff;
+	linesAntialiasingSwitch->OnClick = ne;
+
 	GUIStyleComboBox->ItemIndex = GUIStyleComboBox->Items->IndexOf(TStyleManager::ActiveStyle->Name);
 
 	ne = LineAlphaTrackBar->OnChange;
@@ -1497,4 +1502,13 @@ void __fastcall TSettingsForm::SmithBothScalesToggleSwitchClick(TObject *Sender)
 	if (Application->MainForm)
 		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
 }
+
+void __fastcall TSettingsForm::linesAntialiasingSwitchClick(TObject *Sender)
+{
+	settings.linesAntialiasing = (linesAntialiasingSwitch->State == tssOn) ? true : false;
+
+	if (Application->MainForm)
+		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
+}
+//---------------------------------------------------------------------------
 

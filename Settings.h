@@ -54,6 +54,7 @@ private:
 
 	int m_line_width;
 	int m_line_alpha;
+	bool m_line_antialiasing;
 
 	int m_border_width;
 
@@ -205,6 +206,7 @@ public:
 	__property bool autoScalePeakHold      = {read = m_auto_scale_peak_hold, write = m_auto_scale_peak_hold};
 
 	__property bool smithBothScales = {read = m_smith_both_scales, write = m_smith_both_scales};
+	__property bool linesAntialiasing = {read = m_line_antialiasing, write = m_line_antialiasing};
 
 	__property float s21OffsetdB           = {read = m_s21_offset_dB, write = m_s21_offset_dB};
 	__property double eDelaySecs           = {read = m_edelay_secs, write = m_edelay_secs};
