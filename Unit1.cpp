@@ -1,4 +1,4 @@
-
+﻿
 // (c) OneOfEleven 2020
 //
 // This code can be used on terms of WTFPL Version 2 (http://www.wtfpl.net)
@@ -2029,385 +2029,176 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 		const int size = data_unit.freqArraySize(mem);
 		if (size < 4)
 			return false;
+		const complexf c(re, im);
+		const complexf c0 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s11;
 
-		if (index >= 0 && index < size)
-		{  // mouse is over a graph line
+		const float ref_impedance = 50;
+		const int m                 = (index == 0) ? 0 : index - 1;
+		const int n                 = (index >= (size - 1)) ? size - 1 : index + 1;
+		const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
 
-			const complexf c(re, im);
+		const complexf imp            = data_unit.impedance(c0, ref_impedance);
+		const complexf adm            = 1.0f / imp;
+		const complexf imp_p          = data_unit.serialToParallel(imp);
+		const float return_loss       = data_unit.gain10(c0);
+		const float vswr              = data_unit.VSWR(c0);
+		const float s11_mag           = data_unit.magnitude(c0);
+		const float s11_logmag        = data_unit.gain20(c0);
 
-			const float ref_impedance = 50;
-			const complexf c0 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s11;
-			const complexf c1 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s21;
+		const float quality_factor    = data_unit.qualityFactor(c0, ref_impedance);
+		const float s11_z             = data_unit.magnitude(imp);
+		const float s11_phase         = data_unit.phase(c0);
 
-			const complexf imp            = data_unit.impedance(c0, ref_impedance);
-			const complexf imp_p          = data_unit.serialToParallel(imp);
-			const float return_loss       = data_unit.gain10(c0);
-			const float vswr              = data_unit.VSWR(c0);
-			const float s11_mag           = data_unit.magnitude(c0);
-			const float quality_factor    = data_unit.qualityFactor(c0, ref_impedance);
-			const float s11_z             = data_unit.magnitude(imp);
-			const float s11_phase         = data_unit.phase(c0);
+		const float res               = imp.real();
+		const float res_j             = ABS(imp.imag());
 
-			const float s21_gain          = data_unit.gain10(c1);
-			const float s21_mag           = data_unit.magnitude(c1);
-			const float s21_phase         = data_unit.phase(c1);
+		const float resp              = imp_p.real();
+		const float resp_j            = ABS(imp_p.imag());
 
-			const float res               = imp.real();
-			const float res_j             = ABS(imp.imag());
+		const float cap               = data_unit.impedanceToCapacitance(imp, Hz);
+		const float cap_p             = data_unit.impedanceToCapacitance(imp_p, Hz);
 
-			const float resp              = imp_p.real();
-			const float resp_j            = ABS(imp_p.imag());
+		const float ind               = data_unit.impedanceToInductance(imp, Hz);
+		const float ind_p             = data_unit.impedanceToInductance(imp_p, Hz);
 
-			const float cap               = data_unit.impedanceToCapacitance(imp, Hz);
-			const float cap_p             = data_unit.impedanceToCapacitance(imp_p, Hz);
+		String res_str   = common.valueToStr(res,    false, true).Trim();
+		String resj_str  = common.valueToStr(res_j,  false, true).Trim();
 
-			const float ind               = data_unit.impedanceToInductance(imp, Hz);
-			const float ind_p             = data_unit.impedanceToInductance(imp_p, Hz);
+		String adm_str   = common.valueToStr(adm.real(),    false, true).Trim();
+		String admj_str  = common.valueToStr(ABS(adm.imag()),  false, true).Trim();
 
-			String res_str   = common.valueToStr(res,    false, true).Trim();
-			String resj_str  = common.valueToStr(res_j,  false, true).Trim();
+		String resp_str  = common.valueToStr(resp,   false, true).Trim();
+		String respj_str = common.valueToStr(resp_j, false, true).Trim();
 
-			String resp_str  = common.valueToStr(resp,   false, true).Trim();
-			String respj_str = common.valueToStr(resp_j, false, true).Trim();
+		String cap_str   = common.valueToStr(cap,    false, true).Trim() + "F";
+		String capp_str  = common.valueToStr(cap_p,  false, true).Trim() + "F";
 
-			String cap_str   = common.valueToStr(cap,    false, true).Trim() + "F";
-			String capp_str  = common.valueToStr(cap_p,  false, true).Trim() + "F";
-
-			String ind_str   = common.valueToStr(ind,    false, true).Trim() + "H";
-			String indp_str  = common.valueToStr(ind_p,  false, true).Trim() + "H";
-
-			float s11_group_delay_sec;
-			float s21_group_delay_sec;
-			{
-				complexf w;
-				complexf v;
-				complexf cpx;
-
-				const int m                 = (index == 0) ? 0 : index - 1;
-				const int n                 = (index >= (size - 1)) ? size - 1 : index + 1;
-				const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
-
-				w                           = data_unit.m_point_filt[mem][m].s11;
-				v                           = data_unit.m_point_filt[mem][n].s11;
-				cpx                         = w * v;
-				s11_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-
-				w                           = data_unit.m_point_filt[mem][m].s21;
-				v                           = data_unit.m_point_filt[mem][n].s21;
-				cpx                         = w * v;
-				s21_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-			}
-
-
-
-			MarkerFrequencyLabel->Caption = common.freqToStrMHz(Hz) + " MHz";
-
-			MarkerWavelengthLabel1->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / Hz, false, true, "") + "m" : String("");
-			MarkerWavelengthLabel2->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / (Hz * 4), false, true, "") + "m" : String("");
-
-
-			// S11 info
-
-
-			s = common.valueToStr(c0.real(), false, true, "", true) + " " + common.valueToStr(c0.imag(), false, true, "", true);
-			MarkerS11RealImagLabel->Caption = s;
-
-			//s.printf("%0.3f %cj%0.3f", imp.real(), (imp.imag() >= 0) ? '+' : '-', fabsf(imp.imag()));
-			s = res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
-			MarkerS11ImpedanceLabel->Caption = s;
-
-			//s.printf("%0.3f %cj%0.3f", imp_p.real(), (imp_p.imag() >= 0) ? '+' : '-', fabsf(imp_p.imag()));
-			s = resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
-			MarkerS11AdmittanceLabel2->Caption = s;
-
-			s.printf("%0.3f", imp.real());
-			MarkerS11SeriesRLabel->Caption = s;
-			s = (imp.imag() < 0) ? cap_str : ind_str;
-			MarkerS11SeriesXLabel->Caption = s;
-			MarkerS11SeriesLLabel->Caption = ind_str;
-			MarkerS11SeriesCLabel->Caption = cap_str;
-
-			s.printf("%0.3f", imp_p.real());
-			MarkerS11ParallelRLabel->Caption = s;
-			s = (imp_p.imag() < 0) ? capp_str : indp_str;
-			MarkerS11ParallelXLabel->Caption = s;
-			MarkerS11ParallelLLabel->Caption = indp_str;
-			MarkerS11ParallelCLabel->Caption = capp_str;
-
-			s.printf("%0.3f", vswr);
-			MarkerS11VSWRLabel->Caption = s;
-
-			s.printf("%+0.3fdB", return_loss);
-			MarkerS11ReturnLossLabel->Caption = s;
-
-			s.printf("%0.3f", s11_mag);
-			MarkerS11Label->Caption = s;
-
-			s.printf("%0.3f", quality_factor);
-			MarkerS11QualityFactorLabel->Caption = s;
-
-			s.printf("%0.3f", s11_z);
-			MarkerS11ZLabel->Caption = s;
-
-			s.printf("%+0.3f\xb0", s11_phase * rad_2_deg);
-			MarkerS11PhaseLabel->Caption = s;
-
-			s.printf("%0.3f %+0.3f\xb0", s11_mag, s11_phase * rad_2_deg);
-			MarkerS11PolarLabel->Caption = s;
-
-			s = common.valueToStr(s11_group_delay_sec, false, true) + "s";
-			MarkerS11GroupDelayLabel->Caption = s;
-
-
-			// S21 info
-
-
-			s = common.valueToStr(c1.real(), false, true, "", true) + " " + common.valueToStr(c1.imag(), false, true, "", true);
-			MarkerS21RealImagLabel->Caption = s;
-
-			s.printf("%+0.3fdB", s21_gain);
-			MarkerS21GainLabel->Caption = s;
-
-			s.printf("%0.3f", s21_mag);
-			MarkerS21Label->Caption = s;
-
-			s.printf("%+0.3f\xb0", s21_phase * rad_2_deg);
-			MarkerS21PhaseLabel->Caption = s;
-
-			s.printf("%0.3f %+0.3f\xb0", s21_mag, s21_phase * rad_2_deg);
-			MarkerS21PolarLabel->Caption = s;
-
-			s = common.valueToStr(s21_group_delay_sec, false, true) + "s";
-			MarkerS21GroupDelayLabel->Caption = s;
-
-
-			//
-
-
-
-			// make everything visible on the info panel
-			for (int i = 0; i < InfoPanel->ControlCount; i++)
-			{
-				TControl *control = InfoPanel->Controls[i];
-				TLabel *label = dynamic_cast<TLabel *>(control);
-				if (label)
-					if (!label->Visible)
-						label->Visible = true;
-			}
-
-			//InfoPanel->Visible = true;
-
-			// force the info panel to finish display updates
-			InfoPanel->Update();
-
-			return true;
+		String ind_str   = common.valueToStr(ind,    false, true).Trim() + "H";
+		String indp_str  = common.valueToStr(ind_p,  false, true).Trim() + "H";
+		static bool first = true;
+		#define qInfo(name, txt)   {if (first) InfoStringGrid->Cells[0][idx] = name; InfoStringGrid->Cells[1][idx] = txt; idx++;}
+		float s11_group_delay_sec;
+		{
+			complexf w                  = data_unit.m_point_filt[mem][m].s11;
+			complexf v                  = data_unit.m_point_filt[mem][n].s11;
+			complexf cpx                = w * v;
+			s11_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
 		}
-		else
-		{  // mouse is on empty space
-
-			const complexf c(re, im);
-
-			const float ref_impedance = 50;
-
-			const complexf imp            = data_unit.impedance(c, ref_impedance);
-			const complexf imp_p          = data_unit.serialToParallel(imp);
-			const float return_loss       = data_unit.gain10(c);
-			const float vswr              = data_unit.VSWR(c);
-			const float s11_mag           = data_unit.magnitude(c);
-			const float quality_factor    = data_unit.qualityFactor(c, ref_impedance);
-			const float s11_z             = data_unit.magnitude(imp);
-			const float s11_phase         = data_unit.phase(c);
-
-			const float s21_gain          = data_unit.gain10(c);
-			const float s21_mag           = data_unit.magnitude(c);
-			const float s21_phase         = data_unit.phase(c);
-
-			const float res               = imp.real();
-			const float res_j             = ABS(imp.imag());
-
-			const float resp              = imp_p.real();
-			const float resp_j            = ABS(imp_p.imag());
-
-			const float cap               = data_unit.impedanceToCapacitance(imp, Hz);
-			const float cap_p             = data_unit.impedanceToCapacitance(imp_p, Hz);
-
-			const float ind               = data_unit.impedanceToInductance(imp, Hz);
-			const float ind_p             = data_unit.impedanceToInductance(imp_p, Hz);
-
-			String res_str   = common.valueToStr(res,    false, true).Trim();
-			String resj_str  = common.valueToStr(res_j,  false, true).Trim();
-
-			String resp_str  = common.valueToStr(resp,   false, true).Trim();
-			String respj_str = common.valueToStr(resp_j, false, true).Trim();
-
-			String cap_str   = common.valueToStr(cap,    false, true).Trim() + "F";
-			String capp_str  = common.valueToStr(cap_p,  false, true).Trim() + "F";
-
-			String ind_str   = common.valueToStr(ind,    false, true).Trim() + "H";
-			String indp_str  = common.valueToStr(ind_p,  false, true).Trim() + "H";
-
-			float s11_group_delay_sec;
-			float s21_group_delay_sec;
-			{
-				complexf w;
-				complexf v;
-				complexf cpx;
-
-				const int m                 = (index == 0) ? 0 : index - 1;
-				const int n                 = (index >= (size - 1)) ? size - 1 : index + 1;
-				const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
-
-				w                           = data_unit.m_point_filt[mem][m].s11;
-				v                           = data_unit.m_point_filt[mem][n].s11;
-				cpx                         = w * v;
-				s11_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-
-				w                           = data_unit.m_point_filt[mem][m].s21;
-				v                           = data_unit.m_point_filt[mem][n].s21;
-				cpx                         = w * v;
-				s21_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-			}
-
-
-
-			MarkerFrequencyLabel->Caption = common.freqToStrMHz(Hz) + " MHz";
-
-			MarkerWavelengthLabel1->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / Hz, false, true, "") + "m" : String("");
-			MarkerWavelengthLabel2->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / (Hz * 4), false, true, "") + "m" : String("");
-
-
-			// S11 info
-
-
-			s = common.valueToStr(c.real(), false, true, "", true) + " " + common.valueToStr(c.imag(), false, true, "", true);
-			MarkerS11RealImagLabel->Caption = s;
-
-			//s.printf("%0.3f %cj%0.3f", imp.real(), (imp.imag() >= 0) ? '+' : '-', fabsf(imp.imag()));
-			s = res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
-			MarkerS11ImpedanceLabel->Caption = s;
-
-			//s.printf("%0.3f %cj%0.3f", imp_p.real(), (imp_p.imag() >= 0) ? '+' : '-', fabsf(imp_p.imag()));
-			s = resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
-			MarkerS11AdmittanceLabel2->Caption = s;
-
-			s.printf("%0.3f", imp.real());
-			MarkerS11SeriesRLabel->Caption = s;
-			s = (imp.imag() < 0) ? cap_str : ind_str;
-			MarkerS11SeriesXLabel->Caption = s;
-			MarkerS11SeriesLLabel->Caption = ind_str;
-			MarkerS11SeriesCLabel->Caption = cap_str;
-
-			s.printf("%0.3f", imp_p.real());
-			MarkerS11ParallelRLabel->Caption = s;
-			s = (imp_p.imag() < 0) ? capp_str : indp_str;
-			MarkerS11ParallelXLabel->Caption = s;
-			MarkerS11ParallelLLabel->Caption = indp_str;
-			MarkerS11ParallelCLabel->Caption = capp_str;
-
-			s.printf("%0.3f", vswr);
-			MarkerS11VSWRLabel->Caption = s;
-
-			s.printf("%+0.3fdB", return_loss);
-			MarkerS11ReturnLossLabel->Caption = s;
-
-			s.printf("%0.3f", s11_mag);
-			MarkerS11Label->Caption = s;
-
-			s.printf("%0.3f", quality_factor);
-			MarkerS11QualityFactorLabel->Caption = s;
-
-			s.printf("%0.3f", s11_z);
-			MarkerS11ZLabel->Caption = s;
-
-			s.printf("%+0.3f\xb0", s11_phase * rad_2_deg);
-			MarkerS11PhaseLabel->Caption = s;
-
-			s.printf("%0.3f %+0.3f\xb0", s11_mag, s11_phase * rad_2_deg);
-			MarkerS11PolarLabel->Caption = s;
-
-			s = common.valueToStr(s11_group_delay_sec, false, true) + "s";
-			MarkerS11GroupDelayLabel->Caption = s;
-
-
-			// S21 info
-
-
-			MarkerS21RealImagLabel->Caption   = "";
-			MarkerS21GainLabel->Caption       = "";
-			MarkerS21Label->Caption           = "";
-			MarkerS21PhaseLabel->Caption      = "";
-			MarkerS21PolarLabel->Caption      = "";
-			MarkerS21GroupDelayLabel->Caption = "";
-
-
-			//
-
-
-			// make everything visible on the info panel
-			for (int i = 0; i < InfoPanel->ControlCount; i++)
-			{
-				TControl *control = InfoPanel->Controls[i];
-				TLabel *label = dynamic_cast<TLabel *>(control);
-				if (label)
-					if (!label->Visible)
-						label->Visible = true;
-			}
-
-			//InfoPanel->Visible = true;
-
-			// force the info panel to finish display updates
-			InfoPanel->Update();
-
-			return true;
+		int idx = 0;
+		if (first) {
+			InfoStringGrid->ColWidths[0] = 100;
+			InfoStringGrid->ColWidths[1] = InfoStringGrid->Width - InfoStringGrid->ColWidths[0]-1;
+			InfoStringGrid->ColAlignments[0] = taRightJustify;
+			InfoStringGrid->ColAlignments[1] = taLeftJustify;
 		}
-	}
+		qInfo("Frequency", common.freqToStrMHz(Hz) + " MHz");
 
-	 return false;
-}
+		qInfo("Wavelength", (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / Hz, false, true, "") + "m" : String(""));
 
-void __fastcall TForm1::updateInfoPanel()
-{
-/*
-	if (settings.borderWidth <= 0)
-	{	// match the colour of the graphs
-		if (InfoPanel->StyleElements.Contains(seClient))
-			InfoPanel->StyleElements = InfoPanel->StyleElements >> seClient;	// disable the client style so we can set our own colour
-		if (InfoPanel->Color != settings.m_colours.background)
-			InfoPanel->Color = settings.m_colours.background;
+		qInfo("1/4 Wavelength", (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / (Hz * 4), false, true, "") + "m" : String(""));
+		qInfo("", "");
+
+		qInfo("S11 info              ", "");
+		// S11 info
+		qInfo("Real Imag", common.valueToStr(c0.real(), false, true, "", true) + "  " + common.valueToStr(c0.imag(), false, true, "", true));
+
+		s.printf("%0.3f", imp.real());
+		qInfo("Series R", s);
+		qInfo("Series X", (imp.imag() < 0) ? cap_str : ind_str);
+		qInfo("Series L", ind_str);
+		qInfo("Series C", cap_str);
+
+		s.printf("%0.3f", imp_p.real());
+		qInfo("Parallel R", s);
+		qInfo("Parallel X", (imp_p.imag() < 0) ? capp_str : indp_str);
+		qInfo("Parallel L", indp_str);
+		qInfo("Parallel C", capp_str);
+
+		s.printf("%+0.3fdB", return_loss);
+		qInfo("Return Loss", s);
+
+		s.printf("%0.3f", s11_mag);
+		qInfo("Magnitude Lin", s);
+
+		s.printf("%0.3f dB", s11_logmag);
+		qInfo("Magnitude Log", s);
+
+		s.printf("%0.3f", quality_factor);
+		qInfo("Quality Factor", s);
+
+		s.printf("%0.3f", s11_z);
+		qInfo("|Z|", s);
+
+		s.printf("%+0.3f\xb0", s11_phase * rad_2_deg);
+		qInfo("Phase", s);
+
+		s.printf("%0.3f %+0.3f\xb0", s11_mag, s11_phase * rad_2_deg);
+		qInfo("Polar", s);
+
+		qInfo("Group Delay", common.valueToStr(s11_group_delay_sec, false, true) + "s");
+
+		s.printf("%0.3f", vswr);
+		qInfo("VSWR", s);
+
+		qInfo("Impedance", res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str);
+		qInfo("Admittance", adm_str + " " + ((adm.imag() >= 0) ? "+j" : "-j") + admj_str + "S");
+
+		qInfo("", "");
+		// S21 info
+		qInfo("S21 info              ", "");
+		const complexf c1 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s21;
+		const float s21_gain          = data_unit.gain10(c1);
+		const float s21_mag           = data_unit.magnitude(c1);
+		const float s21_logmag        = data_unit.gain10(c1);
+		const float s21_phase         = data_unit.phase(c1);
+
+		float s21_group_delay_sec;
+		{
+			complexf w                  = data_unit.m_point_filt[mem][m].s21;
+			complexf v                  = data_unit.m_point_filt[mem][n].s21;
+			complexf cpx                = w * v;
+			s21_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
+		}
+
+		qInfo("Real Imag", common.valueToStr(c1.real(), false, true, "", true) + " " + common.valueToStr(c1.imag(), false, true, "", true));
+
+		s.printf("%0.3f", s21_mag);
+		qInfo("Magnitude Lin", s);
+
+		s.printf("%0.3f dB", s21_logmag);
+		qInfo("Magnitude Log", s);
+
+		s.printf("%+0.3fdB", s21_gain);
+		qInfo("Gain", s);
+
+		s.printf("%+0.3f\xb0", s21_phase * rad_2_deg);
+		qInfo("Phase", s);
+
+		s.printf("%0.3f %+0.3f\xb0", s21_mag, s21_phase * rad_2_deg);
+		qInfo("Polar", s);
+
+		qInfo("Group Delay", common.valueToStr(s21_group_delay_sec, false, true) + "s");
+
+		first = false;
+		// make everything visible on the info panel
 		for (int i = 0; i < InfoPanel->ControlCount; i++)
 		{
 			TControl *control = InfoPanel->Controls[i];
 			TLabel *label = dynamic_cast<TLabel *>(control);
 			if (label)
-			{
-				if (label->StyleElements.Contains(seFont))
-					label->StyleElements = label->StyleElements >> seFont;	// disable the font style so we can set our own colour
-				if (label->Font->Color != settings.m_colours.font)
-					label->Font->Color = settings.m_colours.font;
-			}
+				if (!label->Visible)
+					label->Visible = true;
 		}
+		//InfoPanel->Visible = true;
+		// force the info panel to finish display updates
+		InfoPanel->Update();
+		return true;
 	}
-	else
-	{	// put components back to their original colours
-		if (!InfoPanel->StyleElements.Contains(seClient))
-			InfoPanel->StyleElements = InfoPanel->StyleElements << seClient;	// re-enable the client style
-		if (InfoPanel->Color != m_info_panel_colours[0])
-			InfoPanel->Color = m_info_panel_colours[0];
-		for (int i = 0, k = 0; i < InfoPanel->ControlCount; i++)
-		{
-			TControl *control = InfoPanel->Controls[i];
-			TLabel *label = dynamic_cast<TLabel *>(control);
-			if (label)
-			{
-				if (!label->StyleElements.Contains(seFont))
-					label->StyleElements = label->StyleElements << seFont;	// re-enable the font style
-				if (label->Font->Color != m_info_panel_colours[k])
-					label->Font->Color = m_info_panel_colours[k];
-				k++;
-			}
-		}
-	}
-*/
+	return false;
+}
+
+void __fastcall TForm1::updateInfoPanel()
+{
 	const int p_graph = graphs.m_mouse.graph;
 	const int p_mem   = graphs.m_mouse.point_mem;
 	const int p_index = graphs.m_mouse.point_index;
@@ -2428,56 +2219,6 @@ void __fastcall TForm1::updateInfoPanel()
 
 	if (!InfoPanel->Visible)
 		return;
-
-	if (!MarkerFrequencyLabel->Caption.IsEmpty())
-	{
-		InfoPanel->Caption              = "";
-
-		MarkerFrequencyLabel->Caption        = "";
-
-		MarkerWavelengthLabel1->Caption      = "";
-		MarkerWavelengthLabel2->Caption      = "";
-
-		MarkerS11RealImagLabel->Caption      = "";
-		MarkerS11ImpedanceLabel->Caption     = "";
-		MarkerS11AdmittanceLabel2->Caption   = "";
-		MarkerS11SeriesRLabel->Caption       = "";
-		MarkerS11SeriesXLabel->Caption       = "";
-		MarkerS11SeriesLLabel->Caption       = "";
-		MarkerS11SeriesCLabel->Caption       = "";
-		MarkerS11ParallelRLabel->Caption     = "";
-		MarkerS11ParallelXLabel->Caption     = "";
-		MarkerS11ParallelLLabel->Caption     = "";
-		MarkerS11ParallelCLabel->Caption     = "";
-		MarkerS11VSWRLabel->Caption          = "";
-		MarkerS11ReturnLossLabel->Caption    = "";
-		MarkerS11Label->Caption              = "";
-		MarkerS11QualityFactorLabel->Caption = "";
-		MarkerS11ZLabel->Caption             = "";
-		MarkerS11PhaseLabel->Caption         = "";
-		MarkerS11PolarLabel->Caption         = "";
-		MarkerS11GroupDelayLabel->Caption    = "";
-
-		MarkerS21RealImagLabel->Caption      = "";
-		MarkerS21GainLabel->Caption          = "";
-		MarkerS21Label->Caption              = "";
-		MarkerS21PhaseLabel->Caption         = "";
-		MarkerS21PolarLabel->Caption         = "";
-		MarkerS21GroupDelayLabel->Caption    = "";
-/*
-		// make everything invisible on the info panel
-		for (int i = 0; i < InfoPanel->ControlCount; i++)
-		{
-			TControl *control = InfoPanel->Controls[i];
-			TLabel *label = dynamic_cast<TLabel *>(control);
-			if (label)
-				if (label->Visible)
-					label->Visible = false;
-		}
-*/
-		// force the info panel to finish display updates
-		InfoPanel->Update();
-	}
 }
 
 // *************************************************************************
@@ -7149,9 +6890,6 @@ void __fastcall TForm1::configGUI()
 		OutputPowerLabel2->Visible         = false;
 		OutputPowerTrackBar->Visible       = false;
 
-		MarkerS11AdmittanceLabel1->Visible = false;
-		MarkerS11AdmittanceLabel2->Visible = false;
-
 		LCMatchingLabel->Visible           = false;
 		LCMatchingToggleSwitch->Visible    = false;
 
@@ -7184,11 +6922,8 @@ void __fastcall TForm1::configGUI()
 		OutputPowerLabel2->Visible         = true;
 		OutputPowerTrackBar->Visible       = true;
 
-		MarkerS11AdmittanceLabel1->Visible = true;
-		MarkerS11AdmittanceLabel2->Visible = true;
-
 		LCMatchingLabel->Visible           = true;
-		LCMatchingToggleSwitch->Visible    = true;
+		LCMatchingToggleSwitch->Visible    = true;
 
 		InfoPanelLabel2->Visible           = true;
 		InfoPanelToggleSwitch->Visible     = true;
@@ -7228,7 +6963,7 @@ void __fastcall TForm1::updatePointBandwidthComboBox(const bool create)
 {
 	TComboBox *cb = PointBandwidthHzComboBox;
 
-	const String s = cb->Text;
+	String s = cb->Text;
 
 	const TNotifyEvent ne = cb->OnChange;
 	cb->OnChange = NULL;
@@ -7254,11 +6989,10 @@ void __fastcall TForm1::updatePointBandwidthComboBox(const bool create)
 			avg = 5;cb->AddItem(IntToStr(avg), (TObject *)avg); 
 			avg = 10;cb->AddItem(IntToStr(avg), (TObject *)avg); 
 			avg = 20;cb->AddItem(IntToStr(avg), (TObject *)avg); 
-			avg = 40;cb->AddItem(IntToStr(avg), (TObject *)avg); 
-			avg = 60;cb->AddItem(IntToStr(avg), (TObject *)avg); 
+			avg = 40;cb->AddItem(IntToStr(avg), (TObject *)avg);
+			avg = 60;cb->AddItem(IntToStr(avg), (TObject *)avg);
 			avg = 80;cb->AddItem(IntToStr(avg), (TObject *)avg);
-			cb->ItemIndex = 0;
-			cb->Text = data_unit.m_bandwidth_Hz;
+			s = IntToStr(data_unit.m_bandwidth_Hz);
 		}
 		else {
 			int Hz = data_unit.m_vna_data.max_bandwidth_Hz;
@@ -13519,6 +13253,7 @@ void __fastcall TForm1::GLPanelMouseUp(TObject *Sender, TMouseButton Button,
 	if (Application->MainForm)
 		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
 }
+
 
 
 

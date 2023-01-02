@@ -20,11 +20,11 @@
 	//#pragma link "glut.lib"
 	#include <windows.h>
 //	#include <gl/glew.h>
-	#include <gl/gl.h>
-	#include <gl/glext.h>
-	#include <gl/glu.h>
-	#include <gl/glaux.h>
-//	#include <gl/wglext.h>
+	#include "gl/gl.h"
+	#include "gl/glext.h"
+	#include "gl/glu.h"
+	#include "gl/glaux.h"
+	#include "gl/wglext.h"
 #endif
 
 // GDI+ system

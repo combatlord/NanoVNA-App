@@ -484,7 +484,7 @@ void __fastcall CGraphs::glInit(TWinControl *win_control)
 	// turn the vsync off/on
 
 //	wglSwapIntervalEXT(0);
-#if 0
+#if 1
 //	if (WGLExtensionSupported("WGL_EXT_swap_control"))
 	{
 		PFNWGLSWAPINTERVALEXTPROC    wglSwapIntervalEXT    = (PFNWGLSWAPINTERVALEXTPROC   ) wglGetProcAddress("wglSwapIntervalEXT");
@@ -891,7 +891,7 @@ GLuint __fastcall CGraphs::createTexture(Graphics::TBitmap *bitmap, bool pixel_p
 	// resize the bitmap
 	Gdiplus::Bitmap p_bitmap(bitmap->Handle, bitmap->Palette);
 	Gdiplus::Graphics p_bm(bm->Canvas->Handle);
-	p_bm.SetSmoothingMode(Gdiplus::SmoothingModeDefault);
+	p_bm.SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
 	//p_bm.SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);	// SmoothingModeAntiAlias
 	//p_bm.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
 	p_bm.DrawImage(&p_bitmap, 0, 0, bm->Width, bm->Height);
@@ -4481,7 +4481,9 @@ void __fastcall CGraphs::drawFreqLines(const int graph, const int graph_type)
 
 		#ifndef USE_OPENGL
 			const Gdiplus::SmoothingMode sm = m_gdi_plus->GetSmoothingMode();
-			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 		#else
 		#endif
 
@@ -4595,6 +4597,8 @@ void __fastcall CGraphs::drawFreqLines(const int graph, const int graph_type)
 			//m_graph_bm->Canvas->Brush->Style = bsSolid;
 			const Gdiplus::SmoothingMode sm = m_gdi_plus->GetSmoothingMode();
 			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 			Gdiplus::SolidBrush brush(Gdiplus::Color(freq_bands_alpha, grey, grey, grey));	// ARGB
 		#else
 			glColor4ub(grey, grey, grey, freq_bands_alpha);
@@ -4643,7 +4647,9 @@ void __fastcall CGraphs::drawFreqLines(const int graph, const int graph_type)
 
 		#ifndef USE_OPENGL
 			const Gdiplus::SmoothingMode sm = m_gdi_plus->GetSmoothingMode();
-			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);		// fast
+			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 
 			Gdiplus::Pen pen(Gdiplus::Color(alpha, red, grn, blu), 1);
 			pen.SetAlignment(Gdiplus::PenAlignmentCenter);
@@ -5055,7 +5061,8 @@ void __fastcall CGraphs::drawNoneLinMagLines(const int graph, const bool left_si
 		TRect rect;
 
 		#ifndef USE_OPENGL
-			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
 			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 		#endif
 
@@ -5166,6 +5173,8 @@ void __fastcall CGraphs::drawNoneLinMagLines(const int graph, const bool left_si
 
 		#ifndef USE_OPENGL
 			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 			Gdiplus::Pen pen(Gdiplus::Color(alpha, grid_red, grid_grn, grid_blu), 1);
 			pen.SetAlignment(Gdiplus::PenAlignmentCenter);
 			//pen.SetDashStyle(Gdiplus::DashStyleSolid);
@@ -5274,6 +5283,8 @@ void __fastcall CGraphs::drawNoneLinMagLines(const int graph, const bool left_si
 
 		#ifndef USE_OPENGL
 			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 
 			Gdiplus::Pen pen(Gdiplus::Color(alpha, red, grn, blu), 1);
 			pen.SetAlignment(Gdiplus::PenAlignmentCenter);
@@ -5432,7 +5443,8 @@ void __fastcall CGraphs::drawMagLines(const int graph, const bool left_side, con
 		TRect rect;
 
 		#ifndef USE_OPENGL
-			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
 			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 		#endif
 
@@ -5543,6 +5555,8 @@ void __fastcall CGraphs::drawMagLines(const int graph, const bool left_side, con
 
 		#ifndef USE_OPENGL
 			m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 			Gdiplus::Pen pen(Gdiplus::Color(alpha, grid_red, grid_grn, grid_blu), 1);
 			pen.SetAlignment(Gdiplus::PenAlignmentCenter);
 			//pen.SetDashStyle(Gdiplus::DashStyleSolid);
@@ -5722,9 +5736,9 @@ void __fastcall CGraphs::drawSmithChart(const int graph, const int graph_type, c
 			gdi_plus.SetCompositingMode(Gdiplus::CompositingModeSourceOver);
 			//gdi_plus.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);
 
-			//gdi_plus.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed);
+			gdi_plus.SetCompositingQuality(Gdiplus::CompositingQualityHighSpeed);
 			//gdi_plus.SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
-			gdi_plus.SetCompositingQuality(Gdiplus::CompositingQualityGammaCorrected);
+			//gdi_plus.SetCompositingQuality(Gdiplus::CompositingQualityGammaCorrected);
 			//gdi_plus.SetCompositingQuality(Gdiplus::CompositingQualityAssumeLinear);
 
 			//gdi_plus.SetPixelOffsetMode(Gdiplus::PixelOffsetModeInvalid);
@@ -6476,8 +6490,8 @@ void __fastcall CGraphs::drawPolarChart(const int graph, const int graph_type, c
 
 	#ifndef USE_OPENGL
 		const Gdiplus::SmoothingMode sm = m_gdi_plus->GetSmoothingMode();
-		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);		// fast
-		m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);		// high quality
+		m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
 		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 		TFont *font = m_graph_bm->Canvas->Font;
 		m_graph_bm->Canvas->Font->Style = m_graph_bm->Canvas->Font->Style >> fsBold;  // remove bold
@@ -6769,8 +6783,8 @@ void __fastcall CGraphs::drawPhaseVectorChart(const int graph, const int graph_t
 
 	#ifndef USE_OPENGL
 		const Gdiplus::SmoothingMode sm = m_gdi_plus->GetSmoothingMode();
-		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);		// fast
-		m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);		// high quality
+		m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
+		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
 		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 		TFont *font = m_graph_bm->Canvas->Font;
 		m_graph_bm->Canvas->Font->Style = m_graph_bm->Canvas->Font->Style >> fsBold;  // remove bold
@@ -13940,10 +13954,6 @@ void __fastcall CGraphs::onPaint(TObject *Sender,
 	if (m_gdi_plus)
 	{
 		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeNone);
-		m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
-		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
-		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-
 		m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighSpeed);
 		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 		//m_gdi_plus->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);

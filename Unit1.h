@@ -41,6 +41,7 @@
 #include "NanoVNA_v2_comms.h"
 #include "JanVNA2_comms.h"
 #include "DataUnit.h"
+#include <Vcl.Grids.hpp>
 
 #ifndef TCPIPH
 	// use the Indy TCPIP client
@@ -147,59 +148,6 @@ __published:
 	TEdit *CenterMHzEdit;
 	TEdit *StartMHzEdit;
 	TPanel *Panel1;
-	TPanel *InfoPanel;
-	TLabel *Label14;
-	TLabel *Label16;
-	TLabel *Label23;
-	TLabel *Label19;
-	TLabel *Label22;
-	TLabel *Label25;
-	TLabel *Label27;
-	TLabel *Label29;
-	TLabel *Label35;
-	TLabel *Label31;
-	TLabel *Label20;
-	TLabel *Label53;
-	TLabel *Label51;
-	TLabel *MarkerS21GainLabel;
-	TLabel *MarkerS21Label;
-	TLabel *MarkerS21RealImagLabel;
-	TLabel *MarkerS11ParallelCLabel;
-	TLabel *MarkerS11ParallelLLabel;
-	TLabel *MarkerS11ParallelXLabel;
-	TLabel *MarkerS11ParallelRLabel;
-	TLabel *MarkerS11SeriesCLabel;
-	TLabel *MarkerS11SeriesLLabel;
-	TLabel *MarkerS11SeriesXLabel;
-	TLabel *MarkerS11SeriesRLabel;
-	TLabel *MarkerS11RealImagLabel;
-	TLabel *MarkerFrequencyLabel;
-	TLabel *Label37;
-	TLabel *Label39;
-	TLabel *Label47;
-	TLabel *Label41;
-	TLabel *Label43;
-	TLabel *Label46;
-	TLabel *Label49;
-	TLabel *Label34;
-	TLabel *Label15;
-	TLabel *MarkerS11AdmittanceLabel1;
-	TLabel *Label59;
-	TLabel *Label55;
-	TLabel *Label58;
-	TLabel *MarkerS21GroupDelayLabel;
-	TLabel *MarkerS21PolarLabel;
-	TLabel *MarkerS21PhaseLabel;
-	TLabel *MarkerS11ImpedanceLabel;
-	TLabel *MarkerS11AdmittanceLabel2;
-	TLabel *MarkerS11GroupDelayLabel;
-	TLabel *MarkerS11PolarLabel;
-	TLabel *MarkerS11PhaseLabel;
-	TLabel *MarkerS11ZLabel;
-	TLabel *MarkerS11QualityFactorLabel;
-	TLabel *MarkerS11Label;
-	TLabel *MarkerS11ReturnLossLabel;
-	TLabel *MarkerS11VSWRLabel;
 	TLabel *PointBandwidthLabel;
 	TLabel *PointsPerSegmentLabel;
 	TLabel *S21OffsetLabel;
@@ -314,9 +262,6 @@ __published:
 	TMenuItem *Scaletomaxvalue1;
 	TMenuItem *Scaletominvalue1;
 	TMenuItem *Deleteallmarkers1;
-	TBevel *Bevel1;
-	TBevel *Bevel2;
-	TBevel *Bevel3;
 	TPopupMenu *MemoryPopupMenu;
 	TMenuItem *SetScanRangeFromMemory1;
 	TMenuItem *N10;
@@ -332,10 +277,6 @@ __published:
 	TMenuItem *Showmarkers1;
 	TMenuItem *Snaptonearestpoint1;
 	TMenuItem *Autoscalepeakhold1;
-	TLabel *Label6;
-	TLabel *MarkerWavelengthLabel1;
-	TLabel *Label8;
-	TLabel *MarkerWavelengthLabel2;
 	TMenuItem *Copyimage1;
 	TBitBtn *SaveGraphImageBitBtn;
 	TBitBtn *SaveS1PFileBitBtn;
@@ -370,6 +311,8 @@ __published:
 	TMenuItem *LoadM3;
 	TMenuItem *LoadM4;
 	TMenuItem *Savetodisk;
+	TPanel *InfoPanel;
+	TStringGrid *InfoStringGrid;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormDestroy(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
