@@ -168,7 +168,6 @@ __published:
 	TEdit *EDelayEdit;
 	TGroupBox *MarkersGroupBox;
 	TListBox *MarkerListBox;
-	TListView *MarkerListView;
 	TToggleSwitch *ShowMarkersOnGraphToggleSwitch;
 	TLabel *OutputPowerLabel2;
 	TLabel *OutputPowerLabel1;
@@ -330,11 +329,6 @@ __published:
 	void __fastcall VelocityFactorEditChange(TObject *Sender);
 	void __fastcall TDRWindowTrackBarChange(TObject *Sender);
 	void __fastcall DeviceComboBoxClick(TObject *Sender);
-	void __fastcall MarkerListViewData(TObject *Sender, TListItem *Item);
-	void __fastcall MarkerListViewKeyDown(TObject *Sender, WORD &Key,
-          TShiftState Shift);
-	void __fastcall MarkerListViewChange(TObject *Sender, TListItem *Item,
-			 TItemChange Change);
 	void __fastcall MarkerListBoxKeyDown(TObject *Sender, WORD &Key,
 			 TShiftState Shift);
 	void __fastcall MarkerListBoxClick(TObject *Sender);

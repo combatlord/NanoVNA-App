@@ -98,10 +98,10 @@ class CCommon
 		String __fastcall localiseDecimalPoint(String s);
 
 		int __fastcall parseString(String s, String separator, std::vector <String> &params);
+		int sprintf(char *s, const char *format, ...);
 
-		String __fastcall freqToStrMHz(double Hz);
+		String __fastcall freqToStrMHz(int64_t Hz);
 		String __fastcall freqToStr1(double Hz, bool trim_trailing_zero, bool space_units, int fraction_size, bool show_sign);
-		String __fastcall freqToStr2(int64_t Hz, const int left_padding);
 
 		String __fastcall secsToStr(double time, bool trim_trailing_zero = true);
 

@@ -1,4 +1,4 @@
-﻿
+
 // (c) OneOfEleven 2020
 //
 // This code can be used on terms of WTFPL Version 2 (http://www.wtfpl.net)
@@ -1702,7 +1702,7 @@ void __fastcall TForm1::createGraphTypeMenus()
 				case 15: graph_type = GRAPH_TYPE_REAL_IMAG_S11;          s = "S-Parameters S11";          break;
 				case 16: graph_type = GRAPH_TYPE_REAL_IMAG_S21;          s = "S-Parameters S21";          break;
 				case 17: graph_type = GRAPH_TYPE_VSWR_S11;               s = "VSWR S11";                  break;
-				case 18: graph_type = GRAPH_TYPE_IMPEDANCE_S11;          s = "Impedance S11";             break;
+				case 18: graph_type = GRAPH_TYPE_IMPEDANCE_S11;          s = "|Z| S11";                   break;
 				case 19: graph_type = GRAPH_TYPE_SERIES_RJX_S11;         s = "Series R+jX S11";           break;
 				case 20: graph_type = GRAPH_TYPE_PARALLEL_RJX_S11;       s = "Parallel R+jX S11";         break;
 				case 21: graph_type = GRAPH_TYPE_SERIES_RESISTANCE_S11;  s = "Series resistance S11";     break;
@@ -2032,152 +2032,155 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 		const complexf c(re, im);
 		const complexf c0 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s11;
 
-		const float ref_impedance = 50;
+		const float ref_impedance = 50.0f;
 		const int m                 = (index == 0) ? 0 : index - 1;
 		const int n                 = (index >= (size - 1)) ? size - 1 : index + 1;
 		const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
 
-		const complexf imp            = data_unit.impedance(c0, ref_impedance);
-		const complexf adm            = 1.0f / imp;
-		const complexf imp_p          = data_unit.serialToParallel(imp);
-		const float return_loss       = data_unit.gain10(c0);
-		const float vswr              = data_unit.VSWR(c0);
-		const float s11_mag           = data_unit.magnitude(c0);
-		const float s11_logmag        = data_unit.gain20(c0);
-
-		const float quality_factor    = data_unit.qualityFactor(c0, ref_impedance);
-		const float s11_z             = data_unit.magnitude(imp);
+		const float return_loss       = data_unit.logmag(c0);
+		const float vswr              = data_unit.swr(c0);
+		const float s11_mag           = data_unit.linear(c0);
 		const float s11_phase         = data_unit.phase(c0);
 
-		const float res               = imp.real();
-		const float res_j             = ABS(imp.imag());
+		const float quality_factor    = data_unit.qualityfactor(c0);
+		const float s11_z             = data_unit.mod_z(c0);
 
-		const float resp              = imp_p.real();
-		const float resp_j            = ABS(imp_p.imag());
+		const float resistance        = data_unit.resistance(c0, ref_impedance);
+		const float reactance         = data_unit.reactance(c0, ref_impedance);
 
-		const float cap               = data_unit.impedanceToCapacitance(imp, Hz);
-		const float cap_p             = data_unit.impedanceToCapacitance(imp_p, Hz);
+		const float parallel_r        = data_unit.parallel_r(c0, ref_impedance);
+		const float parallel_x        = data_unit.parallel_x(c0, ref_impedance);
 
-		const float ind               = data_unit.impedanceToInductance(imp, Hz);
-		const float ind_p             = data_unit.impedanceToInductance(imp_p, Hz);
+		const float series_c          = data_unit.series_c(c0, Hz, ref_impedance);
+		const float series_l          = data_unit.series_l(c0, Hz, ref_impedance);
 
-		String res_str   = common.valueToStr(res,    false, true).Trim();
-		String resj_str  = common.valueToStr(res_j,  false, true).Trim();
+		const float parallel_c        = data_unit.parallel_c(c0, Hz, ref_impedance);
+		const float parallel_l        = data_unit.parallel_l(c0, Hz, ref_impedance);
 
-		String adm_str   = common.valueToStr(adm.real(),    false, true).Trim();
-		String admj_str  = common.valueToStr(ABS(adm.imag()),  false, true).Trim();
+		const float conductance       = data_unit.conductance(c0, ref_impedance);
+		const float susceptance       = data_unit.susceptance(c0, ref_impedance);
 
-		String resp_str  = common.valueToStr(resp,   false, true).Trim();
-		String respj_str = common.valueToStr(resp_j, false, true).Trim();
+		const float s11_group_delay_sec = data_unit.groupdelay(data_unit.m_point_filt[mem][m].s11, data_unit.m_point_filt[mem][n].s11, delta_freq);
 
-		String cap_str   = common.valueToStr(cap,    false, true).Trim() + "F";
-		String capp_str  = common.valueToStr(cap_p,  false, true).Trim() + "F";
-
-		String ind_str   = common.valueToStr(ind,    false, true).Trim() + "H";
-		String indp_str  = common.valueToStr(ind_p,  false, true).Trim() + "H";
 		static bool first = true;
 		#define qInfo(name, txt)   {if (first) InfoStringGrid->Cells[0][idx] = name; InfoStringGrid->Cells[1][idx] = txt; idx++;}
-		float s11_group_delay_sec;
-		{
-			complexf w                  = data_unit.m_point_filt[mem][m].s11;
-			complexf v                  = data_unit.m_point_filt[mem][n].s11;
-			complexf cpx                = w * v;
-			s11_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-		}
 		int idx = 0;
 		if (first) {
-			InfoStringGrid->ColWidths[0] = 100;
-			InfoStringGrid->ColWidths[1] = InfoStringGrid->Width - InfoStringGrid->ColWidths[0]-1;
+			InfoStringGrid->ColWidths[0] = 95;
+			InfoStringGrid->ColWidths[1] = InfoStringGrid->Width - InfoStringGrid->ColWidths[0];
 			InfoStringGrid->ColAlignments[0] = taRightJustify;
 			InfoStringGrid->ColAlignments[1] = taLeftJustify;
 		}
-		qInfo("Frequency", common.freqToStrMHz(Hz) + " MHz");
+		char tmp[256];
+		common.sprintf(tmp, "%qHz", Hz);
+		qInfo("Frequency", tmp);
 
-		qInfo("Wavelength", (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / Hz, false, true, "") + "m" : String(""));
+		common.sprintf(tmp, "%.5Fm", (float)SPEED_OF_LIGHT / Hz);
+		qInfo("Wavelength", tmp);
 
-		qInfo("1/4 Wavelength", (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / (Hz * 4), false, true, "") + "m" : String(""));
+		common.sprintf(tmp, "%.5Fm", (float)SPEED_OF_LIGHT / (4*Hz));
+		qInfo("1/4 Wavelength", tmp);
 		qInfo("", "");
 
 		qInfo("S11 info              ", "");
 		// S11 info
-		qInfo("Real Imag", common.valueToStr(c0.real(), false, true, "", true) + "  " + common.valueToStr(c0.imag(), false, true, "", true));
+		common.sprintf(tmp, "%.5F %+j.5F", c0.real(), c0.imag());
+		qInfo("Real Imag", tmp);
 
-		s.printf("%0.3f", imp.real());
-		qInfo("Series R", s);
-		qInfo("Series X", (imp.imag() < 0) ? cap_str : ind_str);
-		qInfo("Series L", ind_str);
-		qInfo("Series C", cap_str);
+//		common.sprintf(tmp, "%.5F", s11_mag);
+//		qInfo("Magnitude", tmp);
+//		common.sprintf(tmp, "%+5F\xb0", s11_phase);
+//		qInfo("Phase", tmp);
 
-		s.printf("%0.3f", imp_p.real());
-		qInfo("Parallel R", s);
-		qInfo("Parallel X", (imp_p.imag() < 0) ? capp_str : indp_str);
-		qInfo("Parallel L", indp_str);
-		qInfo("Parallel C", capp_str);
+		common.sprintf(tmp, "%.5F %+.5F\xb0", s11_mag, s11_phase);
+		qInfo("Polar", tmp);
 
-		s.printf("%+0.3fdB", return_loss);
-		qInfo("Return Loss", s);
+		common.sprintf(tmp, "%.3f", vswr);
+		qInfo("VSWR", tmp);
 
-		s.printf("%0.3f", s11_mag);
-		qInfo("Magnitude Lin", s);
+		common.sprintf(tmp, "%+0.3fdB", return_loss);
+		qInfo("Return Loss", tmp);
 
-		s.printf("%0.3f dB", s11_logmag);
-		qInfo("Magnitude Log", s);
+		common.sprintf(tmp, "%0.3f", quality_factor);
+		qInfo("Quality Factor", tmp);
 
-		s.printf("%0.3f", quality_factor);
-		qInfo("Quality Factor", s);
+		common.sprintf(tmp, "%.5Fs", s11_group_delay_sec);
+		qInfo("Group Delay", tmp);
 
-		s.printf("%0.3f", s11_z);
-		qInfo("|Z|", s);
+		common.sprintf(tmp, "%F %+jF", resistance, reactance);
+		qInfo("Impedance", tmp);
 
-		s.printf("%+0.3f\xb0", s11_phase * rad_2_deg);
-		qInfo("Phase", s);
+		common.sprintf(tmp, "%0.5F", s11_z);
+		qInfo("|Z|", tmp);
 
-		s.printf("%0.3f %+0.3f\xb0", s11_mag, s11_phase * rad_2_deg);
-		qInfo("Polar", s);
+		common.sprintf(tmp, "%.5F", resistance);
+		qInfo("Series R", tmp);
+		common.sprintf(tmp, "%.5F", reactance);
+		qInfo("Series X", tmp);
 
-		qInfo("Group Delay", common.valueToStr(s11_group_delay_sec, false, true) + "s");
+		common.sprintf(tmp, "%.5FH", series_l);
+		qInfo("Series L", tmp);
+		common.sprintf(tmp, "%.5FF", series_c);
+		qInfo("Series C", tmp);
 
-		s.printf("%0.3f", vswr);
-		qInfo("VSWR", s);
+		common.sprintf(tmp, "%.5F", parallel_r);
+		qInfo("Parallel R", tmp);
+		common.sprintf(tmp, "%.5F", parallel_x);
+		qInfo("Parallel X", tmp);
+		common.sprintf(tmp, "%.5FH", parallel_l);
+		qInfo("Parallel L", tmp);
+		common.sprintf(tmp, "%.5FF", parallel_c);
+		qInfo("Parallel C", tmp);
 
-		qInfo("Impedance", res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str);
-		qInfo("Admittance", adm_str + " " + ((adm.imag() >= 0) ? "+j" : "-j") + admj_str + "S");
+		common.sprintf(tmp, "%.5F %+j.5FS", conductance, susceptance);
+		qInfo("Admittance", tmp);
 
 		qInfo("", "");
 		// S21 info
 		qInfo("S21 info              ", "");
 		const complexf c1 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s21;
-		const float s21_gain          = data_unit.gain10(c1);
-		const float s21_mag           = data_unit.magnitude(c1);
-		const float s21_logmag        = data_unit.gain10(c1);
+		const float s21_mag           = data_unit.linear(c1);
+		const float s21_logmag        = data_unit.logmag(c1);
 		const float s21_phase         = data_unit.phase(c1);
+		const float s21shunt_r        = data_unit.s21shunt_r(c1, ref_impedance);
+		const float s21shunt_x        = data_unit.s21shunt_x(c1, ref_impedance);
+		const float s21shunt_z        = data_unit.s21shunt_z(c1, ref_impedance);
+		const float s21series_r       = data_unit.s21series_r(c1, ref_impedance);
+		const float s21series_x       = data_unit.s21series_x(c1, ref_impedance);
+		const float s21series_z       = data_unit.s21series_z(c1, ref_impedance);
+		const float s21_qualityfactor = data_unit.s21_qualityfactor(c1);
 
-		float s21_group_delay_sec;
-		{
-			complexf w                  = data_unit.m_point_filt[mem][m].s21;
-			complexf v                  = data_unit.m_point_filt[mem][n].s21;
-			complexf cpx                = w * v;
-			s21_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-		}
+		const float s21_group_delay_sec = data_unit.groupdelay(data_unit.m_point_filt[mem][m].s21, data_unit.m_point_filt[mem][n].s21, 2.0f * delta_freq);
 
-		qInfo("Real Imag", common.valueToStr(c1.real(), false, true, "", true) + " " + common.valueToStr(c1.imag(), false, true, "", true));
+		common.sprintf(tmp, "%.5F%+j.5F", c1.real(), c1.imag());
+		qInfo("Real Imag", tmp);
 
-		s.printf("%0.3f", s21_mag);
-		qInfo("Magnitude Lin", s);
+		common.sprintf(tmp, "%+0.3fdB", s21_logmag);
+		qInfo("Gain", tmp);
 
-		s.printf("%0.3f dB", s21_logmag);
-		qInfo("Magnitude Log", s);
+//		common.sprintf(tmp, "%.5F", s21_mag);
+//		qInfo("Magnitude", tmp);
+//		common.sprintf(tmp, "%+5F\xb0", s21_phase);
+//		qInfo("Phase", tmp);
 
-		s.printf("%+0.3fdB", s21_gain);
-		qInfo("Gain", s);
+		common.sprintf(tmp, "%.5F%+.5F\xb0", s21_mag, s21_phase);
+		qInfo("Polar", tmp);
 
-		s.printf("%+0.3f\xb0", s21_phase * rad_2_deg);
-		qInfo("Phase", s);
+		common.sprintf(tmp, "%0.3f", s21_qualityfactor);
+		qInfo("Quality Factor", tmp);
 
-		s.printf("%0.3f %+0.3f\xb0", s21_mag, s21_phase * rad_2_deg);
-		qInfo("Polar", s);
+		common.sprintf(tmp, "%.5Fs", s21_group_delay_sec);
+		qInfo("Group Delay", tmp);
 
-		qInfo("Group Delay", common.valueToStr(s21_group_delay_sec, false, true) + "s");
+		common.sprintf(tmp, "%F %+jF", s21shunt_r, s21shunt_x);
+		qInfo("Z shunt", tmp);
+		common.sprintf(tmp, "%.5F", s21shunt_z);
+		qInfo("|Z| shunt", tmp);
+
+		common.sprintf(tmp, "%F %+jF", s21series_r, s21series_x);
+		qInfo("Z series", tmp);
+		common.sprintf(tmp, "%.5F", s21series_z);
+		qInfo("|Z| series", tmp);
 
 		first = false;
 		// make everything visible on the info panel
@@ -4037,13 +4040,9 @@ void __fastcall TForm1::buildMarkerListBox()
 	for (unsigned int i = 0; i < settings.m_markers_freq.size(); i++)
 	{
 		const t_marker_freq marker = settings.m_markers_freq[i];
-		String s;
-		s.printf(L"%3d  %s Hz", 1 + i, common.freqToStr2(marker.Hz, 10).c_str());
-		if (marker.type == MARKER_TYPE_DELTA)
-			s += "  Delta";
-		else
-			s += "       ";
-		MarkerListBox->Items->AddObject(s, (TObject *)i);
+		char tmp[128];
+		common.sprintf(tmp, "%3d   %15qHz   %5s", 1 + i, marker.Hz, marker.type == MARKER_TYPE_DELTA ? "Delta" : "");
+		MarkerListBox->Items->AddObject(tmp, (TObject *)i);
 	}
 
 	// move the visible list back to it's original position
@@ -6641,100 +6640,6 @@ void __fastcall TForm1::DeviceComboBoxClick(TObject *Sender)
 
 	if (DeviceComboBox->ItemIndex > 0)
 		connect();
-}
-
-void __fastcall TForm1::MarkerListViewData(TObject *Sender,
-		TListItem *Item)
-{
-	TListView *lv = dynamic_cast<TListView *>(Sender);
-	if (!lv || !Item)
-		return;
-	if (!lv->OwnerData)
-		return;
-
-	const int index = Item->Index;
-	if (index < 0 || index >= (int)settings.m_markers_freq.size())
-		return;
-
-	Item->Data = (void *)(1 + index);
-	Item->Caption = "";
-	Item->SubItems->Add(IntToStr(1 + index));
-	Item->SubItems->Add(common.freqToStr2(settings.m_markers_freq[index].Hz, 10));
-}
-
-void __fastcall TForm1::MarkerListViewKeyDown(TObject *Sender, WORD &Key,
-		TShiftState Shift)
-{
-	TListView *lv = dynamic_cast<TListView *>(Sender);
-	if (lv == NULL)
-		return;
-
-	if (Key == VK_DELETE)
-	{
-		Key = 0;
-
-		int deleted_items = 0;
-
-		if (lv->Selected == NULL)
-			return;
-
-		//const int top_index = (lv->TopItem) ? lv->TopItem->Index : 0;
-
-		int last_selected_index;
-		for (last_selected_index = lv->Items->Count - 1; last_selected_index >= 0; last_selected_index--)
-			if (lv->Items->Item[last_selected_index]->Selected)
-				break;
-
-		// we must go in reverse for this to work
-		for (int i = lv->Items->Count - 1; i >= 0; i--)
-		{
-			TListItem *pItem = lv->Items->Item[i];
-			if (!pItem)
-				continue;
-			if (!pItem->Selected)
-				continue;
-
-			//const int index = 1 + pItem->Index;
-			const int index = pItem->Index;
-			settings.m_markers_freq.erase(settings.m_markers_freq.begin() + index);	// delete a marker
-			deleted_items++;
-		}
-
-		if (deleted_items > 0)
-		{
-			lv->ClearSelection();
-
-			// select the one that followed the last selected one
-			if (last_selected_index < 0 || last_selected_index > lv->Items->Count - 1)
-				last_selected_index = lv->Items->Count - 1;
-			if (last_selected_index >= 0)
-			{
-				lv->Items->Item[last_selected_index]->Selected = true;
-				if (lv->Showing && lv->CanFocus())
-					lv->Items->Item[last_selected_index]->Focused = true;
-			}
-
-			lv->Invalidate();
-
-			if (Application->MainForm)
-				::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
-			//updateInfoPanel();
-		}
-
-		return;
-	}
-}
-
-void __fastcall TForm1::MarkerListViewChange(TObject *Sender,
-		TListItem *Item, TItemChange Change)
-{
-	TListView *lv = dynamic_cast<TListView *>(Sender);
-	if (lv == NULL)
-		return;
-
-	if (Application->MainForm)
-		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
-	//updateInfoPanel();
 }
 
 void __fastcall TForm1::MarkerListBoxKeyDown(TObject *Sender, WORD &Key,

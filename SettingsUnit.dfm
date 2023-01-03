@@ -90,8 +90,9 @@ object SettingsForm: TSettingsForm
     Anchors = [akLeft, akTop, akBottom]
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -9
-    Font.Name = 'Tahoma'
+    Font.Height = -12
+    Font.Name = 'Consolas'
+    Font.Pitch = fpFixed
     Font.Style = []
     ParentFont = False
     OnMouseDown = GraphColourPaintBoxMouseDown
@@ -321,7 +322,8 @@ object SettingsForm: TSettingsForm
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'Tahoma'
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
       Font.Style = []
       ItemHeight = 13
       ParentFont = False

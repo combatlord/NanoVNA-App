@@ -123,7 +123,8 @@ double __fastcall nonLinear(double value, double min, double max, double gamma)
 		value = min;
 
 	#ifdef NON_LIN_GAMMA
-		const double level = (level >= 0.0) ? pow((value - min) / range, 1.0 / gamma) * range : 0.0; 	// non-linear scale
+		double level = (value - min) / range;
+		level = (level >= 0.0) ? pow(level, 1.0 / gamma) * range : 0.0; 	// non-linear scale
 
 		// reverse
 		//value = min + (pow(level / range, gamma) * range);
@@ -3590,7 +3591,7 @@ void __fastcall CGraphs::drawMarkersSmithPolar(const int graph, const int mem, c
 
 			const complexf imp   = data_unit.impedance(c, ref_impedance);
 			const complexf imp_p = data_unit.serialToParallel(imp);
-			const float mag      = data_unit.magnitude(c);
+			const float mag      = data_unit.linear(c);
 			const float phase    = data_unit.phase(c);
 			//const float phase  = (c.real != 0.0f) ? atan2f(c.imag(), c.real) : 0.0f;
 			const float cap      = data_unit.impedanceToCapacitance(imp, Hz);
@@ -3635,8 +3636,8 @@ void __fastcall CGraphs::drawMarkersSmithPolar(const int graph, const int mem, c
 					//s[j++].printf(L" Rs jX    %#.4g %cj%#.4g ", imp.real(), (imp.imag() < 0) ? '-' : '+', fabsf(imp.imag()));
 					s[j++] =       " Rs jX    " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[j++].printf(L" Rs L/C   %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+					s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 				else
 				if (admittance)
@@ -3644,16 +3645,16 @@ void __fastcall CGraphs::drawMarkersSmithPolar(const int graph, const int mem, c
 					//s[j++].printf(L" Rp+jX    %#.4g %cj%#.4g ", imp_p.real(), (imp_p.imag() < 0) ? '-' : '+', fabsf(imp_p.imag()));
 					s[j++] =       " Rp jX    " + resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
 					s[j++].printf(L" Rp L/C   %#.4g %s ", imp_p.real(), ((imp_p.imag() < 0) ? capp_str : indp_str).c_str());
-					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+					s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 				else
 				{	// smith
 					//s[j++].printf(L" Rs jX    %#.4g %cj%#.4g ", imp.real(), (imp.imag() < 0) ? '-' : '+', fabsf(imp.imag()));
 					s[j++] =       " Rs jX    " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[j++].printf(L" Rs L/C   %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+					s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 			}
 			else
@@ -3691,7 +3692,7 @@ void __fastcall CGraphs::drawMarkersSmithPolar(const int graph, const int mem, c
 
 			const complexf imp   = data_unit.impedance(c, ref_impedance);
 			const complexf imp_p = data_unit.serialToParallel(imp);
-			const float mag      = data_unit.magnitude(c);
+			const float mag      = data_unit.linear(c);
 			const float phase    = data_unit.phase(c);
 			const float cap      = data_unit.impedanceToCapacitance(imp, Hz);
 			const float ind      = data_unit.impedanceToInductance(imp, Hz);
@@ -3735,8 +3736,8 @@ void __fastcall CGraphs::drawMarkersSmithPolar(const int graph, const int mem, c
 					//s[j++].printf(L" Rs jX    %#.4g %cj%#.4g ", imp.real(), (imp.imag() < 0) ? '-' : '+', fabsf(imp.imag()));
 					s[j++] =       " Rs jX    " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[j++].printf(L" Rs L/C   %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+					s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 				else
 				if (admittance)
@@ -3744,16 +3745,16 @@ void __fastcall CGraphs::drawMarkersSmithPolar(const int graph, const int mem, c
 					//s[j++].printf(L" Rp jX    %#.4g %cj%#.4g ", imp_p.real(), (imp_p.imag() < 0) ? '-' : '+', fabsf(imp_p.imag()));
 					s[j++] =       " Rp jX    " + resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
 					s[j++].printf(L" Rp L/C   %#.4g %s ", imp_p.real(), ((imp_p.imag() < 0) ? capp_str : indp_str).c_str());
-					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+					s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 				else
 				{	// smith
 					//s[j++].printf(L" Rs jX    %#.4g %cj%#.4g ", imp.real(), (imp.imag() < 0) ? '-' : '+', fabsf(imp.imag()));
 					s[j++] =       " Rs jX    " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[j++].printf(L" Rs L/C   %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+					s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 			}
 			else
@@ -3846,7 +3847,7 @@ void __fastcall CGraphs::drawMarkersOnSmithPolarGraph(const int graph, const int
 
 		const complexf imp   = data_unit.impedance(c, ref_impedance);
 		const complexf imp_p = data_unit.serialToParallel(imp);
-		const float mag      = data_unit.magnitude(c);
+		const float mag      = data_unit.linear(c);
 		const float phase    = data_unit.phase(c);
 		const float cap      = data_unit.impedanceToCapacitance(imp, Hz);
 		const float ind      = data_unit.impedanceToInductance(imp, Hz);
@@ -3889,8 +3890,8 @@ void __fastcall CGraphs::drawMarkersOnSmithPolarGraph(const int graph, const int
 			//s[j++].printf(L" Rs jX    %#.4g %cj%#.4g ", imp.real(), (imp.imag() < 0) ? '-' : '+', fabsf(imp.imag()));
 			s[j++] =       " Rs jX    " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 			s[j++].printf(L" Rs L/C   %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-			s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-			s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+			s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+			s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 		}
 		else
 		if (admittance)
@@ -3898,16 +3899,16 @@ void __fastcall CGraphs::drawMarkersOnSmithPolarGraph(const int graph, const int
 			//s[j++].printf(L" Rp jX    %#.4g %cj%#.4g ", imp_p.real(), (imp_p.imag() < 0) ? '-' : '+', fabsf(imp_p.imag()));
 			s[j++] =       " Rp jX    " + resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
 			s[j++].printf(L" Rp L/C   %#.4g %s ", imp_p.real(), ((imp_p.imag() < 0) ? capp_str : indp_str).c_str());
-			s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-			s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp_p), false, true);
+			s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+			s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp_p), false, true);
 		}
 		else
 		{	// smith
 			//s[j++].printf(L" Rs jX    %#.4g %cj%#.4g ", imp.real(), (imp.imag() < 0) ? '-' : '+', fabsf(imp.imag()));
 			s[j++] =       " Rs jX    " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 			s[j++].printf(L" Rs L/C   %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-			s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-			s[j++] =       " Imp      " + common.valueToStr(data_unit.magnitude(imp), false, true);
+			s[j++].printf(L" Mag Ang  %0.4f %#.4g\xb0 ", mag, phase);
+			s[j++] =       " Imp      " + common.valueToStr(data_unit.linear(imp), false, true);
 		}
 
 		#ifndef USE_OPENGL
@@ -4033,7 +4034,7 @@ void __fastcall CGraphs::drawMouseSmithPolar(const int graph, const int graph_ty
 
 				const complexf imp   = data_unit.impedance(c, ref_impedance);
 				const complexf imp_p = data_unit.serialToParallel(imp);
-				const float mag      = data_unit.magnitude(c);
+				const float mag      = data_unit.linear(c);
 				const float phase    = data_unit.phase(c);
 				const float cap      = data_unit.impedanceToCapacitance(imp, Hz);
 				const float ind      = data_unit.impedanceToInductance(imp, Hz);
@@ -4065,22 +4066,22 @@ void __fastcall CGraphs::drawMouseSmithPolar(const int graph, const int graph_ty
 				{	// polar
 					s[str_count++] =       " Rs jX     " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[str_count++].printf(L" Rs L/C    %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
+					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase);
 				}
 				else
 				if (admittance)
 				{  // admittance
 					s[str_count++] =       " Rp jX     " + resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
 					s[str_count++].printf(L" Rp L/C    %#.4g %s ", imp_p.real(), ((imp_p.imag() < 0) ? capp_str : indp_str).c_str());
-					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase);
+					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 				else
 				{  // smith
 					s[str_count++] =       " Rs jX     " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[str_count++].printf(L" Rs L/C    %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase);
+					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 
 				if (tx < 0)
@@ -4121,7 +4122,7 @@ void __fastcall CGraphs::drawMouseSmithPolar(const int graph, const int graph_ty
 
 				const complexf imp   = data_unit.impedance(c, ref_impedance);
 				const complexf imp_p = data_unit.serialToParallel(imp);
-				const float mag      = data_unit.magnitude(c);
+				const float mag      = data_unit.linear(c);
 				const float phase    = data_unit.phase(c);
 				const float cap      = data_unit.impedanceToCapacitance(imp, Hz);
 				const float ind      = data_unit.impedanceToInductance(imp, Hz);
@@ -4156,22 +4157,22 @@ void __fastcall CGraphs::drawMouseSmithPolar(const int graph, const int graph_ty
 				{  // polar
 					s[str_count++] =       " Rs jX     " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[str_count++].printf(L" Rs L/C    %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
+					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase);
 				}
 				else
 				if (admittance)
 				{	// admittance
 					s[str_count++] =       " Rp jX     " + resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
 					s[str_count++].printf(L" Rp L/C    %#.4g %s ", imp_p.real(), ((imp_p.imag() < 0) ? capp_str : indp_str).c_str());
-					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase);
+					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 				else
 				{	// smith
 					s[str_count++] =       " Rs jX     " + res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
 					s[str_count++].printf(L" Rs L/C    %#.4g %s ", imp.real(), ((imp.imag() < 0) ? cap_str : ind_str).c_str());
-					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase * rad_2_deg);
-					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.magnitude(imp), false, true);
+					s[str_count++].printf(L" Mag Ang   %0.4f %#.4g\xb0 ", mag, phase);
+					s[str_count++] =       " Imp       " + common.valueToStr(data_unit.linear(imp), false, true);
 				}
 
 				if (tx < 0)
@@ -8132,7 +8133,7 @@ void __fastcall CGraphs::drawLogMagCalibrations(const int graph, const int graph
 				for (int i = 0; i < size; i++)
 				{
 					const complexf sparam = calibration_module.m_calibration.point[i].sParam[trace];
-					float level = data_unit.gain10(sparam);
+					float level = data_unit.logmag(sparam);
 					m_levels[mem][trace][i] = level;
 				}
 			}
@@ -8282,9 +8283,9 @@ void __fastcall CGraphs::drawLogMagS11S21(const int graph, const int graph_type,
 					m_levels[mem][channel].resize(size);
 					for (int i = 0; i < size; i++)
 					{
-						float level = data_unit.gain10(data_unit.m_point_filt[mem][i].sParam[channel]);
+						float level = data_unit.logmag(data_unit.m_point_filt[mem][i].sParam[channel]);
 						if (normalise)
-							level -= data_unit.gain10(data_unit.m_point_norm[i].sParam[channel]);
+							level -= data_unit.logmag(data_unit.m_point_norm[i].sParam[channel]);
 						m_levels[mem][channel][i] = level;
 					}
 				}
@@ -8474,9 +8475,9 @@ void __fastcall CGraphs::drawLinMagS11S21(const int graph, const int graph_type,
 					m_levels[mem][channel].resize(size);
 					for (int i = 0; i < size; i++)
 					{
-						float level = data_unit.magnitude(data_unit.m_point_filt[mem][i].sParam[channel]);
+						float level = data_unit.linear(data_unit.m_point_filt[mem][i].sParam[channel]);
 						if (normalise)
-							level -= data_unit.magnitude(data_unit.m_point_norm[i].sParam[channel]);
+							level -= data_unit.linear(data_unit.m_point_norm[i].sParam[channel]);
 						m_levels[mem][channel][i] = level;
 					}
 				}
@@ -8696,7 +8697,7 @@ void __fastcall CGraphs::drawPhaseS11S21(const int graph, const int graph_type, 
 						float level = data_unit.phase(data_unit.m_point_filt[mem][i].sParam[channel]);
 						if (normalise)
 							level -= data_unit.phase(data_unit.m_point_norm[i].sParam[channel]);
-						m_levels[mem][channel][i] = level * rad_2_deg;
+						m_levels[mem][channel][i] = level;
 					}
 
 					// phase unwrap (in degrees)
@@ -8896,9 +8897,9 @@ void __fastcall CGraphs::drawVSWRReturnLossS11(const int graph, const int graph_
 			{
 				for (int i = 0; i < size; i++)
 				{
-					float level = data_unit.VSWR(data_unit.m_point_filt[mem][i].sParam[channel]);
+					float level = data_unit.swr(data_unit.m_point_filt[mem][i].sParam[channel]);
 					if (normalise)
-						level -= data_unit.VSWR(data_unit.m_point_norm[i].sParam[channel]);
+						level -= data_unit.swr(data_unit.m_point_norm[i].sParam[channel]);
 					m_levels[mem][channel].push_back(level);
 				}
 			}
@@ -9098,13 +9099,10 @@ void __fastcall CGraphs::drawImpedanceS11(const int graph, const int graph_type,
 				for (int i = 0; i < size; i++)
 				{
 					complexf c = data_unit.m_point_filt[mem][i].sParam[channel];
-					complexf z = data_unit.impedance(c, 50);
-					float Zs   = data_unit.magnitude(z);
-					if (normalise)
-					{
+					float Zs   = data_unit.mod_z(c, 50);
+					if (normalise) {
 						c   = data_unit.m_point_norm[i].sParam[channel];
-						z   = data_unit.impedance(c, 50);
-						Zs -= data_unit.magnitude(z);
+						Zs -= data_unit.mod_z(c, 50);
 					}
 					m_levels[mem][channel][i] = Zs;
 				}
@@ -9218,7 +9216,7 @@ void __fastcall CGraphs::drawImpedanceS11(const int graph, const int graph_type,
 
 	String units = "";
 	String s[MAX_CHANNELS];
-	s[0] = (data_unit.m_vna_data.type != UNIT_TYPE_TINYSA) ? "S11 Zs" : "line";
+	s[0] = (data_unit.m_vna_data.type != UNIT_TYPE_TINYSA) ? "S11 |Z|" : "line";
 	s[1] = "";
 
 	if (gs && gs->show_max_marker)
@@ -9307,9 +9305,9 @@ void __fastcall CGraphs::drawQualityFactorS11(const int graph, const int graph_t
 				m_levels[mem][channel].resize(size);
 				for (int i = 0; i < size; i++)
 				{
-					float level = data_unit.qualityFactor(data_unit.m_point_filt[mem][i].sParam[channel], 50);
+					float level = data_unit.qualityfactor(data_unit.m_point_filt[mem][i].sParam[channel]);
 					if (normalise)
-						level -= data_unit.qualityFactor(data_unit.m_point_norm[i].sParam[channel], 50);
+						level -= data_unit.qualityfactor(data_unit.m_point_norm[i].sParam[channel]);
 					m_levels[mem][channel][i] = level;
 				}
 			}
@@ -9503,9 +9501,9 @@ void __fastcall CGraphs::drawQCS11(const int graph, const int graph_type, const 
 					m_levels[mem][channel].resize(size);
 					for (int i = 0; i < size; i++)
 					{
-						float level = data_unit.QualityFactor(data_unit.m_point_filt[mem][i].sParam[channel], 50);
+						float level = data_unit.qualityfactor(data_unit.m_point_filt[mem][i].sParam[channel]);
 						if (normalise)
-							level -= data_unit.QualityFactor(data_unit.m_point_norm[i].sParam[channel], 50);
+							level -= data_unit.qualityfactor(data_unit.m_point_norm[i].sParam[channel]);
 						m_levels[mem][channel][i] = level;
 					}
 				}
@@ -9523,12 +9521,10 @@ void __fastcall CGraphs::drawQCS11(const int graph, const int graph_type, const 
 						complexf c = data_unit.m_point_filt[mem][i].sParam[channel];
 						if (normalise)
 							c -= data_unit.m_point_norm[i].sParam[channel];
-						const complexf imp     = data_unit.impedance(c, ref_impedance);
-						//const complexf imp_p = data_unit.serialToParallel(imp);
-						const float cap        = data_unit.impedanceToCapacitance(imp, Hz);
-						//const float ind      = data_unit.impedanceToInductance(imp, Hz);
-						//const float cap_p    = data_unit.impedanceToCapacitance(imp_p, Hz);
-						//const float ind_p    = data_unit.impedanceToInductance(imp_p, Hz);
+						const float cap        = data_unit.series_c(c, Hz, ref_impedance);
+						//const float ind      = data_unit.series_l(c, Hz, ref_impedance);
+						//const float cap_p    = data_unit.parallel_c(c, Hz, ref_impedance);
+						//const float ind_p    = data_unit.parallel_l(c, Hz, ref_impedance);
 						m_levels[mem][channel][i] = cap;
 					}
 				}
@@ -9710,9 +9706,9 @@ void __fastcall CGraphs::drawQLS11(const int graph, const int graph_type, const 
 					m_levels[mem][channel].resize(size);
 					for (int i = 0; i < size; i++)
 					{
-						float level = data_unit.QualityFactor(data_unit.m_point_filt[mem][i].sParam[channel], 50);
+						float level = data_unit.qualityfactor(data_unit.m_point_filt[mem][i].sParam[channel]);
 						if (normalise)
-							level -= data_unit.QualityFactor(data_unit.m_point_norm[i].sParam[channel], 50);
+							level -= data_unit.qualityfactor(data_unit.m_point_norm[i].sParam[channel]);
 						m_levels[mem][channel][i] = level;
 					}
 				}
@@ -9730,12 +9726,10 @@ void __fastcall CGraphs::drawQLS11(const int graph, const int graph_type, const 
 						complexf c = data_unit.m_point_filt[mem][i].sParam[channel];
 						if (normalise)
 							c -= data_unit.m_point_norm[i].sParam[channel];
-						const complexf imp     = data_unit.impedance(c, ref_impedance);
-						//const complexf imp_p = data_unit.serialToParallel(imp);
-						//const float cap      = data_unit.impedanceToCapacitance(imp, Hz);
-						const float ind        = data_unit.impedanceToInductance(imp, Hz);
-						//const float cap_p    = data_unit.impedanceToCapacitance(imp_p, Hz);
-						//const float ind_p    = data_unit.impedanceToInductance(imp_p, Hz);
+						//const float cap        = data_unit.series_c(c, Hz, ref_impedance);
+						const float ind      = data_unit.series_l(c, Hz, ref_impedance);
+						//const float cap_p    = data_unit.parallel_c(c, Hz, ref_impedance);
+						//const float ind_p    = data_unit.parallel_l(c, Hz, ref_impedance);
 						m_levels[mem][channel][i] = ind;
 					}
 				}
@@ -9910,37 +9904,28 @@ void __fastcall CGraphs::drawGroupDelayS11S21(const int graph, const int graph_t
 		if (size > 1 && settings.memoryEnable[mem])
 		{
 			const bool normalise = ((int)data_unit.m_point_norm.size() == size && settings.normalisationEnabled) ? true : false;
-			std::vector <float> phase(size);
 			for (int channel = 0; channel < MAX_CHANNELS; channel++)
 			{
 				if (chan_mask & (1u << channel))
 				{
-					// compute the phase (in degrees)
 					m_levels[mem][channel].resize(size);
 					for (int i = 0; i < size; i++)
 					{
-						complexf sparam = data_unit.m_point_filt[mem][i].sParam[channel];
-						float level = data_unit.phase(sparam);
-						if (normalise)
-						{
-							sparam = data_unit.m_point_norm[i].sParam[channel];
-							level -= data_unit.phase(sparam);
+						const int m                 = (i == 0) ? 0 : i - 1;
+						const int n                 = (i >= (size - 1)) ? size - 1 : i + 1;
+						const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
+
+						complexf sparam1 = data_unit.m_point_filt[mem][m].sParam[channel];
+						complexf sparam2 = data_unit.m_point_filt[mem][n].sParam[channel];
+						float level = data_unit.groupdelay(sparam1, sparam2, delta_freq);
+						if (normalise) {
+							sparam1 = data_unit.m_point_norm[m].sParam[channel];
+							sparam2 = data_unit.m_point_norm[n].sParam[channel];
+							level-= data_unit.groupdelay(sparam1, sparam2, delta_freq);
 						}
-						phase[i] = level * rad_2_deg;
+						if (channel == 1) level/= 2.0f;
+						m_levels[mem][channel][i] = level * 1e9;
 					}
-
-					// phase unwrap (in degrees)
-					common.phaseUnwrapDeg(&phase[0], size);
-
-					// compute the group delay (in ns)
-					for (int i = 0; i < (size - 1); i++)
-					{
-						const int64_t delta_freq  = data_unit.m_point_filt[mem][i + 1].Hz - data_unit.m_point_filt[mem][i + 0].Hz;
-						const float delta_phase   = phase[i + 1] - phase[i + 0];
-						const float group_delay   = delta_phase / (360 * delta_freq);
-						m_levels[mem][channel][i] = group_delay * -1e9f;	// convert to nano-seconds
-					}
-					m_levels[mem][channel][size - 1] = m_levels[mem][channel][size - 2];
 				}
 			}
 		}
@@ -9966,7 +9951,7 @@ void __fastcall CGraphs::drawGroupDelayS11S21(const int graph, const int graph_t
 
 	drawFreqLines(graph, graph_type);
 
-	drawMagLines(graph, true, min_levels, max_levels, 0.0001, "%#.5f", "");
+	drawMagLines(graph, true, min_levels, max_levels, 0.001, "%#.5f", "");
 
 	{	// compute the graph points
 		const double range_levels = fabs(max_levels - min_levels);
@@ -10086,7 +10071,7 @@ void __fastcall CGraphs::drawGroupDelayS11S21(const int graph, const int graph_t
 			}
 		}
 
-		String title = "Freq Group Delay ns";
+		String title = "Group Delay ns";
 		if (chan_mask & 1)
 			title += " S11";
 		if (chan_mask & 2)
@@ -10354,18 +10339,17 @@ void __fastcall CGraphs::drawParallelRJX(const int graph, const int graph_type, 
 				for (int i = 0; i < size; i++)
 				{
 					complexf sparam = data_unit.m_point_filt[mem][i].sParam[chan];
-					complexf z      = data_unit.impedance(sparam, 50);
-					complexf zp     = data_unit.serialToParallel(z);
-					if (normalise)
-					{
+					float parallel_r = data_unit.parallel_r(sparam);
+					float parallel_x = data_unit.parallel_x(sparam);
+					if (normalise) {
 						sparam = data_unit.m_point_norm[i].sParam[chan];
-						z      = data_unit.impedance(sparam, 50);
-						zp    -= data_unit.serialToParallel(z);
+						parallel_r-= data_unit.parallel_r(sparam);
+						parallel_x-= data_unit.parallel_x(sparam);
 					}
 					if (mask & 1)
-						m_levels[mem][chan + 0][i] = zp.real();
+						m_levels[mem][chan + 0][i] = parallel_r;
 					if (mask & 2)
-						m_levels[mem][chan + 1][i] = zp.imag();
+						m_levels[mem][chan + 1][i] = parallel_x;
 				}
 			}
 		}
@@ -10758,11 +10742,11 @@ void __fastcall CGraphs::drawCoaxLossS11(const int graph, const int graph_type, 
 				for (int i = 0; i < size; i++)
 				{
 					complexf sparam = data_unit.m_point_filt[mem][i].sParam[chan];
-					float level     = data_unit.gain10(sparam);
+					float level     = data_unit.logmag(sparam);
 					if (normalise)
 					{
 						sparam = data_unit.m_point_norm[i].sParam[chan];
-						level -= data_unit.gain10(sparam);
+						level -= data_unit.logmag(sparam);
 					}
 					m_levels[mem][chan][i] = level;
 				}
@@ -11067,7 +11051,7 @@ void __fastcall CGraphs::drawSmithS11S21(const int graph, const int graph_type, 
 				for (int i = 0; i < (int)m_levels[m][c].size(); i++)
 				{
 					const complexf cpx(m_levels[m][c + 0][i], m_levels[m][c + 1][i]);
-					const float mag = data_unit.magnitude(cpx);
+					const float mag = data_unit.linear(cpx);
 
 					if (max_index < 0 || max_value < mag)
 					{
@@ -11266,7 +11250,7 @@ void __fastcall CGraphs::drawPolarS11S21(const int graph, const int graph_type, 
 				for (int i = 0; i < (int)m_levels[m][c].size(); i++)
 				{
 					const complexf cpx(m_levels[m][c + 0][i], m_levels[m][c + 1][i]);
-					const float mag = data_unit.magnitude(cpx);
+					const float mag = data_unit.linear(cpx);
 
 					if (max_index < 0 || max_value < mag)
 					{
@@ -12379,7 +12363,7 @@ void __fastcall CGraphs::drawTDRImpedance(const int graph, const int graph_type,
 					for (int i = 0; i < size; i++)
 					{
 						const complexf imp(m_levels[mem][chan + 0][i], m_levels[mem][chan + 1][i]);
-						double level = (double)data_unit.magnitude(imp) - min_levels;
+						double level = (double)data_unit.linear(imp) - min_levels;
 						if (gamma > GAMMA_MIN)
 						{	// non-linear scale
 							#ifdef NON_LIN_GAMMA
@@ -12502,7 +12486,7 @@ void __fastcall CGraphs::drawTDRImpedance(const int graph, const int graph_type,
 						const double dist = mem_max_dist * (m_mouse.secs / mem_max_time);
 
 						const complexf imp(m_levels[mem][chan + 0][index], m_levels[mem][chan + 1][index]);
-						float level = data_unit.magnitude(imp);
+						float level = data_unit.linear(imp);
 
 						if (gs && gs->show_markers && graph == m_mouse.graph)
 						{
@@ -12568,7 +12552,7 @@ void __fastcall CGraphs::drawTDRImpedance(const int graph, const int graph_type,
 								String s[2];
 
 								const complexf imp(m_levels[mem][chan + 0][index], m_levels[mem][chan + 1][index]);
-								float level = data_unit.magnitude(imp);
+								float level = data_unit.linear(imp);
 
 								if (gs && gs->show_markers)
 								{

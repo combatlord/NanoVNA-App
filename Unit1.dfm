@@ -928,7 +928,7 @@ object Form1: TForm1
     object GraphPaintBox: TPaintBox
       Left = 0
       Top = 0
-      Width = 326
+      Width = 344
       Height = 536
       Cursor = crArrow
       Hint = 'No hint'
@@ -1024,7 +1024,7 @@ object Form1: TForm1
     object GLPanel: TPanel
       Left = 0
       Top = 0
-      Width = 326
+      Width = 344
       Height = 536
       Align = alClient
       BevelOuter = bvLowered
@@ -1052,10 +1052,9 @@ object Form1: TForm1
       OnMouseMove = GLPanelMouseMove
       OnMouseUp = GLPanelMouseUp
       OnResize = GLPanelResize
-      ExplicitWidth = 344
     end
     object SDPanel: TPanel
-      Left = 326
+      Left = 344
       Top = 0
       Width = 200
       Height = 536
@@ -1065,7 +1064,6 @@ object Form1: TForm1
       DragMode = dmAutomatic
       TabOrder = 2
       Visible = False
-      ExplicitLeft = 344
       object file_list: TListBox
         Left = 1
         Top = 48
@@ -1110,9 +1108,9 @@ object Form1: TForm1
       end
     end
     object InfoPanel: TPanel
-      Left = 526
+      Left = 544
       Top = 0
-      Width = 230
+      Width = 212
       Height = 536
       Align = alRight
       BevelOuter = bvLowered
@@ -1129,7 +1127,7 @@ object Form1: TForm1
       object InfoStringGrid: TStringGrid
         Left = 1
         Top = 16
-        Width = 228
+        Width = 210
         Height = 519
         Align = alBottom
         Anchors = [akLeft, akTop, akRight, akBottom]
@@ -1149,13 +1147,12 @@ object Form1: TForm1
         Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing]
+        Font.Style = []
+        Options = [goEditing]
         ParentCtl3D = False
         ParentFont = False
         ScrollBars = ssNone
         TabOrder = 0
-        ExplicitWidth = 226
       end
     end
   end
@@ -1282,61 +1279,19 @@ object Form1: TForm1
     DesignSize = (
       213
       84)
-    object MarkerListView: TListView
-      Left = 8
-      Top = 36
-      Width = 198
-      Height = 39
-      Cursor = crHandPoint
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      Columns = <
-        item
-          MaxWidth = 1
-          MinWidth = 1
-          Width = 1
-        end
-        item
-          Alignment = taCenter
-          Caption = 'No.'
-          MaxWidth = 40
-          MinWidth = 40
-          Width = 40
-        end
-        item
-          Caption = 'Frequency'
-          MaxWidth = 100
-          MinWidth = 100
-          Width = 100
-        end>
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      GridLines = True
-      OwnerData = True
-      ReadOnly = True
-      RowSelect = True
-      ParentFont = False
-      ShowColumnHeaders = False
-      TabOrder = 3
-      ViewStyle = vsReport
-      Visible = False
-      OnChange = MarkerListViewChange
-      OnData = MarkerListViewData
-      OnKeyDown = MarkerListViewKeyDown
-    end
     object MarkerListBox: TListBox
-      Left = 8
+      Left = 1
       Top = 42
-      Width = 198
-      Height = 34
+      Width = 211
+      Height = 41
       Cursor = crHandPoint
+      Align = alBottom
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'Tahoma'
+      Font.Name = 'Consolas'
+      Font.Pitch = fpFixed
       Font.Style = []
       ItemHeight = 13
       ParentFont = False
@@ -1419,7 +1374,7 @@ object Form1: TForm1
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 3
       OnClick = DeleteFrequencyMarkersBitBtnClick
     end
   end

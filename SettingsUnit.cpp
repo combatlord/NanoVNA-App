@@ -546,18 +546,9 @@ void __fastcall TSettingsForm::updateFreqBandListBox()
 	for (unsigned int i = 0; i < settings.m_freq_band.size(); i++)
 	{
 		const t_freq_band fb = settings.m_freq_band[i];
-		AnsiString s;
-
-		s = fb.name.Trim();
-		while (s.Length() < 12)
-			s = " " + s;
-
-		s  = " " + s;
-		s += "  " + common.freqToStr2(fb.low_Hz, 10) + "Hz";
-		s += "  " + common.freqToStr2(fb.high_Hz, 10) + "Hz";
-		s += fb.enabled ? "          " : "  hide";
-
-		lb->Items->AddObject(s, (TObject *)i);
+		char tmp[256];
+		common.sprintf(tmp, "%15s   %15qHz   %15qHz   %s", fb.name.c_str(), fb.low_Hz, fb.high_Hz, fb.enabled ? "    " : "hide");
+		lb->Items->AddObject(tmp, (TObject *)i);
 	}
 
 	if (top_index >= 0 && !settings.m_freq_band.empty())
@@ -902,10 +893,10 @@ void __fastcall TSettingsForm::GraphColourPaintBoxPaint(TObject *Sender)
 		m_colour_bm->Height = pb->Height;
 	}
 
-	m_colour_bm->Canvas->Font = (settings.graphFont != NULL) ? settings.graphFont : pb->Canvas->Font;
+	m_colour_bm->Canvas->Font = pb->Canvas->Font;
 
 	//m_colour_bm->Canvas->Font->Style = m_colour_bm->Canvas->Font->Style << fsBold;
-	m_colour_bm->Canvas->Font->Size = m_colour_bm->Canvas->Font->Size + 1;
+	m_colour_bm->Canvas->Font->Size = m_colour_bm->Canvas->Font->Size;
 
 	const int border_size = 10;
 

@@ -197,43 +197,278 @@ double __fastcall CData::max_dist(const double freq_step, const double velocity_
 	return (freq_step <= 0) ? 0 : (0.25 * velocity_factor * SPEED_OF_LIGHT) / freq_step;
 }
 
-float __fastcall CData::power(complexf c)
-{
-	return SQR(c.real()) + SQR(c.imag());
+//**************************************************************************************
+//                                      VNA calculations
+//**************************************************************************************
+// Help functions
+static inline float get_l(float re, float im) {return (re*re + im*im);}
+static inline float get_w(double freq) {return 2.0f * M_PI * freq;}
+static inline float get_s11_r(float re, float im, float z) {return fabsf(2.0f * z * re / get_l(re, im) - z);}
+static inline float get_s21_r(float re, float im, float z) {return  1.0f * z * re / get_l(re, im) - z;}
+static inline float get_s11_x(float re, float im, float z) {return -2.0f * z * im / get_l(re, im);}
+static inline float get_s21_x(float re, float im, float z) {return -1.0f * z * im / get_l(re, im);}
+
+//#define PORT_Z  50.0f
+//**************************************************************************************
+// LINEAR = |S|
+//**************************************************************************************
+float __fastcall CData::linear(complexf v) {
+  const float re = v.real(), im = v.imag();
+  return sqrtf(get_l(re, im));
 }
 
-float __fastcall CData::magnitude(complexf c)
-{
-	const float p = power(c);
-	return sqrtf(p);
+//**************************************************************************************
+// LOGMAG = 20*log10f(|S|)
+//**************************************************************************************
+float __fastcall CData::logmag(complexf v) {
+  const float re = v.real(), im = v.imag();
+  const float l = get_l(re, im);
+  return l == 0 ? 0.0f : log10f(l) * 10.0f;
 }
 
-float __fastcall CData::gain10(complexf c)
-{
-	const float pwr = power(c);
-	return (pwr > 0) ? 10.0f * log10f(pwr) : 0.0f;
+//**************************************************************************************
+// Return Loss = 10*log10f(|S|)
+//**************************************************************************************
+float __fastcall CData::return_loss(complexf v) {
+  const float re = v.real(), im = v.imag();
+  const float l = get_l(re, im);
+  return l == 0 ? INFINITY : log10f(get_l(re, im)) * 5.0f;
 }
 
-float __fastcall CData::gain20(complexf z)
-{
-	const float pwr = power(z);
-	return (pwr > 0) ? 20.0f * log10f(pwr) : 0.0f;
+//**************************************************************************************
+// PHASE angle in degree = atan2(im, re) * 180 / PI
+//**************************************************************************************
+float __fastcall CData::phase(complexf v) {
+  const float re = v.real(), im = v.imag();
+  return (180.0f / M_PI) * atan2f(im, re);
 }
 
-float __fastcall CData::phase(complexf c)
-{
-	return (c.real() != 0) ? atan2f(c.imag(), c.real()) : 0.0f;
+//**************************************************************************************
+// Group delay
+//**************************************************************************************
+float __fastcall CData::groupdelay(complexf v, complexf w, double deltaf) {
+  // calculate atan(w)-atan(v)
+#if 0
+  complexf q = v / w;
+  return atan2f(q.imag(), q.real()) / (2.0f * M_PI * deltaf);
+#else
+  float r = w.real()*v.real() + w.imag()*v.imag();
+  float i = w.real()*v.imag() - w.imag()*v.real();
+  return atan2f(i, r) / (2.0f * M_PI * deltaf);
+#endif
 }
 
-float __fastcall CData::VSWR(complexf c)
-{
-	const float mag = magnitude(c);
-	return (mag < 1) ? (1.0f + mag) / (1.0f - mag) : VSWR_MAX;
+//**************************************************************************************
+// REAL
+//**************************************************************************************
+float __fastcall CData::real(complexf v) {
+  return v.real();
 }
 
+//**************************************************************************************
+// IMAG
+//**************************************************************************************
+float __fastcall CData::imag(complexf v) {
+  return v.imag();
+}
+
+//**************************************************************************************
+// SWR = (1 + |S|)/(1 - |S|)
+//**************************************************************************************
+float __fastcall CData::swr(complexf v) {
+  float x = linear(v);
+  if (x > ((VSWR_MAX - 1.0f) / (VSWR_MAX + 1.0f)))
+	return VSWR_MAX;//1.0f / 0.0f;
+  return (1.0f + x)/(1.0f - x);
+}
+//**************************************************************************************
+// Z parameters calculations from complex S
+// Z = z0 * (1 + S) / (1 - S) = R + jX
+// |Z| = sqrtf(R*R+X*X)
+// Resolve this in complex give:
+//   let S` = 1 - S  => re` = 1 - re and im` = -im
+//       l` = re` * re` + im` * im`
+// Z = z0 * (2 - S`) / S` = z0 * 2 / S` - z0
+//  R = z0 * 2 * re` / l` - z0
+//  X =-z0 * 2 * im` / l`
+// |Z| = z0 * sqrt(4 * re / l` + 1)
+// Z phase = atan(X, R)
+//**************************************************************************************
+float __fastcall CData::resistance(complexf v, const float ref_impedance) {
+  v = 1.0f - v;
+  if (v.real() == 0.0f && v.imag() == 0.0f) return ref_impedance;
+  return get_s11_r(v.real(), v.imag(), ref_impedance);
+}
+
+float __fastcall CData::reactance(complexf v, const float ref_impedance) {
+  v = 1.0f - v;
+  if (v.real() == 0.0f && v.imag() == 0.0f) return 0.0;
+  return get_s11_x(v.real(), v.imag(), ref_impedance);
+}
+
+float __fastcall CData::mod_z(complexf v, const float ref_impedance) {
+  const float re = v.real(), im = v.imag();
+  const float l = get_l(1.0f - re, im);
+  return l == 0.0f ? INFINITY : ref_impedance * sqrtf(4.0f * re / l + 1.0f); // always >= 0
+}
+
+float __fastcall CData::phase_z(complexf v) {
+  const float re = v.real(), im = v.imag();
+  if (v.real() == 0.0f && v.imag() == 0.0f) return 0.0;
+  const float r = 1.0f - get_l(re, im);
+  const float x = 2.0f * im;
+  return (180.0f / M_PI) * atan2f(x, r);
+}
+
+//**************************************************************************************
+// Use w = 2 * pi * frequency
+// Get Series L and C from X
+//  C = -1 / (w * X)
+//  L =  X / w
+//**************************************************************************************
+float __fastcall CData::series_c(complexf v, double freq, const float ref_impedance) {
+  const float zi = reactance(v, ref_impedance);
+  const float w = get_w(freq);
+  return zi == 0.0f ? 0.0f : -1.0f / (w * zi);
+}
+
+float __fastcall CData::series_l(complexf v, double freq, const float ref_impedance) {
+  const float zi = reactance(v, ref_impedance);
+  const float w = get_w(freq);
+  return zi / w;
+}
+
+//**************************************************************************************
+// Q factor = abs(X / R)
+// Q = 2 * im / (1 - re * re - im * im)
+//**************************************************************************************
+float __fastcall CData::qualityfactor(complexf v) {
+  const float re = v.real(), im = v.imag();
+  const float r = 1.0f - get_l(re, im);
+  const float x = 2.0f * im;
+  return r == 0.0f ? INFINITY : fabsf(x / r);
+}
+
+//**************************************************************************************
+// Y parameters (conductance and susceptance) calculations from complex S
+// Y = (1 / z0) * (1 - S) / (1 + S) = G + jB
+// Resolve this in complex give:
+//   let S` = 1 + S  => re` = 1 + re and im` = im
+//       l` = re` * re` + im` * im`
+//      z0` = (1 / z0)
+// Y = z0` * (2 - S`) / S` = 2 * z0` / S` - z0`
+//  G =  2 * z0` * re` / l` - z0`
+//  B = -2 * z0` * im` / l`
+// |Y| = 1 / |Z|
+//**************************************************************************************
+float __fastcall CData::conductance(complexf v, const float ref_impedance) {
+  v = 1.0f + v;
+  float ref = 1.0f / ref_impedance;
+  if (v.real() == 0.0f && v.imag() == 0.0f) return ref;
+  return get_s11_r(v.real(), v.imag(), ref);
+}
+
+float __fastcall CData::susceptance(complexf v, const float ref_impedance) {
+  v = 1.0f + v;
+  float ref = 1.0f / ref_impedance;
+  if (v.real() == 0.0f && v.imag() == 0.0f) return 0.0;
+  return get_s11_x(v.real(), v.imag(), ref);
+}
+
+//**************************************************************************************
+// Parallel R and X calculations from Y
+// Rp = 1 / G
+// Xp =-1 / B
+//**************************************************************************************
+float __fastcall CData::parallel_r(complexf v, const float ref_impedance) {
+  v = 1.0f + v;
+  const float re = v.real(), im = v.imag();
+  const float l = get_l(re, im);
+  return (2.0f * re - l) == 0 ? INFINITY : ref_impedance * l / (2.0f * re - l);
+}
+
+float __fastcall CData::parallel_x(complexf v, const float ref_impedance) {
+  v = 1.0f + v;
+  const float re = v.real(), im = v.imag();
+  return im == 0.0f ? 0.0f: ref_impedance * get_l(re, im) / (2.0f * im);
+}
+
+//**************************************************************************************
+// Use w = 2 * pi * frequency
+// Get Parallel L and C from B
+//  C =  B / w
+//  L = -1 / (w * B) = Xp / w
+//**************************************************************************************
+float __fastcall CData::parallel_c(complexf v, double freq, const float ref_impedance) {
+  const float yi = susceptance(v, ref_impedance);
+  const float w = get_w(freq);
+  return yi / w;
+}
+
+float __fastcall CData::parallel_l(complexf v, double freq, const float ref_impedance) {
+  const float xp = parallel_x(v, ref_impedance);
+  const float w = get_w(freq);
+  return xp / w;
+}
+
+float __fastcall CData::mod_y(complexf v, const float ref_impedance) {
+  float mz = mod_z(v, ref_impedance);
+  return mz == 0.0f ? INFINITY : 1.0f / mz; // always >= 0
+}
+
+//**************************************************************************************
+// S21 series and shunt
+// S21 shunt  Z = 0.5f * z0 * S / (1 - S)
+//   replace S` = (1 - S)
+// S21 shunt  Z = 0.5f * z0 * (1 - S`) / S`
+// S21 series Z = 2.0f * z0 * (1 - S ) / S
+// Q21 = im / re
+//**************************************************************************************
+float __fastcall CData::s21shunt_r(complexf v, const float ref_impedance) {
+  v = 1.0f - v;
+  if (v.real() == 0.0f && v.imag() == 0.0f) return INFINITY;
+  return get_s21_r(v.real(), v.imag(), 0.5f * ref_impedance);
+}
+
+float __fastcall CData::s21shunt_x(complexf v, const float ref_impedance) {
+  v = 1.0f - v;
+  if (v.real() == 0.0f && v.imag() == 0.0f) return INFINITY;
+  return get_s21_x(v.real(), v.imag(), 0.5f * ref_impedance);
+}
+
+float __fastcall CData::s21shunt_z(complexf v, const float ref_impedance) {
+  float l1 = get_l(v.real(), v.imag());
+  float l2 = get_l(1.0f - v.real(), v.imag());
+  return l2 == 0.0f ? INFINITY : 0.5f * ref_impedance * sqrtf(l1 / l2);
+}
+
+float __fastcall CData::s21series_r(complexf v, const float ref_impedance) {
+  if (v.real() == 0.0f && v.imag() == 0.0f) return 0;
+  return get_s21_r(v.real(), v.imag(), 2.0f * ref_impedance);
+}
+
+float __fastcall CData::s21series_x(complexf v, const float ref_impedance) {
+  if (v.real() == 0.0f && v.imag() == 0.0f) return 0;
+  return get_s21_x(v.real(), v.imag(), 2.0f * ref_impedance);
+}
+
+float __fastcall CData::s21series_z(complexf v, const float ref_impedance) {
+  float l1 = get_l(v.real(), v.imag());
+  float l2 = get_l(1.0f - v.real(), v.imag());
+  return l1 == 0.0f ? INFINITY : 2.0f * ref_impedance * sqrtf(l2 / l1);
+}
+
+float __fastcall CData::s21_qualityfactor(complexf v) {
+  float re = v.real(), im = v.imag();
+  re-= get_l(re, im);
+  return re == 0.0f ? INFINITY : fabsf(im / re);
+}
+
+//===================================================================
+#if 0
 complexf __fastcall CData::parallelToSerial(complexf c)
 {	// Convert parallel impedance to serial impedance equivalent
-	const float p = power(c);
+	const float p = get_l(c.real(), c.imag());
 	if (p <= 0.0f)
 	{
 		return complexf(IMPEDANCE_MAX, IMPEDANCE_MAX);
@@ -245,10 +480,34 @@ complexf __fastcall CData::parallelToSerial(complexf c)
 		return complexf (re, im);
 	}
 }
+complexf __fastcall CData::impedanceToNorm(complexf z, const float ref_impedance)
+{	// Calculate normalized z from impedance
+	return z / ref_impedance;
+}
+complexf __fastcall CData::normToImpedance(complexf z, const float ref_impedance)
+{	// Calculate impedance from normalized z
+	return z * ref_impedance;
+}
+complexf __fastcall CData::reflectionCoefficient(complexf z, const float ref_impedance)
+{	// Calculate reflection coefficient for z
+	return (z - ref_impedance) / (z + ref_impedance);
+}
+float __fastcall CData::capacitiveEquivalent(complexf c, const double freq, const float ref_impedance)
+{
+	complexf imp = impedance(c, ref_impedance);
+	return impedanceToCapacitance(imp, freq);
+}
+
+float __fastcall CData::inductiveEquivalent(complexf c, const double freq, const float ref_impedance)
+{
+	complexf imp = impedance(c, ref_impedance);
+	return impedanceToInductance(imp, freq);
+}
+#endif
 
 complexf __fastcall CData::serialToParallel(complexf z)
 {	// Convert serial impedance to parallel impedance equivalent
-	const float pwr = power(z);
+	const float pwr = get_l(z.real(), z.imag());
 	const float re = (z.real() != 0.0f) ? pwr / z.real() : IMPEDANCE_MAX;
 	const float im = (z.imag() != 0.0f) ? pwr / z.imag() : IMPEDANCE_MAX;
 	return complexf(re, im);
@@ -266,29 +525,8 @@ float __fastcall CData::impedanceToInductance(complexf z, double freq)
 	return (freq <= 0) ? 0.0f : z.imag() / (float)(2 * M_PI * freq);
 }
 
-complexf __fastcall CData::impedanceToNorm(complexf z, const float ref_impedance)
-{	// Calculate normalized z from impedance
-	return z / ref_impedance;
-}
-
-complexf __fastcall CData::normToImpedance(complexf z, const float ref_impedance)
-{	// Calculate impedance from normalized z
-	return z * ref_impedance;
-}
-
-complexf __fastcall CData::reflectionCoefficient(complexf z, const float ref_impedance)
-{	// Calculate reflection coefficient for z
-	return (z - ref_impedance) / (z + ref_impedance);
-}
-
-complexf __fastcall CData::gammaToImpedance(complexf gamma, const float ref_impedance)
-{
-	return ((-gamma - 1.0f) / (gamma - 1.0f)) * ref_impedance;
-}
-
 complexf __fastcall CData::impedance(complexf c, const float ref_impedance)
 {
-	//	return gammaToImpedance(c, ref_impedance);
 	//	return complexf((1.0f + c.real) * (1.0f - c.real) - (c.imag() * c.imag), 2.0f * c.imag) * ref_impedance;
 
 	const float div = ((1.0f - c.real()) * (1.0f - c.real()) + (c.imag() * c.imag()));
@@ -301,25 +539,6 @@ complexf __fastcall CData::impedance(complexf c, const float ref_impedance)
 		const float d = ref_impedance / div;
 		return complexf((((1.0f + c.real()) * (1.0f - c.real())) - (c.imag() * c.imag())), 2.0f * c.imag()) * d;
 	}
-}
-
-float __fastcall CData::qualityFactor(complexf c, const float ref_impedance)
-{
-	complexf imp = impedance(c, ref_impedance);
-//	complexf imp((1.0f + c.real) * (1.0f - c.real) - (c.imag() * c.imag), 2.0f * c.imag);
-	return (imp.real() != 0.0f) ? fabsf(imp.imag() / imp.real()) : 0.0f;
-}
-
-float __fastcall CData::capacitiveEquivalent(complexf c, const double freq, const float ref_impedance)
-{
-	complexf imp = impedance(c, ref_impedance);
-	return impedanceToCapacitance(imp, freq);
-}
-
-float __fastcall CData::inductiveEquivalent(complexf c, const double freq, const float ref_impedance)
-{
-	complexf imp = impedance(c, ref_impedance);
-	return impedanceToInductance(imp, freq);
 }
 
 bool __fastcall CData::validFrequencySettings()

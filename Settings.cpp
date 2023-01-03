@@ -1843,7 +1843,7 @@ void __fastcall CSettings::defaultFreqBands()
 	{
 		const t_freq_band_c fb_c = default_freq_band[i];
 		t_freq_band fb;
-		fb.name    = String(fb_c.name);
+		fb.name    = AnsiString(fb_c.name);
 		fb.low_Hz  = fb_c.low_Hz;
 		fb.high_Hz = fb_c.high_Hz;
 		fb.enabled = fb_c.enabled;
