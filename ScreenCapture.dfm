@@ -23,6 +23,7 @@ object VNAScreenCaptureForm: TVNAScreenCaptureForm
   FormStyle = fsStayOnTop
   KeyPreview = True
   OldCreateOrder = False
+  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -114,8 +115,8 @@ object VNAScreenCaptureForm: TVNAScreenCaptureForm
     object ResizeImage: TImage
       Left = 3
       Top = 3
-      Width = 320
-      Height = 240
+      Width = 312
+      Height = 236
       Margins.Left = 0
       Margins.Top = 0
       Margins.Right = 0
