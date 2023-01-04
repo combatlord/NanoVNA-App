@@ -2066,7 +2066,7 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 		#define qInfo(name, txt)   {if (first) InfoStringGrid->Cells[0][idx] = name; InfoStringGrid->Cells[1][idx] = txt; idx++;}
 		int idx = 0;
 		if (first) {
-			InfoStringGrid->ColWidths[0] = 95;
+			InfoStringGrid->ColWidths[0] = (InfoStringGrid->ColWidths[0] * 80)/100;
 			InfoStringGrid->ColWidths[1] = InfoStringGrid->Width - InfoStringGrid->ColWidths[0];
 			InfoStringGrid->ColAlignments[0] = taRightJustify;
 			InfoStringGrid->ColAlignments[1] = taLeftJustify;
@@ -2082,7 +2082,7 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 		qInfo("1/4 Wavelength", tmp);
 		qInfo("", "");
 
-		qInfo("S11 info              ", "");
+		qInfo("S11 info            ", "");
 		// S11 info
 		common.sprintf(tmp, "%.5F %+j.5F", c0.real(), c0.imag());
 		qInfo("Real Imag", tmp);
@@ -2137,7 +2137,7 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 
 		qInfo("", "");
 		// S21 info
-		qInfo("S21 info              ", "");
+		qInfo("S21 info            ", "");
 		const complexf c1 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s21;
 		const float s21_mag           = data_unit.linear(c1);
 		const float s21_logmag        = data_unit.logmag(c1);
@@ -2152,7 +2152,7 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 
 		const float s21_group_delay_sec = data_unit.groupdelay(data_unit.m_point_filt[mem][m].s21, data_unit.m_point_filt[mem][n].s21, 2.0f * delta_freq);
 
-		common.sprintf(tmp, "%.5F%+j.5F", c1.real(), c1.imag());
+		common.sprintf(tmp, "%.5F% +j.5F", c1.real(), c1.imag());
 		qInfo("Real Imag", tmp);
 
 		common.sprintf(tmp, "%+0.3fdB", s21_logmag);
@@ -2163,7 +2163,7 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 //		common.sprintf(tmp, "%+5F\xb0", s21_phase);
 //		qInfo("Phase", tmp);
 
-		common.sprintf(tmp, "%.5F%+.5F\xb0", s21_mag, s21_phase);
+		common.sprintf(tmp, "%.5F% +.5F\xb0", s21_mag, s21_phase);
 		qInfo("Polar", tmp);
 
 		common.sprintf(tmp, "%0.3f", s21_qualityfactor);

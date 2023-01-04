@@ -1059,6 +1059,7 @@ object Form1: TForm1
       Width = 200
       Height = 536
       Align = alRight
+      AutoSize = True
       BevelOuter = bvLowered
       Caption = 'SDPanel'
       DragMode = dmAutomatic
@@ -1113,6 +1114,7 @@ object Form1: TForm1
       Width = 212
       Height = 536
       Align = alRight
+      AutoSize = True
       BevelOuter = bvLowered
       Caption = 'InfoPanel'
       Font.Charset = ANSI_CHARSET
