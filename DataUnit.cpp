@@ -254,7 +254,7 @@ float __fastcall CData::groupdelay(complexf v, complexf w, double deltaf) {
 #else
   float r = w.real()*v.real() + w.imag()*v.imag();
   float i = w.real()*v.imag() - w.imag()*v.real();
-  return atan2f(i, r) / (2.0f * M_PI * deltaf);
+  return deltaf == 0 ? 0.0 : atan2f(i, r) / (2.0f * M_PI * deltaf);
 #endif
 }
 
@@ -443,7 +443,7 @@ float __fastcall CData::s21shunt_z(complexf v, const float ref_impedance) {
 }
 
 float __fastcall CData::s21series_r(complexf v, const float ref_impedance) {
-  if (v.real() == 0.0f && v.imag() == 0.0f) return 0;
+  if (v.real() == 0.0f && v.imag() == 0.0f) return INFINITY;
   return get_s21_r(v.real(), v.imag(), 2.0f * ref_impedance);
 }
 
