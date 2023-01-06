@@ -752,7 +752,7 @@ void CGraphs::glPrint(int font_index, GLint x, GLint y, const char *fmt, ...)
 	delete buf;
 }
 
-void __fastcall CGraphs::glTextOut(int font_index, GLint x, GLint y, String s)
+void __fastcall CGraphs::glTextOut(int font_index, GLint x, GLint y, String s, bool transparent)
 {
 	if (font_index < 0 || font_index >= (int)m_gl.font.size())
 		return;
@@ -761,9 +761,23 @@ void __fastcall CGraphs::glTextOut(int font_index, GLint x, GLint y, String s)
 	const GLuint base_start = m_gl.font[font_index].base_start;
 	if (base == 0)
 		return;
+	const int text_width = glTextWidth(font_index, s);
+	const int text_height = m_gl.font[font_index].height - 3;
+	y += 3 + (text_height / 2);
 
-	y += 3 + (m_gl.font[font_index].height / 2);
-
+	if (transparent == false) {
+		float currentColor[4];
+		glGetFloatv(GL_CURRENT_COLOR,currentColor);
+		glBegin(GL_QUADS);
+		GLrgba bg_col = colourToGLcolour(settings.m_colours.background);
+		glColor3ub(bg_col.r, bg_col.g, bg_col.b);
+		glVertex3f(x-1,y+1,0);
+		glVertex3f(x+text_width,y+1,0);
+		glVertex3f(x+text_width,y-text_height,0);
+		glVertex3f(x-1,y-text_height,0);
+		glEnd();
+		glColor4f(currentColor[0], currentColor[1], currentColor[2], currentColor[3]);
+	}
 	glEnable(GL_BLEND);
 	glShadeModel(GL_SMOOTH);
 
@@ -4734,7 +4748,7 @@ void __fastcall CGraphs::drawFreqLines(const int graph, const int graph_type)
 			{
 				const int x = lines[i].first;
 				String s = lines[i].second;
-				glTextOut(0, x - (glTextWidth(0, s) / 2), gy + gh + 5, s);
+				glTextOut(0, x - (glTextWidth(0, s) / 2), gy + gh + 5, s, true);
 			}
 		#endif
 	}
@@ -5637,7 +5651,7 @@ void __fastcall CGraphs::drawMagLines(const int graph, const bool left_side, con
 				m_graph_bm->Canvas->TextOut(IROUND(x), IROUND(y), s);
 			#else
 				const float x = gx - 5 - glTextWidth(0, s);
-				glTextOut(0, IROUND(x), IROUND(y), s);
+				glTextOut(0, IROUND(x), IROUND(y), s, true);
 			#endif
 		}
 	}
@@ -5650,7 +5664,7 @@ void __fastcall CGraphs::drawMagLines(const int graph, const bool left_side, con
 			#ifndef USE_OPENGL
 				m_graph_bm->Canvas->TextOut(IROUND(x), IROUND(y), lines[i].second);
 			#else
-				glTextOut(0, IROUND(x), IROUND(y), lines[i].second);
+				glTextOut(0, IROUND(x), IROUND(y), lines[i].second, true);
 			#endif
 		}
 	}

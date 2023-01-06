@@ -176,7 +176,7 @@ class CGraphs
 			int __fastcall glTextWidth(int font_index, String s);
 			int __fastcall glTextHeight(int font_index, String s);
 			void glPrint(int font_index, GLint x, GLint y, const char *fmt, ...);
-			void __fastcall glTextOut(int font_index, GLint x, GLint y, String s);
+			void __fastcall glTextOut(int font_index, GLint x, GLint y, String s, bool transparent = false);
 			void __fastcall glCircle(const float x, const float y, const float radius, const float deg_start, const float deg_end, const int segments, const bool fill);
 
 			GLuint __fastcall createTexture(Graphics::TBitmap *bitmap, bool pixel_perfect);
