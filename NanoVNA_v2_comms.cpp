@@ -1116,7 +1116,7 @@ int __fastcall CNanoVNA2Comms::processRx(t_serial_buffer &serial_buffer)
 					{
 						data_unit.m_point_incoming[pos] = fp;
 
-						if (m_new_points_timer.millisecs() >= 100)
+						if (m_new_points_timer.millisecs() >= 300)
 						{	// give the user some feedback that we are actually receiving scanned points
 							m_new_points_timer.mark();
 							::PostMessage(Form1->Handle, WM_INCOMING_POINTS, (WPARAM)index, 0);

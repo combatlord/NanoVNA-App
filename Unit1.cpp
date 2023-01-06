@@ -3237,8 +3237,8 @@ void __fastcall TForm1::WMComDeviceChanged(TMessage &msg)
 			if (data_unit.squeak_wav.size() > MIN_WAV_SIZE)
 				sound_played = PlaySound(&data_unit.squeak_wav[0], NULL, SND_MEMORY | SND_NODEFAULT | SND_NOWAIT | SND_ASYNC);
 		#endif
-		if (sound_played == FALSE)
-			Beep(440, 80);
+		//if (sound_played == FALSE)
+		//	Beep(440, 80);
 	}
 	else
 	{	// disconnected
@@ -3247,8 +3247,8 @@ void __fastcall TForm1::WMComDeviceChanged(TMessage &msg)
 			if (data_unit.phurp_wav.size() > MIN_WAV_SIZE)
 				sound_played = PlaySound(&data_unit.phurp_wav[0], NULL, SND_MEMORY | SND_NODEFAULT | SND_NOWAIT | SND_ASYNC);
 		#endif
-		if (sound_played == FALSE)
-			Beep(349, 80);
+		//if (sound_played == FALSE)
+		//	Beep(349, 80);
 
 		updateDeviceComboBox();
 
@@ -3994,6 +3994,7 @@ void __fastcall TForm1::addNewRxData(std::vector <t_data_point> &new_points)
 			 (!nanovna1_comms.m_pause_comms || (data_unit.m_segment > 0 && data_unit.m_segment < segments)))
 		{
 			requestScan(); 	// request next segment
+			::PostMessage(Form1->Handle, WM_INCOMING_POINTS, (WPARAM)nanovna1_comms.m_rx_block.bin_data_index, 0);
 		}
 		else	// finished scan
 		{
