@@ -121,8 +121,8 @@ CSettings::CSettings()
 	m_graph_font = new TFont();
 	if (m_graph_font)
 	{
-		m_graph_font->Name    = "Consolas";							// string
-		m_graph_font->Charset = ANSI_CHARSET;						// int
+		m_graph_font->Name    = "Tahoma";						// string
+		m_graph_font->Charset = ANSI_CHARSET;					// int
 		m_graph_font->Color   = clBlack;       					// int
 		m_graph_font->Size    = 8;             					// int
 		m_graph_font->Style   = TFontStyles(); 					// byte array

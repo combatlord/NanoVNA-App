@@ -12,7 +12,7 @@ object CalibrationForm: TCalibrationForm
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
@@ -29,20 +29,14 @@ object CalibrationForm: TCalibrationForm
     559
     360)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label6: TLabel
-    Left = 8
+    Left = 4
     Top = 155
-    Width = 92
-    Height = 13
+    Width = 116
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Calibration file path '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object CheckImage1: TImage
     Left = 204
@@ -121,85 +115,49 @@ object CalibrationForm: TCalibrationForm
     Visible = False
   end
   object Label2: TLabel
-    Left = 14
-    Top = 123
-    Width = 43
-    Height = 13
+    Left = 6
+    Top = 121
+    Width = 55
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Average '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object AverageLabel: TLabel
-    Left = 159
-    Top = 123
-    Width = 21
-    Height = 13
+    Left = 150
+    Top = 121
+    Width = 24
+    Height = 16
     Caption = 'XXX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object SmoothingLabel: TLabel
-    Left = 350
-    Top = 123
-    Width = 21
-    Height = 13
+    Left = 345
+    Top = 121
+    Width = 24
+    Height = 16
     Caption = 'XXX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object Label40: TLabel
-    Left = 195
-    Top = 123
-    Width = 53
-    Height = 13
+    Left = 190
+    Top = 121
+    Width = 67
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Smoothing '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object MedianLabel: TLabel
-    Left = 528
-    Top = 123
-    Width = 21
-    Height = 13
+    Left = 520
+    Top = 121
+    Width = 24
+    Height = 16
     Caption = 'XXX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object Label4: TLabel
-    Left = 389
-    Top = 123
-    Width = 37
-    Height = 13
+    Left = 383
+    Top = 121
+    Width = 48
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Median '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object CalibrationNameLabel: TLabel
     Left = 6
@@ -212,7 +170,7 @@ object CalibrationForm: TCalibrationForm
     Caption = 'CalibrationNameLabel'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -11
+    Font.Height = -13
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
@@ -221,7 +179,7 @@ object CalibrationForm: TCalibrationForm
     Left = 49
     Top = 6
     Width = 38
-    Height = 25
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Save as'
     Font.Charset = ANSI_CHARSET
@@ -253,7 +211,7 @@ object CalibrationForm: TCalibrationForm
     Left = 6
     Top = 6
     Width = 37
-    Height = 25
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Load a calibration file'
     Font.Charset = DEFAULT_CHARSET
@@ -357,9 +315,9 @@ object CalibrationForm: TCalibrationForm
       OnClick = ClearCalibrationButtonClick
     end
     object LoadBitBtn: TBitBtn
-      Left = 327
+      Left = 328
       Top = 0
-      Width = 109
+      Width = 110
       Height = 37
       Cursor = crHandPoint
       Hint = 'Attach 50R LOAD cal-standards onto both S11 and S21 ports'
@@ -383,7 +341,7 @@ object CalibrationForm: TCalibrationForm
     object ShortBitBtn: TBitBtn
       Left = 109
       Top = 0
-      Width = 109
+      Width = 110
       Height = 37
       Cursor = crHandPoint
       Hint = 'Attach SHORT cal-standard onto S11 port'
@@ -405,7 +363,7 @@ object CalibrationForm: TCalibrationForm
       OnMouseDown = CalButtonBitBtnMouseDown
     end
     object OpenBitBtn: TBitBtn
-      Left = 218
+      Left = 219
       Top = 0
       Width = 109
       Height = 37
@@ -429,9 +387,9 @@ object CalibrationForm: TCalibrationForm
       OnMouseDown = CalButtonBitBtnMouseDown
     end
     object ThroughBitBtn: TBitBtn
-      Left = 436
+      Left = 438
       Top = 0
-      Width = 111
+      Width = 109
       Height = 37
       Cursor = crHandPoint
       Hint = 
@@ -456,10 +414,10 @@ object CalibrationForm: TCalibrationForm
     end
   end
   object CalibrationPathEdit: TEdit
-    Left = 116
+    Left = 119
     Top = 152
     Width = 394
-    Height = 21
+    Height = 24
     Anchors = [akLeft, akTop, akRight]
     ReadOnly = True
     TabOrder = 5
@@ -470,7 +428,7 @@ object CalibrationForm: TCalibrationForm
     Left = 520
     Top = 152
     Width = 33
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Select calibration file path'
     Anchors = [akTop, akRight]
@@ -537,7 +495,7 @@ object CalibrationForm: TCalibrationForm
     Left = 137
     Top = 6
     Width = 39
-    Height = 25
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Export SOLT calibration to individual s1p files'
     Font.Charset = ANSI_CHARSET
@@ -569,7 +527,7 @@ object CalibrationForm: TCalibrationForm
     Left = 93
     Top = 6
     Width = 38
-    Height = 25
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Save'
     Font.Charset = ANSI_CHARSET
@@ -598,7 +556,7 @@ object CalibrationForm: TCalibrationForm
     OnClick = SaveFileBitBtnClick
   end
   object AverageTrackBar: TTrackBar
-    Left = 63
+    Left = 60
     Top = 119
     Width = 90
     Height = 21
@@ -620,7 +578,7 @@ object CalibrationForm: TCalibrationForm
     OnChange = AverageTrackBarChange
   end
   object SmoothingTrackBar: TTrackBar
-    Left = 254
+    Left = 255
     Top = 119
     Width = 90
     Height = 21
@@ -637,7 +595,7 @@ object CalibrationForm: TCalibrationForm
     OnChange = SmoothingTrackBarChange
   end
   object MedianTrackBar: TTrackBar
-    Left = 432
+    Left = 430
     Top = 119
     Width = 90
     Height = 21
@@ -657,7 +615,7 @@ object CalibrationForm: TCalibrationForm
     Left = 448
     Top = 6
     Width = 105
-    Height = 25
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Set the main sweep settings to match the calibration'
     Anchors = [akTop, akRight]

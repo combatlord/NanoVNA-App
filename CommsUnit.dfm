@@ -1,18 +1,20 @@
 object CommsForm: TCommsForm
   Left = 1004
   Top = 146
+  Margins.Left = 0
+  Margins.Right = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'VNA Comms'
   ClientHeight = 397
-  ClientWidth = 469
+  ClientWidth = 524
   Color = clBtnFace
   Constraints.MinHeight = 300
-  Constraints.MinWidth = 485
+  Constraints.MinWidth = 530
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   FormStyle = fsStayOnTop
@@ -25,47 +27,34 @@ object CommsForm: TCommsForm
   OnMouseEnter = FormMouseEnter
   OnShow = FormShow
   DesignSize = (
-    469
+    524
     397)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label1: TLabel
-    Left = 15
-    Top = 344
-    Width = 74
-    Height = 13
+    Left = 6
+    Top = 343
+    Width = 95
+    Height = 16
     Alignment = taRightJustify
     Anchors = [akLeft, akBottom]
     Caption = 'User command '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    ExplicitTop = 437
   end
   object Label2: TLabel
-    Left = 10
-    Top = 374
-    Width = 79
-    Height = 13
+    Left = 6
+    Top = 372
+    Width = 102
+    Height = 16
     Alignment = taRightJustify
     Anchors = [akLeft, akBottom]
     Caption = 'User commands '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    ExplicitTop = 467
   end
   object Memo1: TMemo
     Left = 6
     Top = 36
-    Width = 458
-    Height = 298
+    Width = 513
+    Height = 301
+    Margins.Right = 0
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -82,7 +71,7 @@ object CommsForm: TCommsForm
     WordWrap = False
   end
   object CloseButton: TButton
-    Left = 389
+    Left = 444
     Top = 5
     Width = 75
     Height = 25
@@ -97,9 +86,10 @@ object CommsForm: TCommsForm
     ParentFont = False
     TabOrder = 4
     OnClick = CloseButtonClick
+    ExplicitLeft = 389
   end
   object SaveButton: TButton
-    Left = 308
+    Left = 363
     Top = 5
     Width = 75
     Height = 25
@@ -114,9 +104,10 @@ object CommsForm: TCommsForm
     ParentFont = False
     TabOrder = 3
     OnClick = SaveButtonClick
+    ExplicitLeft = 308
   end
   object ClearButton: TButton
-    Left = 228
+    Left = 283
     Top = 5
     Width = 75
     Height = 25
@@ -131,50 +122,51 @@ object CommsForm: TCommsForm
     ParentFont = False
     TabOrder = 2
     OnClick = ClearButtonClick
+    ExplicitLeft = 228
   end
   object CommandEdit: TEdit
-    Left = 95
+    Left = 112
     Top = 340
-    Width = 369
-    Height = 21
+    Width = 407
+    Height = 24
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 6
     OnChange = CommandEditChange
     OnEnter = CommandEditEnter
     OnExit = CommandEditExit
     OnKeyDown = CommandEditKeyDown
+    ExplicitWidth = 380
   end
   object PauseCommsToggleSwitch: TToggleSwitch
     Left = 112
     Top = 8
-    Width = 98
+    Width = 113
     Height = 20
     FrameColor = clBtnFace
     StateCaptions.CaptionOn = 'Paused'
     StateCaptions.CaptionOff = 'Un-paused'
     SwitchWidth = 40
     TabOrder = 1
-    ThumbColor = clBlue
+    ThumbColor = clNavy
     ThumbWidth = 20
     OnClick = PauseCommsToggleSwitchClick
   end
   object ScrollToggleSwitch: TToggleSwitch
     Left = 16
     Top = 8
-    Width = 72
     Height = 20
     FrameColor = clBtnFace
     StateCaptions.CaptionOn = 'Hold'
     StateCaptions.CaptionOff = 'Scroll'
     SwitchWidth = 40
     TabOrder = 0
-    ThumbColor = clBlue
+    ThumbColor = clNavy
     ThumbWidth = 20
   end
   object GridPanel1: TGridPanel
-    Left = 95
+    Left = 112
     Top = 368
-    Width = 369
+    Width = 407
     Height = 25
     Anchors = [akLeft, akRight, akBottom]
     BevelOuter = bvNone
@@ -218,10 +210,11 @@ object CommsForm: TCommsForm
         Value = 100.000000000000000000
       end>
     TabOrder = 7
+    ExplicitWidth = 380
     object CommandsButton1: TButton
       Left = 0
       Top = 0
-      Width = 92
+      Width = 102
       Height = 25
       Cursor = crHandPoint
       Align = alClient
@@ -235,11 +228,13 @@ object CommsForm: TCommsForm
       TabOrder = 0
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitLeft = 17
+      ExplicitWidth = 82
     end
     object CommandsButton2: TButton
-      Left = 92
+      Left = 102
       Top = 0
-      Width = 92
+      Width = 102
       Height = 25
       Cursor = crHandPoint
       Align = alClient
@@ -253,11 +248,13 @@ object CommsForm: TCommsForm
       TabOrder = 1
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitLeft = 92
+      ExplicitWidth = 92
     end
     object CommandsButton3: TButton
-      Left = 184
+      Left = 204
       Top = 0
-      Width = 92
+      Width = 101
       Height = 25
       Cursor = crHandPoint
       Align = alClient
@@ -271,11 +268,13 @@ object CommsForm: TCommsForm
       TabOrder = 2
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitLeft = 184
+      ExplicitWidth = 93
     end
     object CommandsButton4: TButton
-      Left = 276
+      Left = 305
       Top = 0
-      Width = 93
+      Width = 102
       Height = 25
       Cursor = crHandPoint
       Align = alClient
@@ -289,6 +288,8 @@ object CommsForm: TCommsForm
       TabOrder = 3
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitLeft = 277
+      ExplicitWidth = 92
     end
   end
   object SaveDialog1: TSaveDialog

@@ -12,8 +12,8 @@ object UploadFirmwareForm: TUploadFirmwareForm
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Height = -13
+  Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -29,54 +29,37 @@ object UploadFirmwareForm: TUploadFirmwareForm
     644
     345)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label1: TLabel
-    Left = 34
-    Top = 8
-    Width = 62
-    Height = 13
+    Left = 42
+    Top = 7
+    Width = 68
+    Height = 16
     Alignment = taRightJustify
     Caption = 'DFU Device '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object Label3: TLabel
-    Left = 14
-    Top = 34
-    Width = 82
-    Height = 13
+    Left = 8
+    Top = 32
+    Width = 102
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Upload Firmware '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object Label2: TLabel
-    Left = 40
-    Top = 61
-    Width = 56
-    Height = 13
+    Left = 44
+    Top = 59
+    Width = 66
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Save Flash '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object Memo1: TMemo
-    Left = 8
-    Top = 84
-    Width = 628
-    Height = 254
+    Left = 0
+    Top = 87
+    Width = 644
+    Height = 258
+    Align = alBottom
     Anchors = [akLeft, akTop, akRight, akBottom]
     DoubleBuffered = True
     Font.Charset = ANSI_CHARSET
@@ -97,7 +80,7 @@ object UploadFirmwareForm: TUploadFirmwareForm
     Left = 540
     Top = 57
     Width = 96
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Clear'
@@ -111,10 +94,10 @@ object UploadFirmwareForm: TUploadFirmwareForm
     OnClick = ClearMemoButtonClick
   end
   object ProgressBar1: TProgressBar
-    Left = 140
+    Left = 152
     Top = 57
-    Width = 390
-    Height = 21
+    Width = 378
+    Height = 24
     Anchors = [akLeft, akTop, akRight]
     Max = 500
     Position = 50
@@ -122,10 +105,10 @@ object UploadFirmwareForm: TUploadFirmwareForm
     TabOrder = 2
   end
   object USBDeviceComboBox: TComboBox
-    Left = 100
+    Left = 112
     Top = 4
-    Width = 536
-    Height = 21
+    Width = 524
+    Height = 24
     Cursor = crHandPoint
     Style = csDropDownList
     Anchors = [akLeft, akTop, akRight]
@@ -135,10 +118,10 @@ object UploadFirmwareForm: TUploadFirmwareForm
     OnSelect = USBDeviceComboBoxSelect
   end
   object OpenFileBitBtn: TBitBtn
-    Left = 99
+    Left = 112
     Top = 30
     Width = 31
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Select Firmware File to Upload'
     Font.Charset = DEFAULT_CHARSET
@@ -170,7 +153,7 @@ object UploadFirmwareForm: TUploadFirmwareForm
     Left = 540
     Top = 30
     Width = 97
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Warning, USB driver problem, this may blue screen windows 10'
     Anchors = [akTop, akRight]
@@ -187,10 +170,10 @@ object UploadFirmwareForm: TUploadFirmwareForm
     OnClick = LeaveDFUButtonClick
   end
   object GridPanel1: TGridPanel
-    Left = 140
+    Left = 152
     Top = 30
-    Width = 390
-    Height = 21
+    Width = 378
+    Height = 24
     Anchors = [akLeft, akTop, akRight]
     BevelOuter = bvNone
     Caption = 'GridPanel1'
@@ -221,8 +204,8 @@ object UploadFirmwareForm: TUploadFirmwareForm
     object NanoVNA_H_button: TButton
       Left = 0
       Top = 0
-      Width = 195
-      Height = 21
+      Width = 189
+      Height = 24
       Cursor = crHandPoint
       Align = alClient
       Caption = 'NanoVNA H v1.2.18'
@@ -234,14 +217,13 @@ object UploadFirmwareForm: TUploadFirmwareForm
       ParentFont = False
       TabOrder = 0
       OnClick = NanoVNA_H_buttonClick
-      ExplicitLeft = -4
-      ExplicitTop = 1
+      ExplicitWidth = 195
     end
     object NanoVNA_H4_button: TButton
-      Left = 195
+      Left = 189
       Top = 0
-      Width = 195
-      Height = 21
+      Width = 189
+      Height = 24
       Cursor = crHandPoint
       Align = alClient
       Caption = 'NanoVNA H4 v1.2.18'
@@ -253,13 +235,16 @@ object UploadFirmwareForm: TUploadFirmwareForm
       ParentFont = False
       TabOrder = 1
       OnClick = NanoVNA_H4_buttonClick
+      ExplicitLeft = 195
+      ExplicitWidth = 195
+      ExplicitHeight = 21
     end
   end
   object CloseBitBtn: TBitBtn
     Left = 600
     Top = 4
     Width = 36
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Glyph.Data = {
@@ -310,10 +295,10 @@ object UploadFirmwareForm: TUploadFirmwareForm
     OnClick = CloseBitBtnClick
   end
   object SaveFlashBitBtn: TBitBtn
-    Left = 99
+    Left = 112
     Top = 57
     Width = 31
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Save entire flash area to a file'
     Font.Charset = DEFAULT_CHARSET

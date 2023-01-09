@@ -12,7 +12,7 @@ object GraphForm: TGraphForm
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
@@ -31,7 +31,7 @@ object GraphForm: TGraphForm
     491
     463)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object GraphPaintBox: TPaintBox
     Left = 0
     Top = 0
@@ -364,7 +364,7 @@ object GraphForm: TGraphForm
     Left = 340
     Top = 108
     Bitmap = {
-      494C0101020008003C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010102000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

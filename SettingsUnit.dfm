@@ -6,14 +6,14 @@ object SettingsForm: TSettingsForm
   BorderStyle = bsSizeToolWin
   Caption = 'Settings'
   ClientHeight = 551
-  ClientWidth = 824
+  ClientWidth = 826
   Color = clBtnFace
   Constraints.MinHeight = 570
   Constraints.MinWidth = 840
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
@@ -28,37 +28,31 @@ object SettingsForm: TSettingsForm
   OnMouseEnter = FormMouseEnter
   OnShow = FormShow
   DesignSize = (
-    824
+    826
     551)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label7: TLabel
-    Left = 763
-    Top = 26
-    Width = 51
-    Height = 13
+    Left = 726
+    Top = 21
+    Width = 59
+    Height = 16
     Anchors = [akTop, akRight]
     Caption = 'Firmware'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clMaroon
-    Font.Height = -11
+    Font.Height = -13
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
   end
   object Label6: TLabel
-    Left = 12
-    Top = 14
-    Width = 62
-    Height = 13
+    Left = 4
+    Top = 13
+    Width = 73
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Record path '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object ColourBevel: TBevel
     Left = 4
@@ -68,18 +62,12 @@ object SettingsForm: TSettingsForm
     Anchors = [akLeft, akTop, akBottom]
   end
   object Label9: TLabel
-    Left = 13
+    Left = 10
     Top = 49
-    Width = 48
-    Height = 13
+    Width = 56
+    Height = 16
     Alignment = taRightJustify
     Caption = 'GUI Style '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object GraphColourPaintBox: TPaintBox
     Left = 8
@@ -101,106 +89,64 @@ object SettingsForm: TSettingsForm
     OnPaint = GraphColourPaintBoxPaint
   end
   object Label14: TLabel
-    Left = 296
+    Left = 293
     Top = 215
-    Width = 48
-    Height = 13
+    Width = 58
+    Height = 16
     Caption = 'Line alpha'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label5: TLabel
-    Left = 296
+    Left = 293
     Top = 250
-    Width = 51
-    Height = 13
+    Width = 62
+    Height = 16
     Caption = 'Line width '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label15: TLabel
     Left = 293
-    Top = 320
-    Width = 46
-    Height = 13
+    Top = 318
+    Width = 57
+    Height = 16
     Caption = 'Marker fill'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label16: TLabel
-    Left = 296
+    Left = 293
     Top = 180
-    Width = 64
-    Height = 13
+    Width = 77
+    Height = 16
     Caption = 'Border width '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label17: TLabel
     Left = 293
-    Top = 355
-    Width = 99
-    Height = 13
-    Caption = 'Auto scale peak hold'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
+    Top = 353
+    Width = 90
+    Height = 16
+    Caption = 'Auto scale peak'
   end
   object Label18: TLabel
     Left = 293
-    Top = 390
-    Width = 83
-    Height = 13
+    Top = 388
+    Width = 101
+    Height = 16
     Caption = 'Smith both scales'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label19: TLabel
     Left = 293
     Top = 285
-    Width = 54
-    Height = 13
+    Width = 65
+    Height = 16
     Caption = 'Antialiasing'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Memo1: TMemo
-    Left = 416
-    Top = 39
-    Width = 398
-    Height = 119
+    Left = 418
+    Top = 40
+    Width = 400
+    Height = 140
     Anchors = [akLeft, akTop, akRight]
     DoubleBuffered = True
-    Font.Charset = ANSI_CHARSET
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -12
+    Font.Height = -13
     Font.Name = 'Tahoma'
     Font.Style = []
     Lines.Strings = (
@@ -208,117 +154,80 @@ object SettingsForm: TSettingsForm
     ParentDoubleBuffered = False
     ParentFont = False
     ReadOnly = True
-    ScrollBars = ssBoth
+    ScrollBars = ssVertical
     TabOrder = 1
     WordWrap = False
+    ExplicitWidth = 398
   end
   object FreqBandGroupBox: TGroupBox
     Left = 416
-    Top = 164
-    Width = 399
-    Height = 377
+    Top = 180
+    Width = 401
+    Height = 361
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' Frequency Bands '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMaroon
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
     TabOrder = 2
-    ExplicitHeight = 392
+    ExplicitWidth = 399
     DesignSize = (
-      399
-      377)
+      401
+      361)
     object Label10: TLabel
-      Left = 16
+      Left = 9
       Top = 48
-      Width = 48
-      Height = 13
+      Width = 55
+      Height = 16
       Alignment = taRightJustify
       Caption = 'Low MHz '
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object Label11: TLabel
-      Left = 174
+      Left = 167
       Top = 48
-      Width = 50
-      Height = 13
+      Width = 57
+      Height = 16
       Alignment = taRightJustify
       Caption = 'High MHz '
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object Label12: TLabel
-      Left = 33
+      Left = 27
       Top = 24
-      Width = 31
-      Height = 13
+      Width = 37
+      Height = 16
       Alignment = taRightJustify
       Caption = 'Name '
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object Label8: TLabel
-      Left = 287
+      Left = 284
       Top = 76
-      Width = 22
-      Height = 13
+      Width = 25
+      Height = 16
       Alignment = taRightJustify
       Caption = 'Pad '
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object FreqBandLowMHzEdit: TEdit
       Left = 68
       Top = 44
       Width = 77
-      Height = 21
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+      Height = 24
       TabOrder = 1
     end
     object FreqBandHighMHzEdit: TEdit
       Left = 228
       Top = 44
       Width = 77
-      Height = 21
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+      Height = 24
       TabOrder = 2
     end
     object FreqBandListBox: TListBox
-      Left = 12
-      Top = 100
-      Width = 375
-      Height = 267
+      Left = 2
+      Top = 102
+      Width = 397
+      Height = 257
       Cursor = crHandPoint
+      Margins.Left = 0
+      Margins.Right = 0
+      Align = alBottom
       Anchors = [akLeft, akTop, akRight, akBottom]
+      BorderStyle = bsNone
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -331,13 +240,12 @@ object SettingsForm: TSettingsForm
       OnClick = FreqBandListBoxClick
       OnDblClick = FreqBandListBoxDblClick
       OnKeyDown = FreqBandListBoxKeyDown
-      ExplicitHeight = 282
     end
     object FreqBandDeleteButton: TButton
       Left = 12
       Top = 72
       Width = 75
-      Height = 21
+      Height = 24
       Cursor = crHandPoint
       Caption = 'Delete'
       Font.Charset = DEFAULT_CHARSET
@@ -353,7 +261,7 @@ object SettingsForm: TSettingsForm
       Left = 92
       Top = 72
       Width = 75
-      Height = 21
+      Height = 24
       Cursor = crHandPoint
       Caption = 'Add'
       Font.Charset = DEFAULT_CHARSET
@@ -369,21 +277,15 @@ object SettingsForm: TSettingsForm
       Left = 68
       Top = 20
       Width = 77
-      Height = 21
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
+      Height = 24
       MaxLength = 12
-      ParentFont = False
       TabOrder = 0
     end
     object SetScanButton: TButton
       Left = 200
       Top = 72
       Width = 75
-      Height = 21
+      Height = 24
       Cursor = crHandPoint
       Caption = 'Set Sweep'
       Font.Charset = DEFAULT_CHARSET
@@ -399,27 +301,22 @@ object SettingsForm: TSettingsForm
       Left = 312
       Top = 72
       Width = 77
-      Height = 21
+      Height = 24
       Cursor = crHandPoint
       Style = csDropDownList
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
       TabOrder = 6
       OnChange = FreqBandPadComboBoxChange
       Items.Strings = (
         '')
     end
     object FreqBandDefaultButton: TButton
-      Left = 312
-      Top = 13
+      Left = 314
+      Top = 20
       Width = 77
-      Height = 25
+      Height = 24
       Cursor = crHandPoint
       Hint = 'Set default frequency bands'
+      Anchors = [akTop]
       Caption = 'Default'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -431,21 +328,16 @@ object SettingsForm: TSettingsForm
       ShowHint = True
       TabOrder = 8
       OnClick = FreqBandDefaultButtonClick
+      ExplicitLeft = 312
     end
     object FreqBandEnableToggleSwitch: TToggleSwitch
-      Left = 196
+      Left = 190
       Top = 18
-      Width = 67
+      Width = 73
       Height = 20
       Cursor = crHandPoint
       Alignment = taLeftJustify
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
       FrameColor = clBtnFace
-      ParentFont = False
       State = tssOn
       StateCaptions.CaptionOn = 'Show'
       StateCaptions.CaptionOff = 'Hide'
@@ -457,106 +349,68 @@ object SettingsForm: TSettingsForm
     end
   end
   object VNAGroupBox: TGroupBox
-    Left = 8
-    Top = 447
-    Width = 377
-    Height = 94
+    Left = 4
+    Top = 440
+    Width = 400
+    Height = 101
     Anchors = [akLeft, akBottom]
     Caption = ' VNA Settings '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clMaroon
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
     TabOrder = 0
-    ExplicitTop = 462
     DesignSize = (
-      377
-      94)
+      400
+      101)
     object Label1: TLabel
-      Left = 26
+      Left = 19
       Top = 20
-      Width = 50
-      Height = 13
+      Width = 61
+      Height = 16
       Alignment = taRightJustify
       Caption = 'Threshold '
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object Label2: TLabel
-      Left = -400
+      Left = -377
       Top = 20
-      Width = 26
-      Height = 13
+      Width = 24
+      Height = 16
       Anchors = [akTop, akRight]
       Caption = 'MHz'
-      ExplicitLeft = -396
     end
     object Label3: TLabel
-      Left = 14
+      Left = 7
       Top = 44
-      Width = 62
-      Height = 13
+      Width = 73
+      Height = 16
       Alignment = taRightJustify
       Caption = 'VBAT Offset '
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clNavy
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object Label4: TLabel
-      Left = 154
+      Left = 158
       Top = 44
-      Width = 15
-      Height = 13
+      Width = 19
+      Height = 16
       Caption = 'mV'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object Label13: TLabel
-      Left = 154
+      Left = 158
       Top = 20
-      Width = 22
-      Height = 13
+      Width = 24
+      Height = 16
       Caption = 'MHz'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
     end
     object ThresholdEdit: TEdit
-      Left = 79
+      Left = 83
       Top = 16
       Width = 69
-      Height = 21
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clMaroon
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
+      Height = 24
       TabOrder = 0
       Text = 'ThresholdEdit'
       OnKeyDown = ThresholdEditKeyDown
     end
     object ClearConfigButton: TButton
-      Left = 260
-      Top = 40
-      Width = 105
-      Height = 21
+      Left = 283
+      Top = 42
+      Width = 108
+      Height = 24
       Cursor = crHandPoint
       Hint = 'Clear the VNA'#39's configuration settings'
       Caption = 'Clear Config'
@@ -572,10 +426,10 @@ object SettingsForm: TSettingsForm
       OnClick = ClearConfigButtonClick
     end
     object SetTimeButton: TButton
-      Left = 260
-      Top = 16
-      Width = 105
-      Height = 21
+      Left = 283
+      Top = 12
+      Width = 108
+      Height = 24
       Cursor = crHandPoint
       Hint = 'Sets the VNA'#39's date and time to your PC'#39's current date and time'
       Caption = 'Set Date/Time'
@@ -591,10 +445,10 @@ object SettingsForm: TSettingsForm
       OnClick = SetTimeButtonClick
     end
     object SaveConfigButton: TButton
-      Left = 260
-      Top = 64
-      Width = 105
-      Height = 21
+      Left = 283
+      Top = 72
+      Width = 108
+      Height = 24
       Cursor = crHandPoint
       Hint = 'Save the VNA'#39's configuration settings'
       Caption = 'Save Config'
@@ -610,10 +464,10 @@ object SettingsForm: TSettingsForm
       OnClick = SaveConfigButtonClick
     end
     object VBatOffsetSpinEdit: TSpinEdit
-      Left = 79
-      Top = 40
+      Left = 83
+      Top = 41
       Width = 69
-      Height = 22
+      Height = 26
       MaxValue = 1000
       MinValue = 0
       TabOrder = 1
@@ -624,18 +478,19 @@ object SettingsForm: TSettingsForm
   object RecordPathEdit: TEdit
     Left = 78
     Top = 10
-    Width = 588
-    Height = 21
+    Width = 590
+    Height = 24
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 3
     Text = 'RecordPathEdit'
     OnChange = RecordPathEditChange
+    ExplicitWidth = 588
   end
   object SelectRecordPathBitBtn: TBitBtn
-    Left = 672
+    Left = 674
     Top = 10
     Width = 33
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Select recording folder'
     Anchors = [akTop, akRight]
@@ -699,8 +554,8 @@ object SettingsForm: TSettingsForm
     OnClick = SelectRecordPathBitBtnClick
   end
   object CloseBitBtn: TBitBtn
-    Left = 780
-    Top = 8
+    Left = 782
+    Top = 10
     Width = 36
     Height = 24
     Cursor = crHandPoint
@@ -756,7 +611,7 @@ object SettingsForm: TSettingsForm
     Left = 65
     Top = 45
     Width = 216
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Set the GUI style'
     AutoDropDown = True
@@ -770,7 +625,7 @@ object SettingsForm: TSettingsForm
     Left = 287
     Top = 45
     Width = 108
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Set default light colours'
     Caption = 'Default Lt'
@@ -789,7 +644,7 @@ object SettingsForm: TSettingsForm
     Left = 287
     Top = 72
     Width = 108
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Set default dark colours'
     Caption = 'Default Dk'
@@ -808,7 +663,7 @@ object SettingsForm: TSettingsForm
     Left = 287
     Top = 126
     Width = 108
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Select graph font'
     Caption = 'Graph Font'
@@ -826,7 +681,7 @@ object SettingsForm: TSettingsForm
   object LineAlphaTrackBar: TTrackBar
     Left = 287
     Top = 230
-    Width = 83
+    Width = 90
     Height = 21
     Cursor = crHandPoint
     Ctl3D = True
@@ -846,7 +701,7 @@ object SettingsForm: TSettingsForm
   object LineWidthTrackBar: TTrackBar
     Left = 287
     Top = 265
-    Width = 83
+    Width = 90
     Height = 21
     Cursor = crHandPoint
     Ctl3D = True
@@ -866,16 +721,10 @@ object SettingsForm: TSettingsForm
   object MarkerFillToggleSwitch: TToggleSwitch
     Left = 296
     Top = 335
-    Width = 63
-    Height = 15
+    Width = 66
+    Height = 18
     Cursor = crHandPoint
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     FrameColor = clBtnFace
-    ParentFont = False
     State = tssOn
     StateCaptions.CaptionOn = 'Yes'
     StateCaptions.CaptionOff = 'no'
@@ -889,7 +738,7 @@ object SettingsForm: TSettingsForm
   object BorderWidthTrackBar: TTrackBar
     Left = 287
     Top = 195
-    Width = 83
+    Width = 90
     Height = 21
     Cursor = crHandPoint
     Ctl3D = True
@@ -908,7 +757,7 @@ object SettingsForm: TSettingsForm
     Left = 287
     Top = 99
     Width = 108
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Set the graph background to the window background'
     Caption = 'Bg to Win'
@@ -927,7 +776,7 @@ object SettingsForm: TSettingsForm
     Left = 287
     Top = 153
     Width = 108
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Set all graph scales to defaults'
     Caption = 'Default Scales'
@@ -945,16 +794,10 @@ object SettingsForm: TSettingsForm
   object AutoScalePeakHoldToggleSwitch: TToggleSwitch
     Left = 296
     Top = 370
-    Width = 63
-    Height = 15
+    Width = 66
+    Height = 18
     Cursor = crHandPoint
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     FrameColor = clBtnFace
-    ParentFont = False
     State = tssOn
     StateCaptions.CaptionOn = 'Yes'
     StateCaptions.CaptionOff = 'no'
@@ -968,16 +811,10 @@ object SettingsForm: TSettingsForm
   object SmithBothScalesToggleSwitch: TToggleSwitch
     Left = 296
     Top = 405
-    Width = 63
-    Height = 15
+    Width = 66
+    Height = 18
     Cursor = crHandPoint
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     FrameColor = clBtnFace
-    ParentFont = False
     State = tssOn
     StateCaptions.CaptionOn = 'Yes'
     StateCaptions.CaptionOff = 'no'
@@ -991,16 +828,10 @@ object SettingsForm: TSettingsForm
   object linesAntialiasingSwitch: TToggleSwitch
     Left = 296
     Top = 300
-    Width = 63
-    Height = 15
+    Width = 66
+    Height = 18
     Cursor = crHandPoint
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     FrameColor = clBtnFace
-    ParentFont = False
     State = tssOn
     StateCaptions.CaptionOn = 'Yes'
     StateCaptions.CaptionOff = 'no'

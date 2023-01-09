@@ -12,8 +12,8 @@ object BatteryVoltageForm: TBatteryVoltageForm
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Height = -13
+  Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -27,7 +27,7 @@ object BatteryVoltageForm: TBatteryVoltageForm
     334
     295)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object PaintBox1: TPaintBox
     Left = 4
     Top = 32
@@ -35,13 +35,7 @@ object BatteryVoltageForm: TBatteryVoltageForm
     Height = 243
     Anchors = [akLeft, akTop, akRight, akBottom]
     Color = clWhite
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Consolas'
-    Font.Style = []
     ParentColor = False
-    ParentFont = False
     OnMouseLeave = PaintBox1MouseLeave
     OnMouseMove = PaintBox1MouseMove
     OnPaint = PaintBox1Paint
@@ -49,31 +43,21 @@ object BatteryVoltageForm: TBatteryVoltageForm
     ExplicitHeight = 320
   end
   object Label1: TLabel
-    Left = 141
-    Top = 9
-    Width = 56
-    Height = 13
+    Left = 134
+    Top = 7
+    Width = 67
+    Height = 16
     Alignment = taRightJustify
     Caption = 'vbat_offset '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
+    Visible = False
   end
   object VBATOffsetLabel: TLabel
-    Left = 197
-    Top = 9
-    Width = 33
-    Height = 13
+    Left = 206
+    Top = 7
+    Width = 32
+    Height = 16
     Caption = 'XXXX'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
+    Visible = False
   end
   object StatusBar1: TStatusBar
     Left = 0
