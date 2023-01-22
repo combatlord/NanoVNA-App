@@ -208,7 +208,7 @@ object UploadFirmwareForm: TUploadFirmwareForm
       Height = 24
       Cursor = crHandPoint
       Align = alClient
-      Caption = 'NanoVNA H v1.2.18'
+      Caption = 'NanoVNA H v1.2.19'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -226,7 +226,7 @@ object UploadFirmwareForm: TUploadFirmwareForm
       Height = 24
       Cursor = crHandPoint
       Align = alClient
-      Caption = 'NanoVNA H4 v1.2.18'
+      Caption = 'NanoVNA H4 v1.2.19'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

@@ -915,8 +915,6 @@ object Form1: TForm1
       DragMode = dmAutomatic
       TabOrder = 2
       Visible = False
-      ExplicitLeft = 323
-      ExplicitTop = -1
       object file_list: TListBox
         Left = 1
         Top = 33
@@ -2074,7 +2072,7 @@ object Form1: TForm1
     Width = 40
     Height = 20
     Cursor = crHandPoint
-    Hint = 'SD Card panel'
+    Hint = 'SD Card access'
     Anchors = [akTop, akRight]
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -2083,6 +2081,8 @@ object Form1: TForm1
     Font.Style = []
     FrameColor = clBtnFace
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     ShowStateCaption = False
     SwitchWidth = 40
     TabOrder = 48

@@ -300,7 +300,7 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
   object CommandEndsComboBox: TComboBox
     Left = 206
     Top = 5
-    Width = 56
+    Width = 59
     Height = 24
     Cursor = crHandPoint
     Hint = 'Command line ends'
