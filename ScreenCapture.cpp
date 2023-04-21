@@ -44,17 +44,12 @@ void __fastcall TVNAScreenCaptureForm::FormCreate(TObject *Sender)
 
 	this->DoubleBuffered = true;
 
-	//Panel1->ControlStyle  = Panel1->ControlStyle << csOpaque;
-	ActualSizeImage->ControlStyle = ActualSizeImage->ControlStyle << csOpaque;
-	ResizeImage->ControlStyle = ResizeImage->ControlStyle << csOpaque;
+ //	ActualSizeImage->ControlStyle = ActualSizeImage->ControlStyle << csOpaque;
 
 	SaveDialog1->InitialDir = ExtractFilePath(Application->ExeName);
 
 	m_image_dw = this->Width  - Panel1->Width;
 	m_image_dh = this->Height - Panel1->Height;
-
-	ActualSizeImage->Visible = (ActualSizeToggleSwitch->State == tssOn ) ? true : false;
-	ResizeImage->Visible     = (ActualSizeToggleSwitch->State == tssOff) ? true : false;
 
 	// move to the saved position
 	this->Top    = settings.screenCaptureWindowPos.top;
@@ -251,10 +246,12 @@ void __fastcall TVNAScreenCaptureForm::addImage(Graphics::TBitmap *bitmap)
 		return;
  	m_bitmap = bitmap;
 	ActualSizeImage->Picture->Assign(m_bitmap);
-	ResizeImage->Picture->Assign(m_bitmap);
 
-	ActualSizeImage->Width = m_bitmap->Width;
-	ActualSizeImage->Height = m_bitmap->Height;
+	if (ActualSizeToggleSwitch->State == tssOn) {
+		this->BorderStyle = bsToolWindow;
+		VNAScreenCaptureForm->ClientWidth = m_bitmap->Width;
+		VNAScreenCaptureForm->ClientHeight = m_bitmap->Height + 40;
+	}
 
 	m_image_w = bitmap->Width;
 	m_image_h = bitmap->Height;
@@ -270,20 +267,18 @@ void __fastcall TVNAScreenCaptureForm::addImage(Graphics::TBitmap *bitmap)
 
 void __fastcall TVNAScreenCaptureForm::updateImage()
 {
-	ActualSizeImage->Visible = (ActualSizeToggleSwitch->State == tssOn ) ? true : false;
-	ResizeImage->Visible     = (ActualSizeToggleSwitch->State == tssOff) ? true : false;
-
 	if (ActualSizeToggleSwitch->State == tssOn)
 	{
-		this->Width   = ActualSizeImage->Width  + m_image_dw;
-		this->Height  = ActualSizeImage->Height + m_image_dh;
-		this->BorderStyle = bsToolWindow;
+		VNAScreenCaptureForm->ClientWidth = m_bitmap->Width;
+		VNAScreenCaptureForm->ClientHeight = m_bitmap->Height + 40;
 	}
-	else
-	{
+}
 
-		this->BorderStyle = bsSizeToolWin;
-	}
+void __fastcall TVNAScreenCaptureForm::ActualSizeToggleSwitchClick(TObject *Sender)
+{
+	this->BorderStyle = (ActualSizeToggleSwitch->State == tssOn) ?  bsToolWindow : bsSizeToolWin;
+	VNAScreenCaptureForm->ClientWidth = m_bitmap->Width;
+	VNAScreenCaptureForm->ClientHeight = m_bitmap->Height + 40;
 }
 
 void __fastcall TVNAScreenCaptureForm::saveBitmap(Graphics::TBitmap *bm, String dialog_title)
@@ -377,11 +372,6 @@ void __fastcall TVNAScreenCaptureForm::saveBitmap(Graphics::TBitmap *bm, String 
 	Application->RestoreTopMosts();
 }
 
-void __fastcall TVNAScreenCaptureForm::ActualSizeToggleSwitchClick(TObject *Sender)
-{
-	updateImage();
-}
-
 void __fastcall TVNAScreenCaptureForm::FormShow(TObject *Sender)
 {
 	if (!m_initialised)
@@ -463,69 +453,37 @@ void __fastcall TVNAScreenCaptureForm::RefreshImageBitBtnClick(TObject *Sender)
 	if (Form1)
 		Form1->getVNAScreenCapture();
 }
-
-void __fastcall TVNAScreenCaptureForm::ResizeImageMouseDown(TObject *Sender, TMouseButton Button,
-          TShiftState Shift, int X, int Y)
-{
-	m_mouse.x = X *  m_image_w / ResizeImage->Width;
-	m_mouse.y = Y *  m_image_h / ResizeImage->Height;
-	m_mouse.down = true;
-	if (Form1)
-		Form1->requestMouseDown(m_mouse.x,m_mouse.y);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TVNAScreenCaptureForm::ResizeImageMouseUp(TObject *Sender, TMouseButton Button,
-					TShiftState Shift, int X, int Y)
-{
-	m_mouse.x = X;
-	m_mouse.y = Y;
-	m_mouse.down = false;
-	if (Form1)
-		Form1->requestMouseUp();
-}
 //---------------------------------------------------------------------------
 
 void __fastcall TVNAScreenCaptureForm::ActualSizeImageMouseDown(TObject *Sender, TMouseButton Button,
 					TShiftState Shift, int X, int Y)
 {
-	m_mouse.x = X;
-	m_mouse.y = Y;
+	m_mouse.x = X * m_image_w / Panel1->Width;
+	m_mouse.y = Y * m_image_h / Panel1->Height;
 	m_mouse.down = true;
 	if (Form1)
-		Form1->requestMouseDown(X,Y);
+		Form1->requestMouseDown(m_mouse.x, m_mouse.y);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TVNAScreenCaptureForm::ActualSizeImageMouseUp(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
-  	m_mouse.x = X;
-	m_mouse.y = Y;
+	m_mouse.x = X * m_image_w / Panel1->Width;
+	m_mouse.y = Y * m_image_h / Panel1->Height;
 	m_mouse.down = false;
 	if (Form1)
 		Form1->requestMouseUp();
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TVNAScreenCaptureForm::ResizeImageMouseMove(TObject *Sender, TShiftState Shift,
-					int X, int Y)
-{
-	m_mouse.x = X *  m_image_w / ResizeImage->Width;
-	m_mouse.y = Y *  m_image_h / ResizeImage->Height;
-	if (Form1 && m_mouse.down) {
-		Form1->requestMouseDown(m_mouse.x,m_mouse.y);
-	}
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TVNAScreenCaptureForm::ActualSizeImageMouseMove(TObject *Sender, TShiftState Shift,
 					int X, int Y)
 {
-	m_mouse.x = X;
-	m_mouse.y = Y;
+	m_mouse.x = X * m_image_w / Panel1->Width;
+	m_mouse.y = Y * m_image_h / Panel1->Height;
 	if (Form1 && m_mouse.down)
-		Form1->requestMouseDown(X,Y);
+		Form1->requestMouseDown(m_mouse.x, m_mouse.y);
 }
 //---------------------------------------------------------------------------
 
@@ -539,21 +497,9 @@ void __fastcall TVNAScreenCaptureForm::ActualSizeImageMouseLeave(TObject *Sender
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TVNAScreenCaptureForm::ResizeImageMouseLeave(TObject *Sender)
+void __fastcall TVNAScreenCaptureForm::RemoteToggleSwitchClick(TObject *Sender)
 {
-	if (Form1 && m_mouse.down) {
-		m_mouse.down = false;
-		Form1->requestMouseUp();
-	}
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TVNAScreenCaptureForm::ToggleSwitch1Click(TObject *Sender)
-{
-	if (ToggleSwitch1->State == tssOn)
-		Form1->autoRefresh(true);
-	else
-		Form1->autoRefresh(false);
+	Form1->autoRefresh(RemoteToggleSwitch->State == tssOn);
 }
 //---------------------------------------------------------------------------
 

@@ -10,7 +10,7 @@ object ColourPickerForm: TColourPickerForm
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
@@ -21,75 +21,45 @@ object ColourPickerForm: TColourPickerForm
   OnDestroy = FormDestroy
   OnHide = FormHide
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label1: TLabel
-    Left = 133
-    Top = 283
-    Width = 22
-    Height = 13
+    Left = 129
+    Top = 282
+    Width = 26
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Red '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label2: TLabel
-    Left = 123
-    Top = 307
-    Width = 32
-    Height = 13
+    Left = 117
+    Top = 306
+    Width = 38
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Green '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label3: TLabel
-    Left = 132
-    Top = 330
-    Width = 23
-    Height = 13
+    Left = 127
+    Top = 329
+    Width = 28
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Blue '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label4: TLabel
-    Left = 110
+    Left = 103
     Top = 352
-    Width = 45
-    Height = 13
+    Width = 52
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Hex BGR '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object ColourNameLabel: TLabel
     Left = 8
     Top = 6
-    Width = 98
-    Height = 13
+    Width = 100
+    Height = 16
     Caption = 'ColourNameLabel'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object LuminosityArrowPaintBox: TPaintBox
     Left = 292
@@ -173,7 +143,7 @@ object ColourPickerForm: TColourPickerForm
     Left = 159
     Top = 279
     Width = 58
-    Height = 22
+    Height = 26
     MaxValue = 255
     MinValue = 0
     TabOrder = 2
@@ -184,7 +154,7 @@ object ColourPickerForm: TColourPickerForm
     Left = 159
     Top = 303
     Width = 58
-    Height = 22
+    Height = 26
     MaxValue = 255
     MinValue = 0
     TabOrder = 3
@@ -195,7 +165,7 @@ object ColourPickerForm: TColourPickerForm
     Left = 159
     Top = 326
     Width = 58
-    Height = 22
+    Height = 26
     MaxValue = 255
     MinValue = 0
     TabOrder = 4
@@ -206,7 +176,7 @@ object ColourPickerForm: TColourPickerForm
     Left = 159
     Top = 349
     Width = 58
-    Height = 21
+    Height = 24
     TabOrder = 5
     Text = 'HexEdit'
     OnChange = EditChange

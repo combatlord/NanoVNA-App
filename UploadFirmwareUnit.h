@@ -56,9 +56,8 @@ __published:	// IDE-managed Components
 	TBitBtn *OpenFileBitBtn;
 	TButton *LeaveDFUButton;
 	TGridPanel *GridPanel1;
-	TButton *OneOfElevenFirmwareButton;
-	TButton *Button2;
-	TButton *Button1;
+	TButton *NanoVNA_H_button;
+	TButton *NanoVNA_H4_button;
 	TBitBtn *CloseBitBtn;
 	TBitBtn *SaveFlashBitBtn;
 	TSaveDialog *SaveDialog1;
@@ -73,8 +72,8 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key,
 			 TShiftState Shift);
 	void __fastcall OneOfElevenFirmwareButtonClick(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
-	void __fastcall Button2Click(TObject *Sender);
+	void __fastcall NanoVNA_H4_buttonClick(TObject *Sender);
+	void __fastcall NanoVNA_H_buttonClick(TObject *Sender);
 	void __fastcall OpenFileBitBtnClick(TObject *Sender);
 	void __fastcall FormHide(TObject *Sender);
 	void __fastcall LeaveDFUButtonClick(TObject *Sender);

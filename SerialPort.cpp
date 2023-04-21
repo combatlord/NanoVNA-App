@@ -491,7 +491,7 @@ void __fastcall CSerialPort::GetSerialPortList()
 				{
 					T_SerialPortInfo *spi = &m_serialPortList[i];
 					//SERIALPORT_STRING s = "(" + spi->name + ")";
-					SERIALPORT_STRING s = spi->name;
+					SERIALPORT_STRING s = "(" + spi->name  + ")";
 					if (usb_device.friendly_name.LowerCase().Pos(s.LowerCase()) > 0)
 					{	// found it
 						spi->description   = usb_device.description;

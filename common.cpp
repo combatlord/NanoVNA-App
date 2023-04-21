@@ -915,11 +915,430 @@ int __fastcall CCommon::parseString(String s, String separator, std::vector <Str
 	return params.size();
 }
 
-String __fastcall CCommon::freqToStrMHz(double Hz)
+// use uint64_t for frequency input for %q format
+#define CHPRINTF_FREQUENCY_SIZE_64
+// Remove zeroes at float value after . if use %0.f format
+#define CHPRINTF_FORCE_TRAILING_ZEROS
+
+// Maximum digits for values (for float use x2 + 1)
+#define MAX_FILLER                      11
+#define MAX_FLOAT_PRECISION              9
+// Default precision for %F format
+#define DEFAULT_FLOAT_PREFIX_PRECISION   3
+
+// Frequency default prescision = 14
+// gg.mmm kkk hhh
+#define MAX_FREQ_PRESCISION    14
+
+// uint32 or uint64 frequency %q formatting.
+#ifdef CHPRINTF_FREQUENCY_SIZE_64
+typedef uint64_t pfreq_t;
+#else
+typedef uint32_t pfreq_t;
+#endif
+
+#pragma pack(push, 2)
+
+static const double p_pow10[MAX_FLOAT_PRECISION+1] = {
+    1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0, 1000000000.0
+};
+// Prefixes for values bigger then 1000.0
+//                                 1  1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24
+static const char bigPrefix[] = {' ', 'k', 'M', 'G',  'T',  'P',  'E',  'Z',  'Y', 0};
+// Prefixes for values less   then 1.0
+//                                 1e-3,    1e-6, 1e-9, 1e-12, 1e-15, 1e-18, 1e-21, 1e-24
+static const char smallPrefix[] = { 'm', 'u',  'n',   'p',   'f',   'a',   'z',   'y', 0};
+
+#pragma pack(pop)
+
+static char *long_to_string_with_divisor(char *p,
+                                         uint64_t num,
+                                         uint32_t radix,
+                                         int      precision) {
+  char *q = p + MAX_FILLER;
+  char *b = q;
+  // convert to string from end buffer to begin
+  do {
+    uint8_t c = num % radix;
+    num /= radix;
+    *--q = c + ((c > 9) ? ('A'-10) : '0');
+  }while((precision && --precision) || num);
+  // copy string at begin
+  int i = (int)(b - q);
+  do
+    *p++ = *q++;
+  while (--i);
+  return p;
+}
+
+#define FREQ_PSET               1
+#define FREQ_PREFIX_SPACE       2
+static char *
+ulong_freq(char *p, pfreq_t freq, int precision)
 {
-	String s;
-	s.printf(L"%0.6f", Hz / 1e6);
-	return trimTrailingZeros(s);
+  uint8_t flag = FREQ_PSET;
+  if (precision == 0)
+    flag|=FREQ_PREFIX_SPACE;
+  if (precision == 0 || precision > MAX_FREQ_PRESCISION)
+    precision = MAX_FREQ_PRESCISION;
+  char *q = p + MAX_FREQ_PRESCISION;
+  char *b = q;
+  // Prefix counter
+  uint32_t s = 0;
+  // Set format (every 3 digits add ' ' up to GHz)
+  uint32_t format = 0x4924;// 0b100100100100100;
+  do {
+	uint32_t c = freq % 10;
+	freq/= 10;
+    *--q = c + '0';
+    if (freq == 0) break;
+    // Add spaces, calculate prefix
+    if (format & 1) {
+      *--q = ' ';
+      s++;
+    }
+    format >>= 1;
+  } while (1);
+  s = bigPrefix[s];
+
+  // Get string size
+  int i = (b - q);
+  // copy string
+  // Replace first ' ' by '.'
+  do {
+    char c = *q++;
+    // replace first ' ' on '.'
+    if (c == ' ') {
+      if (flag & FREQ_PSET) {
+        c = '.';
+        flag &= ~FREQ_PSET;
+      } else if (!(flag & FREQ_PREFIX_SPACE))
+        c = *q++;
+    }
+    if (!(flag & FREQ_PSET) && precision-- < 0) break;
+    *p++ = c;
+  } while (--i);
+  // Put pref (amd space before it if need)
+  if ((flag & FREQ_PREFIX_SPACE) && s != ' ')
+    *p++ = ' ';
+  *p++ = s;
+  return p;
+}
+
+static char *ftoa(char *p, double num, int precision) {
+  // Check precision limit
+  if (precision > MAX_FLOAT_PRECISION)
+    precision = MAX_FLOAT_PRECISION;
+  double multi = p_pow10[precision];
+  uint64_t l = num;
+  // Round value
+  uint64_t k = ((num-l)*multi+0.5f);
+  // Fix rounding error if get
+  if (k>=multi){k-=multi;l++;}
+  p = long_to_string_with_divisor(p, l, 10, 0);
+  if (precision) {
+    *p++ = '.';
+    p=long_to_string_with_divisor(p, k, 10, precision);
+  }
+  return p;
+}
+
+static char *ftoaS(char *p, double num, int16_t precision) {
+  char prefix=0;
+  const char *ptr;
+  if (num >= 1000.0){
+    for (ptr = bigPrefix+1; *ptr && num >= 1000.0; num/=1000.0, ptr++)
+      ;
+    prefix = ptr[-1];
+  }
+  else if (num < 1.0){
+    for (ptr = smallPrefix; *ptr && num < 1.0; num*=1000.0, ptr++)
+      ;
+    prefix = num > 1e-3 ? ptr[-1] : 0;
+  }
+  if (prefix)
+    precision--;
+
+  // Auto set precision in place of value
+  uint32_t l = num;
+  if (l >= 100)
+    precision-=2;
+  else if (l >= 10)
+    precision-=1;
+  if (precision < 0)
+    precision=0;
+  p=ftoa(p, num, precision);
+  // remove zeros at end
+  if (precision){
+	while (p[-1]=='0') p--;
+	if (p[-1]=='.') p--;
+  }
+  if (prefix)
+    *p++ = prefix;
+  return p;
+}
+
+/**
+ * @brief   System formatted output function.
+ * @details This function implements a minimal @p vprintf()-like functionality
+ *          The general parameters format is: %[flags][width|*][.precision|*][l|L]p.
+ *          The following parameter types (p) are supported:
+ *          - <b>x</b> hexadecimal int32.
+ *          - <b>X</b> hexadecimal int64.
+ *          - <b>o</b> octal int32.
+ *          - <b>O</b> octal int64.
+ *          - <b>d</b> decimal signed int32.
+ *          - <b>D</b> decimal signed int64.
+ *          - <b>u</b> decimal unsigned int32.
+ *          - <b>U</b> decimal unsigned int64.
+ *          - <b>c</b> char.
+ *          - <b>s</b> string.
+ *          - <b>f</b> float.
+ *          - <b>F</b> float (use prefix formatting)
+ *          - <b>q</b> uint32 or uint64 frequency formatting (depend from defined or not CHPRINTF_FREQUENCY_SIZE_64).
+ *
+ * @param[in] chp       pointer to a char* buffer
+ * @param[in] fmt       formatting string
+ * @param[in] ap        list of parameters
+ * @return              The number of bytes that would have been written
+ * @api
+ */
+#define IS_LONG             0x0001
+#define LEFT_ALIGN          0x0002
+#define POSITIVE            0x0004
+#define NEGATIVE            0x0008
+#define PAD_ZERO            0x0010
+#define PLUS_SPACE          0x0020
+#define DEFAULT_PRESCISION  0x0040
+#define COMPLEX             0x0080
+
+int chvprintf(char *str, const char *fmt, va_list ap) {
+  char *p, *s, c, filler=' ';
+  int precision, width;
+  int n = 0;
+  uint32_t  state;
+  union {
+    uint64_t    u;
+    int64_t     l;
+    double      f;
+  }value;
+  char tmpbuf[2*MAX_FILLER + 1];
+  while (true) {
+    c = *fmt++;
+    if (c != '%') {
+      *str++ = (char)c;
+      n++;
+      if (c != 0) continue;
+      return n;
+    }
+    // Parse %[flags][width][.precision][length]type
+    p = tmpbuf;
+    s = tmpbuf;
+    state = 0;
+    width = 0;
+    precision = 0;
+
+    // Get [flags], support:
+    // '-' Left-align the output of this placeholder. (The default is to right-align the output.)
+    // '+' Prepends a  plus for positive signed-numeric types. positive = '+', negative = '-'.
+    // ' ' Prepends a space for positive signed-numeric types. positive = ' ', negative = '-'. This flag is ignored if the + flag exists.
+    // '0' When the 'width' option is specified, prepends zeros for numeric types. (The default prepends spaces.), for floats - remove 0 after '.'
+    // 'j' Then add 'j' before '+' or '-', need for complex values.
+    while (true){
+      if (*fmt == '-')
+        state|=LEFT_ALIGN;
+      else if (*fmt == '+')
+        state|=POSITIVE;
+      else if (*fmt == '0')
+        state|=PAD_ZERO;
+      else if (*fmt == 'j')
+        state|=COMPLEX;
+      else if (*fmt == ' ')
+        state|=PLUS_SPACE;
+      else
+        break;
+      fmt++;
+    }
+    // Get [width] - The Width field specifies a minimum number of characters to output
+    // if set *, get width as argument
+    while (true) {
+      c = *fmt++;
+      if (c >= '0' && c <= '9')
+        c -= '0';
+      else if (c == '*')
+        c = va_arg(ap, int);
+      else
+        break;
+      width = width * 10 + c;
+    }
+    // Get [.precision]
+    if (c == '.') {
+      while (true) {
+        c = *fmt++;
+        if (c >= '0' && c <= '9')
+          c -= '0';
+        else if (c == '*')
+          c = va_arg(ap, int);
+        else
+          break;
+        precision = precision * 10 + c;
+      }
+    }
+    else
+      state|=DEFAULT_PRESCISION;
+    //Get [length]
+#ifdef CHPRINTF_FREQUENCY_SIZE_64
+    if (c == 'l' || c == 'L') {
+      state|=IS_LONG;
+      if (*fmt)
+        c = *fmt++;
+    }
+    else if ((c >= 'A') && (c <= 'Z'))
+      state|=IS_LONG;
+#endif
+    // Parse type
+    switch (c) {
+    case 'c':
+      state&=~PAD_ZERO;
+      *p++ = va_arg(ap, int);
+      break;
+    case 's':
+      state&=~PAD_ZERO;
+      if ((s = va_arg(ap, char *)) == 0)
+        s = (char*)"(null)";
+      if (state&DEFAULT_PRESCISION)
+        precision = 32767;
+      for (p = s; *p && (--precision >= 0); p++)
+        ;
+      break;
+    case 'D':
+    case 'd':
+    case 'I':
+    case 'i':
+      if (state & IS_LONG)
+        value.l = va_arg(ap, int64_t);
+      else
+        value.l = va_arg(ap, int32_t);
+      if (value.l < 0) {
+        state|=NEGATIVE;
+        *p++ = '-';
+        value.l = -value.l;
+      }
+      else if (state & POSITIVE)
+        *p++ = '+';
+      else if (state & PLUS_SPACE)
+        *p++ = ' ';
+      if (state & COMPLEX) {
+        *p++ = ' '; *p++ = 'j';
+      }
+      p = long_to_string_with_divisor(p, value.l, 10, 0);
+      break;
+    case 'q':
+      p=ulong_freq(p, va_arg(ap, pfreq_t), precision);
+      break;
+    case 'F':
+    case 'f':
+      value.f = va_arg(ap, double);
+      if (value.f < 0) {
+        state|=NEGATIVE;
+        *p++ = '-';
+        value.f = -value.f;
+      }
+      else if (state & POSITIVE)
+        *p++ = '+';
+      else if (state & PLUS_SPACE)
+        *p++ = ' ';
+      if (state & COMPLEX) {
+        *p++ = ' '; *p++ = 'j';
+      }
+      if (value.f == INFINITY){
+        *p++ = 'I'; *p++ = 'N'; ; *p++ = 'F';
+        break;
+      }
+      // Set default precision and remove zeroes at end by default
+      if (state&DEFAULT_PRESCISION) {
+        precision = (c=='F') ? DEFAULT_FLOAT_PREFIX_PRECISION : MAX_FLOAT_PRECISION;
+//        state|= PAD_ZERO;
+      }
+      p = (c=='F') ? ftoaS(p, value.f, precision) : ftoa(p, value.f, precision);
+#ifdef CHPRINTF_FORCE_TRAILING_ZEROS
+	  if (state & PAD_ZERO) { // remove zeros at end
+        state^= PAD_ZERO;
+        while (p[-1]=='0') p--;
+        if (p[-1]=='.') p--;
+      }
+#endif
+      break;
+    case 'X':
+    case 'x':
+      c = 16;
+      goto unsigned_common;
+    case 'U':
+    case 'u':
+      c = 10;
+      goto unsigned_common;
+    case 'O':
+    case 'o':
+      c = 8;
+unsigned_common:
+      if (state & IS_LONG)
+        value.u = va_arg(ap, int64_t);
+      else
+        value.u = va_arg(ap, uint32_t);
+      p = long_to_string_with_divisor(p, value.u, c, 0);
+      break;
+    default:
+      *p++ = c;
+      break;
+    }
+    // Now need print buffer s[{sign}XXXXXXXXXXXX]p and align it on width
+    // Check filler width (if buffer less then width) and prepare filler if need fill
+    if ((width -=(int)(p - s)) < 0)
+      width = 0;
+    else
+      filler = (state&PAD_ZERO) ? '0' : ' ';
+    // if left align, put sign digit, and fill
+    // [{sign}ffffffXXXXXXXXXXXX]
+    if (!(state&LEFT_ALIGN)) {
+      // Put '+' or '-' or ' ' first if need
+	  if ((state&(NEGATIVE|POSITIVE|PLUS_SPACE)) && (state&PAD_ZERO)) {
+		str+= (char)(*s++);
+        n++;
+      }
+      // fill from left
+      while (width){
+        *str++ = (char)filler;
+        n++;
+        width--;
+      }
+    }
+    // put data
+    while (s < p) {
+      *str++ = (char)(*s++);
+      n++;
+    }
+    // Put filler from right (if need)
+    while (width) {
+      *str++ = (char)filler;
+      n++;
+      width--;
+    }
+  }
+}
+
+int CCommon::sprintf(char *s, const char *format, ...) {
+	va_list ap;
+	va_start(ap, format);
+	int buf_size = chvprintf(s, format, ap);
+	va_end(ap);
+	return buf_size;
+}
+
+String __fastcall CCommon::freqToStrMHz(int64_t Hz)
+{
+	char tmp[32];
+	sprintf(tmp, "%0.6f", (double)Hz/1e6);
+	return tmp;
 }
 
 String __fastcall CCommon::freqToStr1(double Hz, bool trim_trailing_zero, bool space_units, int fraction_size, bool show_sign)
@@ -983,160 +1402,18 @@ String __fastcall CCommon::freqToStr1(double Hz, bool trim_trailing_zero, bool s
 	return space_units ? s2 + " " + s1 : s2 + s1;
 }
 
-String __fastcall CCommon::freqToStr2(int64_t Hz, const int left_padding)
-{
-	String s;
-
-//	if (Hz < 0)
-//		Hz = -Hz;
-
-	if (Hz == 0)
-		return "0";
-
-	s.printf(L"%lld", Hz);
-	while (s.Length() < left_padding)
-		s = " " + s;
-
-	int i = s.Length();
-	while (i > 0)
-	{
-		i -= 2;
-		if (i > 0)
-		{
-			s.Insert(' ', i);
-			i--;
-		}
-	}
-
-	return s;
-}
-
 String __fastcall CCommon::secsToStr(double time, bool trim_trailing_zero)
 {
-	String s1;
-	String s2;
-
-	time = fabs(time);
-
-	if (time == 0)
-		return "0";
-
-	if (time >= 1e0)
-	{
-		time *= 1e0;
-		s1 = "s";
-	}
-	else
-	if (time >= 1e-3)
-	{	// milli
-		time *= 1e3;
-		s1 = "ms";
-	}
-	else
-	if (time >= 1e-6)
-	{	// micro
-		time *= 1e6;
-		s1 = "us";
-	}
-	else
-	if (time >= 1e-9)
-	{	// nano
-		time *= 1e9;
-		s1 = "ns";
-	}
-	else
-	if (time >= 1e-12)
-	{	// pico
-		time *= 1e12;
-		s1 = "ps";
-	}
-	else
-	if (time >= 1e-15)
-	{	// femto
-		time *= 1e15;
-		s1 = "fs";
-	}
-	else
-	if (time >= 1e-18)
-	{	// atto
-		time *= 1e18;
-		s1 = "as";
-	}
-	else
-	if (time >= 1e-21)
-	{	// zepto
-		time *= 1e21;
-		s1 = "zs";
-	}
-	else
-	{	// yocto
-		time *= 1e24;
-		s1 = "ys";
-	}
-
-	s2.printf(L"%5.3f", time);
-
-	if (trim_trailing_zero && (s2.Pos('.') > 0 || s2.Pos(',') > 0))
-	{
-		while (!s2.IsEmpty() && s2[s2.Length()] == '0')
-			s2 = s2.SubString(1, s2.Length() - 1).Trim();
-		if (!s2.IsEmpty() && (s2[s2.Length()] == '.' || s2[s2.Length()] == ','))
-			s2 = s2.SubString(1, s2.Length() - 1).Trim();
-	}
-
-	return s2 + s1;
+	char tmp[32];
+	sprintf(tmp, "%.3Fs", time);
+	return tmp;
 }
 
 String __fastcall CCommon::distToStr(double distance, bool trim_trailing_zero)
 {
-	String s1;
-	String s2;
-
-	distance = fabs(distance);
-
-	if (distance == 0)
-		return "0";
-
-	if (distance >= 1e0)
-	{
-		distance *= 1e0;
-		s1 = "m";
-	}
-	else
-	if (distance >= 1e-3)
-	{
-		distance *= 1e3;
-		s1 = "mm";
-	}
-	else
-	if (distance >= 1e-6)
-	{
-		distance *= 1e6;
-		s1 = "um";
-	}
-	else
-	if (distance >= 1e-9)
-	{
-		distance *= 1e9;
-		s1 = "nm";
-	}
-	else
-	{
-		distance *= 1e12;
-		s1 = "pm";
-	}
-
-	s2.printf(L"%5.3f", distance);
-
-	if (trim_trailing_zero && (s2.Pos('.') > 0 || s2.Pos(',') > 0))
-	{
-		while (!s2.IsEmpty() && s2[s2.Length()] == '0')
-			s2 = s2.SubString(1, s2.Length() - 1).Trim();
-		if (!s2.IsEmpty() && (s2[s2.Length()] == '.' || s2[s2.Length()] == ','))
-			s2 = s2.SubString(1, s2.Length() - 1).Trim();
-	}
-
-	return s2 + s1;
+	char tmp[32];
+	sprintf(tmp, "%.3Fm", distance);
+	return tmp;
 }
 
 String __fastcall CCommon::trimTrailingZeros(String s)
@@ -2070,7 +2347,11 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 		//Memo1->Lines->Add("loaded OK");
 		//Memo1->Lines->Add("");
 	}
+	return parceSxPFile(name, num_chans, s_params, lines);
+}
 
+String __fastcall CCommon::parceSxPFile(String filename, int num_chans, std::vector <t_data_point> &s_params, std::vector <String> &lines)
+{
 	unsigned int line = 0;
 
 	bool db_format    = false;
@@ -2202,43 +2483,17 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 			return "";
 		}
 
-		freq *= freq_mult;
-
 		if (num_chans == 1)
 		{
 			//   50000 +0.997205257416 -0.000746459002
 			//	9049500 +0.997326910496 -0.008030370809
 
-			if (params.size() < 3)
+			if (params.size() < 3 ||
+			    !TryStrToFloat(params[1], s11_real) ||
+				!TryStrToFloat(params[2], s11_imag))
 			{
 				String s3;
 				s3.printf(L"Format error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[1], s11_real))
-			{
-				String s3;
-				s3.printf(L"S11.real error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[2], s11_imag))
-			{
-				String s3;
-				s3.printf(L"S11.imag error on line %u\r\n\n\"%s\"", line, s.c_str());
 				if (filename.IsEmpty())
 				{
 					Application->NormalizeTopMosts();
@@ -2254,7 +2509,11 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 			//   50000 +0.997205257416 -0.000746459002 -0.000119486998 +0.000624242995 0 0 0 0
 			//	9049500 +0.997326910496 -0.008030370809 +0.000366301014 +0.000065216002 0 0 0 0
 
-			if (params.size() < 5)
+			if (params.size() < 5 ||
+			    !TryStrToFloat(params[1], s11_real) ||
+				!TryStrToFloat(params[2], s11_imag) ||
+				!TryStrToFloat(params[3], s21_real) ||
+				!TryStrToFloat(params[4], s21_imag))
 			{
 				String s3;
 				s3.printf(L"Format error on line %u\r\n\n\"%s\"", line, s.c_str());
@@ -2266,59 +2525,8 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 				}
 				return "";
 			}
-
-			if (!TryStrToFloat(params[1], s11_real))
-			{
-				String s3;
-				s3.printf(L"S11.real error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[2], s11_imag))
-			{
-				String s3;
-				s3.printf(L"S11.imag error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[3], s21_real))
-			{
-				String s3;
-				s3.printf(L"S21.real error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
-
-			if (!TryStrToFloat(params[4], s21_imag))
-			{
-				String s3;
-				s3.printf(L"S21.imag error on line %u\r\n\n\"%s\"", line, s.c_str());
-				if (filename.IsEmpty())
-				{
-					Application->NormalizeTopMosts();
-					Application->MessageBox(s3.w_str(), L"Error", MB_ICONERROR | MB_OK);
-					Application->RestoreTopMosts();
-				}
-				return "";
-			}
 		}
+
 
 		if (db_format || ma_format)
 		{
@@ -2359,7 +2567,7 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 		}
 
 		t_data_point fp;
-		fp.Hz  = I64ROUND(freq);
+		fp.Hz  = I64ROUND(freq * freq_mult);
 		fp.s11 = complexf (s11_real, s11_imag);
 		fp.s21 = complexf (s21_real, s21_imag);
 
@@ -2414,7 +2622,7 @@ String __fastcall CCommon::loadSParams(std::vector <t_data_point> &s_params, Str
 		return "";
 	}
 
-	return name;
+	return filename;
 }
 
 bool __fastcall CCommon::saveSParams(std::vector <t_data_point> &points, int num_chans, String filename)

@@ -42,11 +42,12 @@ class CData
 			bool cmd_scan_bin;
 			bool cmd_scanraw;
 			bool cmd_sd_list;
-			bool cmd_sd_readfile;
+			bool cmd_sd_read;
+			bool cmd_sd_delete;
 			bool cmd_bandwidth;
 			bool cmd_vbat;
 			bool cmd_vbat_offset;
-         bool cmd_marker;
+			bool cmd_marker;
 			bool cmd_time;
 			bool cmd_threshold;
 			bool cmd_pause;
@@ -60,6 +61,7 @@ class CData
 			bool cmd_sweep;
 			bool cmd_mode;
 			bool cmd_edelay;
+			bool cmd_s21offset;
 
 			t_unit_type type;
 			int lcd_width;
@@ -77,6 +79,8 @@ class CData
 			int usart_speed;
 			int64_t deviceid;
 			bool cal;
+			bool ultra;
+			float ext_zero_level;
 			float edelay;
 			float s21_offset;
 
@@ -172,25 +176,49 @@ class CData
 		double __fastcall freq_step(const int mem);
 		double __fastcall max_time(const double freq_step);
 		double __fastcall max_dist(const double freq_step, const double velocity_factor);
-		float __fastcall power(complexf c);
-		float __fastcall magnitude(complexf c);
-		float __fastcall gain10(complexf c);
-		float __fastcall gain20(complexf z);
-		float __fastcall phase(complexf c);
-		float __fastcall VSWR(complexf c);
-		complexf __fastcall parallelToSerial(complexf c);
+
+		float __fastcall linear(complexf v);
+		float __fastcall logmag(complexf v);
+		float __fastcall return_loss(complexf v);
+		float __fastcall phase(complexf v);
+		float __fastcall groupdelay(complexf v, complexf w, double deltaf);
+		float __fastcall real(complexf v);
+		float __fastcall imag(complexf v);
+		float __fastcall swr(complexf v);
+		float __fastcall resistance(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall reactance(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall mod_z(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall phase_z(complexf v);
+		float __fastcall series_c(complexf v, double freq, const float ref_impedance = 50.0f);
+		float __fastcall series_l(complexf v, double freq, const float ref_impedance = 50.0f);
+		float __fastcall qualityfactor(complexf v);
+		float __fastcall conductance(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall susceptance(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall parallel_r(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall parallel_x(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall parallel_c(complexf v, double freq, const float ref_impedance = 50.0f);
+		float __fastcall parallel_l(complexf v, double freq, const float ref_impedance = 50.0f);
+		float __fastcall mod_y(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall s21shunt_r(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall s21shunt_x(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall s21shunt_z(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall s21series_r(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall s21series_x(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall s21series_z(complexf v, const float ref_impedance = 50.0f);
+		float __fastcall s21_qualityfactor(complexf v);
+
+#if 1
+//		complexf __fastcall parallelToSerial(complexf c);
 		complexf __fastcall serialToParallel(complexf z);
 		float __fastcall impedanceToCapacitance(complexf z, const double freq);
 		float __fastcall impedanceToInductance(complexf z, double freq);
-		complexf __fastcall impedanceToNorm(complexf z, const float ref_impedance = 50.0f);
-		complexf __fastcall normToImpedance(complexf z, const float ref_impedance = 50.0f);
-		complexf __fastcall reflectionCoefficient(complexf z, const float ref_impedance = 50.0f);
-		complexf __fastcall gammaToImpedance(complexf gamma, const float ref_impedance = 50.0f);
+//		complexf __fastcall impedanceToNorm(complexf z, const float ref_impedance = 50.0f);
+//		complexf __fastcall normToImpedance(complexf z, const float ref_impedance = 50.0f);
+//		complexf __fastcall reflectionCoefficient(complexf z, const float ref_impedance = 50.0f);
 		complexf __fastcall impedance(complexf c, const float ref_impedance = 50.0f);
-		float __fastcall qualityFactor(complexf c, const float ref_impedance = 50.0f);
-		float __fastcall capacitiveEquivalent(complexf c, const double freq, const float ref_impedance = 50.0f);
-		float __fastcall inductiveEquivalent(complexf c, const double freq, const float ref_impedance = 50.0f);
-
+//		float __fastcall capacitiveEquivalent(complexf c, const double freq, const float ref_impedance = 50.0f);
+//		float __fastcall inductiveEquivalent(complexf c, const double freq, const float ref_impedance = 50.0f);
+#endif
 		// ***************************************
 
 //		__property std::vector <t_data_point_hist> point         = {read = m_point,          write = m_point};

@@ -19,6 +19,8 @@
 #define SCAN_MASK_OUT_DATA0      (1u << 1)
 #define SCAN_MASK_OUT_DATA1      (1u << 2)
 #define SCAN_MASK_NO_CALIBRATION (1u << 3)
+#define SCAN_MASK_NO_EDELAY      (1u << 4)
+#define SCAN_MASK_NO_S21OFFSET   (1u << 5)
 #define SCAN_MASK_BINARY         (1u << 7)
 
 #define COMMAND_PROMPT "ch>"
@@ -32,6 +34,7 @@ CNanoVNA1Comms::CNanoVNA1Comms()
 	m_get_screen_capture = false;
 	m_mode               = MODE_NONE;
 	m_rx_block.type      = SERIAL_STATE_IDLE;
+    sd_read_mode = -1;
 }
 
 CNanoVNA1Comms::~CNanoVNA1Comms()
@@ -89,9 +92,10 @@ String __fastcall CNanoVNA1Comms::getSerialStateString(t_serial_state state)
 		case SERIAL_STATE_SCREEN_FILL:      s = "fill"; break;
 		case SERIAL_STATE_SCREEN_BULK:      s = "bulk"; break;
 		case SERIAL_STATE_SD_LIST:				s = "sd_list";        break;
-		case SERIAL_STATE_SD_READFILE:		s = "sd_readfile";    break;
+		case SERIAL_STATE_SD_READ:	 			s = "sd_read";		  break;
+		case SERIAL_STATE_SD_DELETE: 			s = "sd_delete";	  break;
 		case SERIAL_STATE_MODE:					s = "mode";           break;
-		default:										s = "unknown";        break;
+		default:								s = "unknown";        break;
 	}
 	return s;
 }
@@ -230,6 +234,12 @@ void __fastcall CNanoVNA1Comms::addSerialTxCommand(String s, const int command_e
 	m_tx_commands.push_back(s);
 }
 
+void __fastcall CNanoVNA1Comms::sd_read(String filename, int read_mode) {
+	sd_read_mode = read_mode;
+	sd_read_filename = filename;
+	addSerialTxCommand(L"sd_read " + filename);
+}
+
 void __fastcall CNanoVNA1Comms::sendOutputPowerCommand(int power)
 {
 	if (!data_unit.m_vna_data.cmd_power)
@@ -318,9 +328,9 @@ void __fastcall CNanoVNA1Comms::requestScan()
 	if (segments <= 0)
 		return;
 
-	const uint32_t seg_span  = data_unit.m_freq_span_Hz / segments;
-	const uint32_t seg_start = data_unit.m_freq_start_Hz + (seg_span * data_unit.m_segment);
-	const uint32_t seg_stop  = seg_start + seg_span;
+	const uint64_t seg_span  = data_unit.m_freq_span_Hz / segments;
+	const uint64_t seg_start = data_unit.m_freq_start_Hz + (seg_span * data_unit.m_segment);
+	const uint64_t seg_stop  = seg_start + seg_span;
 
 	if (m_poll_timer.millisecs(false) >= m_poll_ms)
 		poll();
@@ -335,9 +345,9 @@ void __fastcall CNanoVNA1Comms::requestScan()
 		uint16_t mask = 0x07;
 		String s;
 		if (data_unit.m_vna_data.cmd_scanraw)
-			s.printf(L"scanraw %u %u %d", seg_start, seg_stop, data_unit.m_points);
+			s.printf(L"scanraw %llu %llu %d", seg_start, seg_stop, data_unit.m_points);
 		else
-			s.printf(L"scan %u %u %d %u", seg_start, seg_stop, data_unit.m_points, mask);
+			s.printf(L"scan %llu %llu %d %u", seg_start, seg_stop, data_unit.m_points, mask);
 		addSerialTxCommand(s);
 	}
 	else
@@ -360,8 +370,8 @@ void __fastcall CNanoVNA1Comms::requestScan()
 			mask |= SCAN_MASK_OUT_DATA1;
 		#endif
 
-		if (settings.calibrationSelection != CAL_SELECT_VNA)
-			mask |= SCAN_MASK_NO_CALIBRATION;	// don't use the VNA's own calibration
+		if (settings.calibrationSelection != CAL_SELECT_VNA)  	// don't use the VNA's own calibration
+			mask |= SCAN_MASK_NO_CALIBRATION | SCAN_MASK_NO_EDELAY | SCAN_MASK_NO_S21OFFSET;
 
 		//mask |= SCAN_MASK_BINARY;
 
@@ -372,7 +382,7 @@ void __fastcall CNanoVNA1Comms::requestScan()
 				mask |= SCAN_MASK_OUT_FREQ;
 
 		String s;
-		s.printf(L"%u %u %d %u", seg_start, seg_stop, data_unit.m_points_per_segment, mask);
+		s.printf(L"%llu %llu %d %u", seg_start, seg_stop, data_unit.m_points_per_segment, mask);
 //		s = "scan " + s;
 		s = (data_unit.m_vna_data.cmd_scan_bin ? "scan_bin " : "scan ") + s;
 
@@ -496,8 +506,11 @@ void __fastcall CNanoVNA1Comms::poll()
 			if (data_unit.m_vna_data.cmd_deviceid)
 				addSerialTxCommand("deviceid");
 
-			if (data_unit.m_vna_data.cmd_edelay)
-				addSerialTxCommand("edelay");
+//			if (data_unit.m_vna_data.cmd_edelay)
+//				addSerialTxCommand("edelay");
+
+//			if (data_unit.m_vna_data.cmd_s21offset)
+//				addSerialTxCommand("s21offset");
 
 			if (data_unit.m_vna_data.cmd_vbat_offset)
 				addSerialTxCommand("vbat_offset");
@@ -554,8 +567,8 @@ void __fastcall CNanoVNA1Comms::poll()
 			if (data_unit.m_vna_data.cmd_vbat)
 				addSerialTxCommand("vbat");
 
-			if (data_unit.m_vna_data.cmd_marker)
-				addSerialTxCommand("marker");
+	//		if (data_unit.m_vna_data.cmd_marker)
+	//			addSerialTxCommand("marker");
 
 			if (data_unit.m_vna_data.cmd_sweep)
 				addSerialTxCommand("sweep");
@@ -779,10 +792,16 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 	// Port Info: Preemption through NMI
 	// Platform: STM32F072xB Entry Level Medium Density devices
 
+	// tinySA ULTRA
+	// 2019-2022 Copyright @Erik Kaashoek
+	// 2016-2020 Copyright @edy555
+	// SW licensed under GPL. See: https://github.com/erikkaashoek/tinySA
+	// Version: tinySA4_v1.2-647-g63a26eb
+	// Build Time: Dec 11 2022 - 13:29:01
 
 	// remember the current unit type
 	const int prev_unit_type = data_unit.m_vna_data.type;
-
+	data_unit.m_vna_data.ultra = false;
 	for (unsigned int i = 0; i < m_rx_block.lines.size(); i++)
 	{
 		String s = m_rx_block.lines[i].Trim().LowerCase();
@@ -808,6 +827,7 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 		if (s.Pos("tinysa") > 0)
 		{
 			data_unit.m_vna_data.type = UNIT_TYPE_TINYSA;
+			if (s.Pos("ultra") > 0) data_unit.m_vna_data.ultra = true;
 			break;
 		}
 	}
@@ -822,7 +842,9 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 		case UNIT_TYPE_NANOVNA_H7: data_unit.m_vna_data.name = "NanoVNA-H7";        break;
 		case UNIT_TYPE_NANOVNA_V2: data_unit.m_vna_data.name = "NanoVNA-V2";        break;
 		case UNIT_TYPE_JANVNA_V2:  data_unit.m_vna_data.name = "JanVNA-V2";         break;
-		case UNIT_TYPE_TINYSA:     data_unit.m_vna_data.name = "tinySA";            break;
+		case UNIT_TYPE_TINYSA:
+			if (data_unit.m_vna_data.ultra) data_unit.m_vna_data.name = "tinySA ULTRA";
+			else                            data_unit.m_vna_data.name = "tinySA";       break;
 		default:                	data_unit.m_vna_data.name = "ERROR-unit-type";   break;
 	}
 
@@ -910,9 +932,16 @@ void __fastcall CNanoVNA1Comms::extractInfoCommand()
 //			break;
 
 		case UNIT_TYPE_TINYSA:
+			if (data_unit.m_vna_data.ultra) {
+				data_unit.m_vna_data.lcd_width  = 480;
+				data_unit.m_vna_data.lcd_height = 320;
+				data_unit.m_vna_data.ext_zero_level = 174;
+			} else {
 				data_unit.m_vna_data.lcd_width  = 320;
 				data_unit.m_vna_data.lcd_height = 240;
-				break;
+				data_unit.m_vna_data.ext_zero_level = 128;
+			}
+			break;
 	}
 
 	::PostMessage(Form1->Handle, WM_NEW_UNIT_TYPE, 0, 0);
@@ -1013,7 +1042,8 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 											data_unit.m_vna_data.cmd_scan_bin      = (s2.Pos(" scan_bin ")    > 1) ? true : false;
 											data_unit.m_vna_data.cmd_scanraw       = (s2.Pos(" scanraw ")     > 1) ? true : false;
 											data_unit.m_vna_data.cmd_sd_list       = (s2.Pos(" sd_list ")     > 1) ? true : false;
-											data_unit.m_vna_data.cmd_sd_readfile   = (s2.Pos(" sd_readfile ") > 1) ? true : false;
+											data_unit.m_vna_data.cmd_sd_read       = (s2.Pos(" sd_read ")     > 1) ? true : false;
+											data_unit.m_vna_data.cmd_sd_delete     = (s2.Pos(" sd_delete ")   > 1) ? true : false;
 											data_unit.m_vna_data.cmd_time          = (s2.Pos(" time ")        > 1) ? true : false;
 											data_unit.m_vna_data.cmd_threshold     = (s2.Pos(" threshold ")   > 1) ? true : false;
 											data_unit.m_vna_data.cmd_pause         = (s2.Pos(" pause ")       > 1) ? true : false;
@@ -1025,7 +1055,9 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 											data_unit.m_vna_data.cmd_usart_cfg     = (s2.Pos(" usart_cfg ")   > 1) ? true : false;
 											data_unit.m_vna_data.cmd_deviceid      = (s2.Pos(" deviceid ")    > 1) ? true : false;
 											data_unit.m_vna_data.cmd_sweep         = (s2.Pos(" sweep ")       > 1) ? true : false;
-											data_unit.m_vna_data.cmd_mode          = (s2.Pos(" mode ")        > 1) ? true : false;
+											data_unit.m_vna_data.cmd_mode          = (s2.Pos(" mode ")        > 1) ? true : false;					
+											data_unit.m_vna_data.cmd_edelay        = (s2.Pos(" edelay ")      > 1) ? true : false;
+											data_unit.m_vna_data.cmd_s21offset     = (s2.Pos(" s21offset ")   > 1) ? true : false;
 										}
 									}
 								}
@@ -1491,7 +1523,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 					case SERIAL_STATE_USART_CFG:
 						for (unsigned int i = 0; i < m_rx_block.lines.size(); i++)
 						{
-							// Serial: 38400 baud
+							// current: 38400   or    Serial: 38400 baud
 							// ch>
 
 							String s2 = m_rx_block.lines[i].Trim();
@@ -1500,9 +1532,9 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 							s2 = common.localiseDecimalPoint(s2);
 							common.parseString(s2, " ", params);
 
-							if (params.size() >= 3)
+							if (params.size() >= 2)
 							{
-								if (params[0].LowerCase() == "serial:" && params[2].LowerCase() == "baud")
+								if (params[0].LowerCase() == "current:" || params[0].LowerCase() == "serial:")
 								{
 									int baudrate;
 									if (TryStrToInt(params[1], baudrate))
@@ -1511,7 +1543,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 
 										if (VNAUsartCommsForm)
 											VNAUsartCommsForm->setBaudrate(baudrate);
-                           }
+									}
 								}
 							}
 						}
@@ -2044,7 +2076,7 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 
 									const int64_t freq = data_unit.m_freq_start_Hz + I64ROUND(((double)data_unit.m_freq_span_Hz * Form1->m_freq_data_list.size()) / (num_points - 1));
 
-									const float dBm = ((float)data / 32) - 128;
+									const float dBm = ((float)data / 32) - data_unit.m_vna_data.ext_zero_level;
 									const float lin = powf(10.0f, dBm / 20.0f);
 
 									t_data_point fp;
@@ -2131,9 +2163,75 @@ void __fastcall CNanoVNA1Comms::processRxBlock()
 						break;
 
 					case SERIAL_STATE_SD_LIST:
+					{
+						const unsigned int bins = m_rx_block.lines.size();
+						Form1->file_list->Items->Clear();
+						for (unsigned int i = 0; i < bins; i++) {
+							std::vector <String> params;
+							common.parseString(m_rx_block.lines[i].Trim(), " ", params);
+							if (params.size() > 0)
+								Form1->file_list->Items->Add(params[0]);
+                        }
 						break;
+					}
+					case SERIAL_STATE_SD_READ:
+						if (m_rx_block.bin_data_index == m_rx_block.bin_data.size())
+						{
+							if(sd_read_mode == SD_FILE_BITMAP)
+							{
+								BITMAPFILEHEADER *bm = (BITMAPFILEHEADER *)&m_rx_block.bin_data[4];
+								BITMAPINFOHEADER *info = (BITMAPINFOHEADER *)&m_rx_block.bin_data[sizeof(BITMAPFILEHEADER)+4];
+								if (info->biHeight > 800 || info->biWidth > 1024 || info->biBitCount != 16) break;
+								if (m_capture_bm == NULL) {
+									m_capture_bm = new Graphics::TBitmap();
+									m_capture_bm->Monochrome  = false;
+									m_capture_bm->Transparent = false;
+									m_capture_bm->PixelFormat = pf16bit;
+								}
+								if (m_capture_bm == NULL) break;
 
-					case SERIAL_STATE_SD_READFILE:
+								if (m_capture_bm->Width  != info->biWidth) m_capture_bm->Width = info->biWidth;
+								if (m_capture_bm->Height != info->biHeight) m_capture_bm->Height = info->biHeight;
+
+								uint8_t *data = (uint8_t *)&m_rx_block.bin_data[bm->bfOffBits+4];
+
+								for (int16_t y = info->biHeight - 1; y >= 0; y--) {
+									uint16_t *dst = (uint16_t *)m_capture_bm->ScanLine[y];
+									int linesize = info->biWidth * info->biBitCount / 8;
+									memcpy(dst, data, linesize);
+									data+= linesize;
+								}
+								::PostMessage(Form1->Handle, WM_SCREEN_CAPTURE, 0, 0);
+							} else if (sd_read_mode == SD_FILE_S1P || sd_read_mode == SD_FILE_S2P) {
+								std::vector <String> lines;
+								unsigned int i = 0, size = m_rx_block.bin_data.size();
+								if (size <= 4) break;
+								size-= 4;
+								char *data = (uint8_t *)&m_rx_block.bin_data[4];
+								String s = "";
+								do {
+									char c = data[i++];
+									if (c == '\t') c = ' ';
+									if (c == '\r' || c == '\n' || i >= size) {
+										if (!s.IsEmpty()) {
+											lines.push_back(s);
+											s = "";
+										}
+										if (c == '\r' && data[i] == '\n') i++;	// skip over the following '\n'
+									} else if (c >= 32)
+										s += c;
+								} while (i < size);
+								int num = sd_read_mode == SD_FILE_S1P ? 1 : 2;
+								std::vector <t_data_point> s_params;
+								String fn = common.parceSxPFile("VNA: " + sd_read_filename, num, s_params, lines);
+
+								if (!fn.IsEmpty())
+									Form1->applyMemoryFile(fn, 1, s_params);
+							}
+							sd_read_mode = -1;
+						}
+						break;
+					case SERIAL_STATE_SD_DELETE:
 						break;
 
 					case SERIAL_STATE_MODE:
@@ -2486,13 +2584,17 @@ bool __fastcall CNanoVNA1Comms::processRxLine()
 	else
 	if (cmd == "sd_list")
 	{
-		//block_type = SERIAL_STATE_SD_LIST;
-		return true;
+		block_type = SERIAL_STATE_SD_LIST;
 	}
 	else
-	if (cmd == "sd_readfile")
+	if (cmd == "sd_read")
 	{
-		//block_type = SERIAL_STATE_SD_READFILE;
+		block_type = SERIAL_STATE_SD_READ;
+	}
+	else
+	if (cmd == "sd_delete")
+	{
+		//block_type = SERIAL_STATE_SD_DELETE;
 		return true;
 	}
 	else
@@ -2595,7 +2697,55 @@ int __fastcall CNanoVNA1Comms::processRx(t_serial_buffer &serial_buffer)
 				break;
 
 			}
-			case SERIAL_STATE_SD_READFILE:
+
+			case SERIAL_STATE_SD_READ:
+			{
+				const uint8_t b = serial_buffer.buffer[k];
+				if (m_rx_block.bin_data_index < sizeof(uint32_t))
+				{
+					((uint8_t *)&sd_filesize)[m_rx_block.bin_data_index++] = b;
+					k++;
+					if (m_rx_block.bin_data_index >= sizeof(uint32_t))
+					{
+						if (sd_filesize == (uint32_t)-1 ||
+							sd_filesize == 0x67617375 || // 'usag' text
+							sd_filesize == 0x3A727265) { // 'err:' text
+							sd_filesize = 0;
+							sd_read_mode = -1;
+							return 0;
+						}
+						m_rx_block.bin_data.resize(sizeof(uint32_t) + sd_filesize);												// make room for the following data
+					}
+				} else {
+					int available_bytes = serial_buffer.buffer_wr - k;
+					int available_space = (int)m_rx_block.bin_data.size() - (int)m_rx_block.bin_data_index;
+					if (available_bytes > available_space)
+						available_bytes  = available_space;
+					if (available_bytes > 0)
+					{	// copy the rx'ed data into the rx binary buffer
+						memcpy(&m_rx_block.bin_data[m_rx_block.bin_data_index], &serial_buffer.buffer[k], available_bytes);
+						m_rx_block.bin_data_index += available_bytes;
+						k += available_bytes;
+					}
+
+					if (m_rx_block.bin_data_index >= m_rx_block.bin_data.size())
+					{	// done
+						if (k > 0)
+						{	// remove used data from the rx serial buffer
+							if (k < serial_buffer.buffer_wr)
+								memmove(&serial_buffer.buffer[0], &serial_buffer.buffer[k], serial_buffer.buffer_wr - k);
+							serial_buffer.buffer_wr -= k;
+							k = 0;
+						}
+						String s;
+						s.printf(L"%u bytes received", m_rx_block.bin_data_index);
+						Form1->pushCommMessage("rx: " + s);
+						processRxBlock();
+					}
+				}
+				break;
+
+			}
 			case SERIAL_STATE_SCREEN_CAPTURE:
 			case SERIAL_STATE_FREQDATA_RAW:
 				{
@@ -2785,7 +2935,7 @@ int __fastcall CNanoVNA1Comms::processRx(t_serial_buffer &serial_buffer)
 		//k = 0;
 	}
 
-	if (	m_rx_block.type == SERIAL_STATE_SD_READFILE ||
+	if (	m_rx_block.type == SERIAL_STATE_SD_READ ||
 			m_rx_block.type == SERIAL_STATE_SCREEN_CAPTURE ||
 			m_rx_block.type == SERIAL_STATE_SCREEN_FILL ||
 			m_rx_block.type == SERIAL_STATE_SCREEN_BULK ||

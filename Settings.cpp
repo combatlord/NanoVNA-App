@@ -121,8 +121,8 @@ CSettings::CSettings()
 	m_graph_font = new TFont();
 	if (m_graph_font)
 	{
-		m_graph_font->Name    = "Consolas";							// string
-		m_graph_font->Charset = ANSI_CHARSET;						// int
+		m_graph_font->Name    = "Tahoma";						// string
+		m_graph_font->Charset = ANSI_CHARSET;					// int
 		m_graph_font->Color   = clBlack;       					// int
 		m_graph_font->Size    = 8;             					// int
 		m_graph_font->Style   = TFontStyles(); 					// byte array
@@ -162,6 +162,8 @@ CSettings::CSettings()
 	m_auto_scale_peak_hold  = false;
 
 	m_smith_both_scales = false;
+	
+	m_line_antialiasing = true;
 
 	m_show_freq_bands = true;
 
@@ -173,6 +175,7 @@ CSettings::CSettings()
 	m_lc_matching_enable = false;
 
 	m_info_panel = false;
+	m_sd_panel = false;
 
 	m_start_Hz = 50000;
 	m_stop_Hz  = 900000000;
@@ -636,6 +639,13 @@ void __fastcall CSettings::load()
 			continue;
 		}
 
+		if (params[0] == "lines_antialiasing_enable")
+		{
+			if (params.size() >= 2)
+				m_line_antialiasing = (params[1].LowerCase() == "true") ? true : false;
+			continue;
+		}
+
 		if (params[0] == "line_width")
 		{
 			if (params.size() >= 2)
@@ -729,6 +739,13 @@ void __fastcall CSettings::load()
 		{
 			if (params.size() >= 2)
 				m_info_panel = (params[1].LowerCase() == "true") ? true : false;
+			continue;
+		}
+
+		if (params[0] == "sd_panel_enable")
+		{
+			if (params.size() >= 2)
+				m_sd_panel = (params[1].LowerCase() == "true") ? true : false;
 			continue;
 		}
 
@@ -1557,6 +1574,9 @@ void __fastcall CSettings::save()
 	s.printf(L"smith_both_scales_enable %s", String(m_smith_both_scales ? "true" : "false").c_str());
 	buffer.push_back(s);
 
+	s.printf(L"lines_antialiasing_enable %s", String(m_line_antialiasing ? "true" : "false").c_str());
+	buffer.push_back(s);
+
 	s.printf(L"line_width %d", m_line_width);
 	buffer.push_back(s);
 
@@ -1585,6 +1605,9 @@ void __fastcall CSettings::save()
 	buffer.push_back(s);
 
 	s.printf(L"info_panel_enable %s", String(m_info_panel ? "true" : "false").c_str());
+	buffer.push_back(s);
+
+	s.printf(L"sd_panel_enable %s", String(m_sd_panel ? "true" : "false").c_str());
 	buffer.push_back(s);
 
 	s.printf(L"serial_port %d", m_serial_port.baudrate);
@@ -1820,7 +1843,7 @@ void __fastcall CSettings::defaultFreqBands()
 	{
 		const t_freq_band_c fb_c = default_freq_band[i];
 		t_freq_band fb;
-		fb.name    = String(fb_c.name);
+		fb.name    = AnsiString(fb_c.name);
 		fb.low_Hz  = fb_c.low_Hz;
 		fb.high_Hz = fb_c.high_Hz;
 		fb.enabled = fb_c.enabled;

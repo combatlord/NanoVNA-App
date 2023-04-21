@@ -5,187 +5,67 @@ object VNAScreenCaptureForm: TVNAScreenCaptureForm
   Margins.Top = 0
   Margins.Right = 0
   Margins.Bottom = 0
-  Anchors = []
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsSizeToolWin
+  BorderStyle = bsToolWindow
   Caption = 'VNA Screen Capture'
-  ClientHeight = 288
-  ClientWidth = 334
+  ClientHeight = 280
+  ClientWidth = 320
   Color = clBtnFace
-  Constraints.MinHeight = 288
-  Constraints.MinWidth = 334
+  Constraints.MinHeight = 280
+  Constraints.MinWidth = 320
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
   OldCreateOrder = False
+  Position = poDefault
+  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnMouseEnter = FormMouseEnter
   OnShow = FormShow
-  DesignSize = (
-    334
-    288)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object ActualSize: TLabel
-    Left = 142
-    Top = 0
-    Width = 52
-    Height = 13
+    Left = 131
+    Top = -1
+    Width = 63
+    Height = 16
+    Alignment = taCenter
     Caption = 'Actual Size'
+    Transparent = True
   end
   object Remote: TLabel
-    Left = 229
-    Top = 0
-    Width = 37
-    Height = 13
+    Left = 213
+    Top = -1
+    Width = 44
+    Height = 16
+    Alignment = taCenter
     Caption = 'Remote'
   end
   object ActualSizeToggleSwitch: TToggleSwitch
-    Left = 134
-    Top = 12
-    Width = 73
-    Height = 24
+    Left = 131
+    Top = 14
+    Width = 76
+    Height = 20
     Cursor = crHandPoint
     Hint = 'Actual size'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     FrameColor = clBtnFace
-    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     State = tssOn
     StateCaptions.CaptionOn = 'Yes'
     StateCaptions.CaptionOff = 'No'
-    SwitchHeight = 24
     TabOrder = 0
     ThumbColor = clNavy
     ThumbWidth = 20
     OnClick = ActualSizeToggleSwitchClick
-  end
-  object Panel1: TPanel
-    Left = 4
-    Top = 38
-    Width = 326
-    Height = 246
-    Margins.Left = 0
-    Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    BevelEdges = []
-    BevelOuter = bvNone
-    BorderStyle = bsSingle
-    Caption = 'Panel1'
-    Color = clBlack
-    Ctl3D = False
-    FullRepaint = False
-    ParentBackground = False
-    ParentCtl3D = False
-    TabOrder = 6
-    DesignSize = (
-      326
-      246)
-    object ActualSizeImage: TImage
-      Left = 3
-      Top = 3
-      Width = 320
-      Height = 240
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 0
-      Proportional = True
-      OnMouseDown = ActualSizeImageMouseDown
-      OnMouseLeave = ActualSizeImageMouseLeave
-      OnMouseMove = ActualSizeImageMouseMove
-      OnMouseUp = ActualSizeImageMouseUp
-    end
-    object ResizeImage: TImage
-      Left = 3
-      Top = 3
-      Width = 320
-      Height = 240
-      Margins.Left = 0
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 0
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      Center = True
-      IncrementalDisplay = True
-      Stretch = True
-      Visible = False
-      OnMouseDown = ResizeImageMouseDown
-      OnMouseLeave = ResizeImageMouseLeave
-      OnMouseMove = ResizeImageMouseMove
-      OnMouseUp = ResizeImageMouseUp
-      ExplicitWidth = 320
-      ExplicitHeight = 240
-    end
-  end
-  object CloseBitBtn: TBitBtn
-    Left = 292
-    Top = 8
-    Width = 36
-    Height = 28
-    Cursor = crHandPoint
-    Anchors = [akTop, akRight]
-    Glyph.Data = {
-      36050000424D3605000000000000360400002800000010000000100000000100
-      08000000000000010000130B0000130B00000001000000010000FFFFFF006360
-      F8007774FF007774FF00625FF8005D5BF7005956F500726FFD00615EF8005451
-      F3004F4DF2006C69FB00605DF7004A47F0004542EE007673FF007471FE006361
-      F9005F5CF7004946F0004441EE00716EFD006E6BFC004845EF004341EE006967
-      FB006663F9004744EF004240EE00615EF8005D5AF6004643EF00413FED005C59
-      F6003C39EB005B58F6003230E8005A57F5004341EE003E3CEC002A27E5005956
-      F5004240EE003E3BEC003937EB003532E9002220E3005451F300413FED003D3A
-      EC00302DE7002C2AE6001F1DE2004A47F000403EED003C39EB002725E5002422
-      E4003F3DED003B38EB00211FE3001E1CE2007A77FF007976FE006461F8006A68
-      F900817EFF00817EFE007471FD00625FF8006F6DFB007E7CFF007D7AFE008A87
-      FF007C79FD006C69FB00615EF8006E6CFA007D7AFF00615FF7007774FD008682
-      FF007673FC006462F800605DF7006D6AFA007B79FF00706DFB00807EFF007E7B
-      FF007C79FF007977FF005E5CF7007D79FF005E5BFF005B58FF007674FF005D5B
-      F7007976FF005956FF005754FF007270FF004846F0005C5AF6006764FA007472
-      FF007370FF00706EFF006E6CFF005755F7003F3DEE005B59F6006663FA007471
-      FF005A58F600504DF4006867FF00504EF5003634EB005B58F6006562FA007170
-      FF005956F6004745F2006362FF004A48F4002F2DE9005856F5006361FA005855
-      F600413FF1004C4AF600312FEA004F4CF200FFFFFF0000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      000000000000000000000000003A3B0000000000003C3D000000000035853637
-      00000000383984340000002F7F8081303100003233828384340000297778797A
-      2A2B2C2D7B7C7D7E2E000000256F707172262773747576280000000000236768
-      696A6B6C6D6E2400000000000000216162636465662200000000000000001D1E
-      5D5E5F601F2000000000000000191A5758595A5B5C1B1C000000000015165051
-      52535455565417180000000F1048494A4B11124C4D4E4F13140000023E424344
-      0B00000C454647450D0E0000023E3F0700000000084041090A00000000020300
-      0000000000040506000000000000000000000000000001000000}
-    TabOrder = 1
-    Visible = False
-    OnClick = CloseBitBtnClick
   end
   object SaveImageBitBtn: TBitBtn
     Left = 8
@@ -205,7 +85,7 @@ object VNAScreenCaptureForm: TVNAScreenCaptureForm
       D6B11B7DD3DDDDDDDBA11BBDDDDDDDDDDA31F11111111111111F}
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 1
     OnClick = SaveImageBitBtnClick
   end
   object CopyImageBitBtn: TBitBtn
@@ -260,7 +140,7 @@ object VNAScreenCaptureForm: TVNAScreenCaptureForm
       0000000000000000000000000000000000000000000000000000}
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 2
     OnClick = CopyImageBitBtnClick
   end
   object RefreshImageBitBtn: TBitBtn
@@ -299,32 +179,65 @@ object VNAScreenCaptureForm: TVNAScreenCaptureForm
       FFFFFFFFFF4EA357499B51FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
     OnClick = RefreshImageBitBtnClick
   end
-  object ToggleSwitch1: TToggleSwitch
+  object RemoteToggleSwitch: TToggleSwitch
     Left = 213
-    Top = 12
-    Width = 73
-    Height = 24
+    Top = 14
+    Width = 76
+    Height = 20
     Cursor = crHandPoint
     Hint = 'Remote Display'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     FrameColor = clBtnFace
-    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     StateCaptions.CaptionOn = 'Yes'
     StateCaptions.CaptionOff = 'No'
-    SwitchHeight = 24
-    TabOrder = 5
+    TabOrder = 4
     ThumbColor = clNavy
     ThumbWidth = 20
-    OnClick = ToggleSwitch1Click
+    OnClick = RemoteToggleSwitchClick
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 40
+    Width = 320
+    Height = 240
+    Margins.Left = 0
+    Margins.Top = 0
+    Margins.Right = 0
+    Margins.Bottom = 0
+    Align = alBottom
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Caption = 'Panel1'
+    Color = clBackground
+    Ctl3D = False
+    UseDockManager = False
+    ParentBackground = False
+    ParentCtl3D = False
+    ShowCaption = False
+    TabOrder = 5
+    VerticalAlignment = taAlignBottom
+    DesignSize = (
+      320
+      240)
+    object ActualSizeImage: TImage
+      Left = 0
+      Top = 0
+      Width = 320
+      Height = 240
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Stretch = True
+      OnMouseDown = ActualSizeImageMouseDown
+      OnMouseLeave = ActualSizeImageMouseLeave
+      OnMouseMove = ActualSizeImageMouseMove
+      OnMouseUp = ActualSizeImageMouseUp
+    end
   end
   object SaveDialog1: TSaveDialog
     DefaultExt = 'bmp'

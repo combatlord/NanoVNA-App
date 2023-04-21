@@ -1,21 +1,26 @@
 object Form1: TForm1
   Left = 188
   Top = 132
+  Margins.Left = 0
+  Margins.Top = 0
+  Margins.Right = 0
+  Margins.Bottom = 0
   HorzScrollBar.Tracking = True
   HorzScrollBar.Visible = False
   VertScrollBar.Tracking = True
   VertScrollBar.Visible = False
   AlphaBlendValue = 128
+  Anchors = []
   Caption = 'Form1'
-  ClientHeight = 661
-  ClientWidth = 884
+  ClientHeight = 662
+  ClientWidth = 987
   Color = clBtnFace
   Constraints.MinHeight = 700
   Constraints.MinWidth = 900
   DoubleBuffered = True
-  Font.Charset = ANSI_CHARSET
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
@@ -30,23 +35,17 @@ object Form1: TForm1
   OnMouseWheel = FormMouseWheel
   OnShow = FormShow
   DesignSize = (
-    884
-    661)
+    987
+    662)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label12: TLabel
-    Left = 19
+    Left = 8
     Top = 307
-    Width = 76
-    Height = 13
+    Width = 93
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Time averaging '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object MemorySpeedButton1: TSpeedButton
     Left = 64
@@ -119,143 +118,83 @@ object Form1: TForm1
     OnMouseUp = MemorySpeedButtonMouseUp
   end
   object TDRWindowLabel2: TLabel
-    Left = 101
+    Left = 104
     Top = 376
-    Width = 14
-    Height = 13
+    Width = 16
+    Height = 16
     Caption = 'XX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object TDRWindowLabel1: TLabel
-    Left = 33
-    Top = 377
-    Width = 62
-    Height = 13
+    Left = 24
+    Top = 376
+    Width = 76
+    Height = 16
     Alignment = taRightJustify
     Caption = 'TDR window '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label3: TLabel
-    Left = 83
-    Top = 92
-    Width = 58
-    Height = 13
+    Left = 71
+    Top = 91
+    Width = 70
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Start (MHz) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label1: TLabel
-    Left = 74
-    Top = 140
-    Width = 67
-    Height = 13
+    Left = 61
+    Top = 139
+    Width = 80
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Center (MHz) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label2: TLabel
-    Left = 83
-    Top = 164
-    Width = 58
-    Height = 13
+    Left = 70
+    Top = 163
+    Width = 71
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Span (MHz) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label4: TLabel
-    Left = 85
-    Top = 116
-    Width = 56
-    Height = 13
+    Left = 73
+    Top = 115
+    Width = 68
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Stop (MHz) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label13: TLabel
-    Left = 90
-    Top = 188
-    Width = 51
-    Height = 13
+    Left = 79
+    Top = 187
+    Width = 62
+    Height = 16
     Alignment = taRightJustify
     Caption = 'CW (MHz) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object PointBandwidthLabel: TLabel
-    Left = 65
+    Left = 50
     Top = 236
-    Width = 76
-    Height = 13
+    Width = 91
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Point RBW (Hz) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object PointsPerSegmentLabel: TLabel
-    Left = 56
+    Left = 39
     Top = 211
-    Width = 85
-    Height = 13
+    Width = 102
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Number of points '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label33: TLabel
-    Left = 450
-    Top = 35
-    Width = 57
-    Height = 13
+    Left = 439
+    Top = 34
+    Width = 68
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Freq bands '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object SweepNameFontLabel: TLabel
     Left = 13
@@ -274,18 +213,12 @@ object Form1: TForm1
     Visible = False
   end
   object LCMatchingLabel: TLabel
-    Left = 565
-    Top = 35
-    Width = 61
-    Height = 13
+    Left = 553
+    Top = 34
+    Width = 74
+    Height = 16
     Alignment = taRightJustify
     Caption = 'LC matching '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object ScanOnceSpeedButton: TSpeedButton
     Left = 62
@@ -299,7 +232,7 @@ object Form1: TForm1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     Glyph.Data = {
       F6000000424DF600000000000000760000002800000010000000100000000100
@@ -316,75 +249,45 @@ object Form1: TForm1
     OnClick = ScanOnceSpeedButtonClick
   end
   object Label40: TLabel
-    Left = 13
-    Top = 331
-    Width = 82
-    Height = 13
+    Left = 17
+    Top = 330
+    Width = 83
+    Height = 16
     Alignment = taRightJustify
-    Caption = 'Trace smoothing '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
+    Caption = 'Trace smooth '
   end
   object CurveSmoothingLabel: TLabel
-    Left = 101
+    Left = 104
     Top = 330
-    Width = 21
-    Height = 13
+    Width = 24
+    Height = 16
     Caption = 'XXX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object OutputPowerLabel2: TLabel
-    Left = 101
+    Left = 105
     Top = 399
-    Width = 28
-    Height = 13
+    Width = 32
+    Height = 16
     Caption = 'XXXX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object OutputPowerLabel1: TLabel
-    Left = 25
-    Top = 400
-    Width = 70
-    Height = 13
+    Left = 20
+    Top = 399
+    Width = 82
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Output power '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object ConnectDisconnectSpeedButton: TSpeedButton
     Left = 8
     Top = 31
     Width = 101
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Connect/Disconnect to/from device'
     AllowAllUp = True
     GroupIndex = 5
     Caption = 'Disconnected'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     OnClick = ConnectDisconnectSpeedButtonClick
@@ -424,7 +327,7 @@ object Form1: TForm1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     Glyph.Data = {
       F6000000424DF600000000000000760000002800000010000000100000000100
@@ -453,7 +356,7 @@ object Form1: TForm1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     Glyph.Data = {
       F6000000424DF600000000000000760000002800000010000000100000000100
@@ -470,74 +373,44 @@ object Form1: TForm1
     OnClick = ScanSpeedButtonClick
   end
   object InfoPanelLabel2: TLabel
-    Left = 811
-    Top = 35
-    Width = 23
-    Height = 13
+    Left = 911
+    Top = 34
+    Width = 26
+    Height = 16
     Alignment = taRightJustify
     Anchors = [akTop, akRight]
     Caption = 'Info '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object EDelayLabel: TLabel
-    Left = 80
+    Left = 68
     Top = 259
-    Width = 61
-    Height = 13
+    Width = 73
+    Height = 16
     Alignment = taRightJustify
     Caption = 'e-delay (ps) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object S21OffsetLabel: TLabel
-    Left = 65
+    Left = 51
     Top = 283
-    Width = 76
-    Height = 13
+    Width = 90
+    Height = 16
     Alignment = taRightJustify
     Caption = 'S21 offset (dB) '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object Label5: TLabel
-    Left = 33
-    Top = 354
-    Width = 62
-    Height = 13
+    Left = 25
+    Top = 353
+    Width = 75
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Median filter '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object MedianFilterLabel: TLabel
-    Left = 101
+    Left = 104
     Top = 353
-    Width = 14
-    Height = 13
+    Width = 16
+    Height = 16
     Caption = 'XX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object MemorySpeedButton4: TSpeedButton
     Left = 184
@@ -582,51 +455,42 @@ object Form1: TForm1
     OnClick = EnableNormaliseSpeedButtonClick
   end
   object MovingAverageFilterLabel: TLabel
-    Left = 101
+    Left = 104
     Top = 307
-    Width = 14
-    Height = 13
+    Width = 16
+    Height = 16
     Caption = 'XX'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = [fsBold]
-    ParentFont = False
   end
   object Label18: TLabel
-    Left = 341
-    Top = 35
-    Width = 18
-    Height = 13
+    Left = 335
+    Top = 34
+    Width = 22
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Cal '
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
   end
   object CWModeSpeedButton: TSpeedButton
-    Left = 39
+    Left = 36
     Top = 184
     Width = 42
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'CW mode'
     AllowAllUp = True
     GroupIndex = 9
     Caption = 'CW'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
-    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     OnClick = CWModeSpeedButtonClick
+  end
+  object Label7: TLabel
+    Left = 808
+    Top = 34
+    Width = 47
+    Height = 16
+    Alignment = taRightJustify
+    Anchors = [akTop, akRight]
+    Caption = 'SD Card'
   end
   object TimeAverageLevelTrackBar: TTrackBar
     Left = 136
@@ -647,7 +511,7 @@ object Form1: TForm1
     OnChange = TimeAverageLevelTrackBarChange
   end
   object CloseBitBtn: TBitBtn
-    Left = 840
+    Left = 943
     Top = 4
     Width = 36
     Height = 21
@@ -704,7 +568,7 @@ object Form1: TForm1
     Left = 220
     Top = 4
     Width = 80
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Serial port baudrate - ignored in USB VCP mode'
     AutoDropDown = True
@@ -720,7 +584,7 @@ object Form1: TForm1
     Left = 8
     Top = 4
     Width = 208
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Device to connect too'
     AutoDropDown = True
@@ -736,14 +600,9 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 642
-    Width = 884
+    Top = 643
+    Width = 987
     Height = 19
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clBtnText
-    Font.Height = -11
-    Font.Name = 'Consolas'
-    Font.Style = []
     Panels = <
       item
         Alignment = taCenter
@@ -777,6 +636,7 @@ object Form1: TForm1
         Alignment = taCenter
         Width = 50
       end>
+    ParentFont = True
     ParentShowHint = False
     ShowHint = False
     UseSystemFont = False
@@ -784,10 +644,10 @@ object Form1: TForm1
     OnMouseDown = StatusBarMouseDown
   end
   object VelocityFactorComboBox: TComboBox
-    Left = 684
+    Left = 681
     Top = 4
-    Width = 131
-    Height = 21
+    Width = 241
+    Height = 24
     Cursor = crHandPoint
     Hint = ' TDR \n Velocity factor '
     AutoDropDown = True
@@ -801,10 +661,10 @@ object Form1: TForm1
     OnChange = VelocityFactorComboBoxChange
   end
   object VelocityFactorEdit: TEdit
-    Left = 821
+    Left = 928
     Top = 4
     Width = 55
-    Height = 21
+    Height = 24
     Alignment = taCenter
     Anchors = [akTop, akRight]
     ParentShowHint = False
@@ -836,7 +696,7 @@ object Form1: TForm1
     Left = 144
     Top = 184
     Width = 76
-    Height = 21
+    Height = 24
     Alignment = taCenter
     TabOrder = 24
     Text = '150'
@@ -848,7 +708,7 @@ object Form1: TForm1
     Left = 144
     Top = 112
     Width = 76
-    Height = 21
+    Height = 24
     Alignment = taCenter
     Ctl3D = True
     ParentCtl3D = False
@@ -862,7 +722,7 @@ object Form1: TForm1
     Left = 144
     Top = 160
     Width = 76
-    Height = 21
+    Height = 24
     Alignment = taCenter
     TabOrder = 23
     Text = '10'
@@ -874,7 +734,7 @@ object Form1: TForm1
     Left = 144
     Top = 136
     Width = 76
-    Height = 21
+    Height = 24
     Alignment = taCenter
     TabOrder = 22
     Text = '145'
@@ -886,7 +746,7 @@ object Form1: TForm1
     Left = 144
     Top = 88
     Width = 76
-    Height = 21
+    Height = 24
     Alignment = taCenter
     ParentShowHint = False
     ShowHint = True
@@ -899,7 +759,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 228
     Top = 57
-    Width = 653
+    Width = 756
     Height = 563
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelOuter = bvNone
@@ -912,7 +772,7 @@ object Form1: TForm1
     object GraphPaintBox: TPaintBox
       Left = 0
       Top = 0
-      Width = 358
+      Width = 326
       Height = 536
       Cursor = crArrow
       Hint = 'No hint'
@@ -921,7 +781,7 @@ object Form1: TForm1
       Font.Charset = ANSI_CHARSET
       Font.Color = clBlack
       Font.Height = -11
-      Font.Name = 'Consolas'
+      Font.Name = 'Tahoma'
       Font.Pitch = fpFixed
       Font.Style = []
       ParentColor = False
@@ -938,830 +798,37 @@ object Form1: TForm1
       OnMouseMove = GraphPaintBoxMouseMove
       OnMouseUp = GraphPaintBoxMouseUp
       OnPaint = GraphPaintBoxPaint
-      ExplicitLeft = 188
-      ExplicitWidth = 170
-      ExplicitHeight = 543
-    end
-    object InfoPanel: TPanel
-      Left = 358
-      Top = 0
-      Width = 295
-      Height = 536
-      Align = alRight
-      BevelOuter = bvLowered
-      Caption = 'InfoPanel'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentColor = True
-      ParentFont = False
-      TabOrder = 0
-      VerticalAlignment = taAlignTop
-      object Label14: TLabel
-        Left = 69
-        Top = 25
-        Width = 60
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'Frequency '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label16: TLabel
-        Left = 45
-        Top = 87
-        Width = 84
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Real Imag '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label23: TLabel
-        Left = 51
-        Top = 104
-        Width = 78
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Series R '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label19: TLabel
-        Left = 51
-        Top = 121
-        Width = 78
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Series X '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label22: TLabel
-        Left = 51
-        Top = 138
-        Width = 78
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Series L '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label25: TLabel
-        Left = 51
-        Top = 155
-        Width = 78
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Series C '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label27: TLabel
-        Left = 39
-        Top = 172
-        Width = 90
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Parallel R '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label29: TLabel
-        Left = 39
-        Top = 189
-        Width = 90
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Parallel X '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label35: TLabel
-        Left = 39
-        Top = 206
-        Width = 90
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Parallel L '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label31: TLabel
-        Left = 39
-        Top = 223
-        Width = 90
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Parallel C '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label20: TLabel
-        Left = 45
-        Top = 420
-        Width = 84
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S21 Real Imag '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label53: TLabel
-        Left = 45
-        Top = 437
-        Width = 84
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S21 Magnitude '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label51: TLabel
-        Left = 75
-        Top = 454
-        Width = 54
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S21 Gain '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object MarkerS21GainLabel: TLabel
-        Left = 136
-        Top = 454
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS21Label: TLabel
-        Left = 136
-        Top = 437
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS21RealImagLabel: TLabel
-        Left = 136
-        Top = 420
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11ParallelCLabel: TLabel
-        Left = 136
-        Top = 223
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11ParallelLLabel: TLabel
-        Left = 136
-        Top = 206
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11ParallelXLabel: TLabel
-        Left = 136
-        Top = 189
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11ParallelRLabel: TLabel
-        Left = 136
-        Top = 172
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11SeriesCLabel: TLabel
-        Left = 136
-        Top = 155
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11SeriesLLabel: TLabel
-        Left = 136
-        Top = 138
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11SeriesXLabel: TLabel
-        Left = 136
-        Top = 121
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11SeriesRLabel: TLabel
-        Left = 136
-        Top = 104
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11RealImagLabel: TLabel
-        Left = 136
-        Top = 87
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerFrequencyLabel: TLabel
-        Left = 136
-        Top = 25
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label37: TLabel
-        Left = 33
-        Top = 240
-        Width = 96
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Return Loss '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label39: TLabel
-        Left = 45
-        Top = 257
-        Width = 84
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Magnitude '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label47: TLabel
-        Left = 81
-        Top = 291
-        Width = 48
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 |Z| '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label41: TLabel
-        Left = 15
-        Top = 274
-        Width = 114
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Quality Factor '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label43: TLabel
-        Left = 69
-        Top = 308
-        Width = 60
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Phase '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label46: TLabel
-        Left = 69
-        Top = 325
-        Width = 60
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Polar '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label49: TLabel
-        Left = 33
-        Top = 342
-        Width = 96
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Group Delay '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label34: TLabel
-        Left = 75
-        Top = 359
-        Width = 54
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 VSWR '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label15: TLabel
-        Left = 45
-        Top = 376
-        Width = 84
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Impedance '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object MarkerS11AdmittanceLabel1: TLabel
-        Left = 39
-        Top = 393
-        Width = 90
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S11 Admittance '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label59: TLabel
-        Left = 69
-        Top = 471
-        Width = 60
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S21 Phase '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label55: TLabel
-        Left = 69
-        Top = 488
-        Width = 60
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S21 Polar '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label58: TLabel
-        Left = 33
-        Top = 505
-        Width = 96
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'S21 Group Delay '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object MarkerS21GroupDelayLabel: TLabel
-        Left = 136
-        Top = 505
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS21PolarLabel: TLabel
-        Left = 136
-        Top = 488
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS21PhaseLabel: TLabel
-        Left = 136
-        Top = 471
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11ImpedanceLabel: TLabel
-        Left = 136
-        Top = 376
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11AdmittanceLabel2: TLabel
-        Left = 136
-        Top = 393
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11GroupDelayLabel: TLabel
-        Left = 136
-        Top = 342
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11PolarLabel: TLabel
-        Left = 136
-        Top = 325
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11PhaseLabel: TLabel
-        Left = 136
-        Top = 308
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11ZLabel: TLabel
-        Left = 136
-        Top = 291
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11QualityFactorLabel: TLabel
-        Left = 136
-        Top = 274
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11Label: TLabel
-        Left = 136
-        Top = 257
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11ReturnLossLabel: TLabel
-        Left = 136
-        Top = 240
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object MarkerS11VSWRLabel: TLabel
-        Left = 136
-        Top = 359
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Bevel1: TBevel
-        Left = 24
-        Top = 79
-        Width = 245
-        Height = 5
-        Shape = bsTopLine
-        Visible = False
-      end
-      object Bevel2: TBevel
-        Left = 28
-        Top = 413
-        Width = 245
-        Height = 5
-        Shape = bsTopLine
-        Visible = False
-      end
-      object Bevel3: TBevel
-        Left = 28
-        Top = 526
-        Width = 245
-        Height = 5
-        Shape = bsTopLine
-        Visible = False
-      end
-      object Label6: TLabel
-        Left = 63
-        Top = 42
-        Width = 66
-        Height = 13
-        Alignment = taRightJustify
-        Caption = 'Wavelength '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object MarkerWavelengthLabel1: TLabel
-        Left = 136
-        Top = 42
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label8: TLabel
-        Left = 39
-        Top = 59
-        Width = 90
-        Height = 13
-        Alignment = taRightJustify
-        Caption = '1/4 Wavelength '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clNavy
-        Font.Height = -11
-        Font.Name = 'Consolas'
-        Font.Style = []
-        ParentFont = False
-      end
-      object MarkerWavelengthLabel2: TLabel
-        Left = 136
-        Top = 59
-        Width = 61
-        Height = 13
-        Caption = 'xxxxxxxxxx'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
+      ExplicitLeft = 387
+      ExplicitWidth = 46
     end
     object Panel2: TPanel
       Left = 0
       Top = 536
-      Width = 653
+      Width = 756
       Height = 27
       Margins.Left = 0
+      Margins.Top = 0
       Margins.Right = 0
+      Margins.Bottom = 0
       Align = alBottom
       BevelOuter = bvNone
       Caption = 'Panel2'
       ParentColor = True
       ShowCaption = False
-      TabOrder = 1
+      TabOrder = 0
       object HistoryTrackBar: TTrackBar
-        Left = 46
+        Left = 41
         Top = 0
-        Width = 607
+        Width = 715
         Height = 27
         Cursor = crHandPoint
         Hint = 'History position'
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
         Align = alRight
-        Anchors = [akLeft, akTop, akRight, akBottom]
+        Anchors = [akLeft, akRight]
         Max = 0
         Min = -1023
         ParentShowHint = False
@@ -1777,8 +844,8 @@ object Form1: TForm1
         OnChange = HistoryTrackBarChange
       end
       object BitBtn1: TBitBtn
-        Left = 0
-        Top = 1
+        Left = 4
+        Top = 2
         Width = 31
         Height = 25
         Cursor = crHandPoint
@@ -1807,7 +874,7 @@ object Form1: TForm1
     object GLPanel: TPanel
       Left = 0
       Top = 0
-      Width = 358
+      Width = 326
       Height = 536
       Align = alClient
       BevelOuter = bvLowered
@@ -1816,14 +883,14 @@ object Form1: TForm1
       FullRepaint = False
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Consolas'
+      Font.Height = -13
+      Font.Name = 'Tahoma'
       Font.Style = []
       ParentBackground = False
       ParentFont = False
       PopupMenu = GraphPopupMenu
       ShowCaption = False
-      TabOrder = 2
+      TabOrder = 1
       Visible = False
       StyleElements = []
       OnDblClick = GLPanelDblClick
@@ -1836,20 +903,109 @@ object Form1: TForm1
       OnMouseUp = GLPanelMouseUp
       OnResize = GLPanelResize
     end
+    object SDPanel: TPanel
+      Left = 326
+      Top = 0
+      Width = 200
+      Height = 536
+      Align = alRight
+      AutoSize = True
+      BevelOuter = bvLowered
+      Caption = 'SDPanel'
+      DragMode = dmAutomatic
+      TabOrder = 2
+      Visible = False
+      object file_list: TListBox
+        Left = 1
+        Top = 33
+        Width = 198
+        Height = 502
+        Align = alBottom
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        PopupMenu = FilePopupMenu
+        TabOrder = 0
+        OnDblClick = file_listDblClick
+        OnKeyPress = file_listKeyPress
+      end
+      object sd_pattern: TComboBox
+        Left = 6
+        Top = 5
+        Width = 115
+        Height = 24
+        AutoComplete = False
+        ItemIndex = 0
+        TabOrder = 1
+        Text = '*.*'
+        OnKeyPress = sd_patternKeyPress
+        OnSelect = sd_patternSelect
+        Items.Strings = (
+          '*.*'
+          '*.bmp'
+          '*.s1p'
+          '*.s2p'
+          '*.bin'
+          '*.cal'
+          '*.cmd')
+      end
+      object SD_list_update: TButton
+        Left = 127
+        Top = 5
+        Width = 69
+        Height = 24
+        Caption = 'Update'
+        TabOrder = 2
+        OnClick = SD_list_updateClick
+      end
+    end
+    object InfoPanel: TPanel
+      Left = 526
+      Top = 0
+      Width = 230
+      Height = 536
+      Align = alRight
+      AutoSize = True
+      BevelOuter = bvLowered
+      Caption = 'InfoPanel'
+      ParentColor = True
+      TabOrder = 3
+      VerticalAlignment = taAlignTop
+      object InfoStringGrid: TStringGrid
+        Left = 1
+        Top = 19
+        Width = 228
+        Height = 516
+        Margins.Left = 1
+        Margins.Right = 1
+        Align = alBottom
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        BevelInner = bvNone
+        BevelOuter = bvRaised
+        BorderStyle = bsNone
+        Color = clBtnFace
+        ColCount = 2
+        Ctl3D = True
+        DefaultColWidth = 112
+        DefaultColAlignment = taRightJustify
+        DefaultRowHeight = 18
+        DrawingStyle = gdsClassic
+        RowCount = 60
+        FixedRows = 0
+        Options = [goEditing]
+        ParentCtl3D = False
+        ParentShowHint = False
+        ScrollBars = ssNone
+        ShowHint = False
+        TabOrder = 0
+      end
+    end
   end
   object FreqBandEnableToggleSwitch: TToggleSwitch
     Left = 507
-    Top = 31
+    Top = 33
     Width = 40
     Height = 20
     Cursor = crHandPoint
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     FrameColor = clBtnFace
-    ParentFont = False
     ShowStateCaption = False
     State = tssOn
     SwitchWidth = 40
@@ -1859,10 +1015,10 @@ object Form1: TForm1
     OnClick = FreqBandEnableToggleSwitchClick
   end
   object SweepNameEdit: TEdit
-    Left = 684
+    Left = 675
     Top = 31
-    Width = 117
-    Height = 21
+    Width = 127
+    Height = 24
     Hint = 'Sweep name - added to top of saved image'
     Anchors = [akLeft, akTop, akRight]
     ParentShowHint = False
@@ -1875,7 +1031,7 @@ object Form1: TForm1
     Left = 144
     Top = 208
     Width = 76
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     AutoDropDown = True
     AutoCloseUp = True
@@ -1890,7 +1046,7 @@ object Form1: TForm1
     Left = 144
     Top = 232
     Width = 76
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     AutoDropDown = True
     AutoCloseUp = True
@@ -1903,8 +1059,8 @@ object Form1: TForm1
     OnKeyDown = PointBandwidthHzComboBoxKeyDown
   end
   object LCMatchingToggleSwitch: TToggleSwitch
-    Left = 630
-    Top = 31
+    Left = 629
+    Top = 33
     Width = 40
     Height = 20
     Cursor = crHandPoint
@@ -1960,63 +1116,21 @@ object Form1: TForm1
     DesignSize = (
       213
       84)
-    object MarkerListView: TListView
-      Left = 8
-      Top = 36
-      Width = 198
-      Height = 39
-      Cursor = crHandPoint
-      Anchors = [akLeft, akTop, akRight, akBottom]
-      Columns = <
-        item
-          MaxWidth = 1
-          MinWidth = 1
-          Width = 1
-        end
-        item
-          Alignment = taCenter
-          Caption = 'No.'
-          MaxWidth = 40
-          MinWidth = 40
-          Width = 40
-        end
-        item
-          Caption = 'Frequency'
-          MaxWidth = 100
-          MinWidth = 100
-          Width = 100
-        end>
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Consolas'
-      Font.Style = []
-      GridLines = True
-      OwnerData = True
-      ReadOnly = True
-      RowSelect = True
-      ParentFont = False
-      ShowColumnHeaders = False
-      TabOrder = 3
-      ViewStyle = vsReport
-      Visible = False
-      OnChange = MarkerListViewChange
-      OnData = MarkerListViewData
-      OnKeyDown = MarkerListViewKeyDown
-    end
     object MarkerListBox: TListBox
-      Left = 8
+      Left = 1
       Top = 42
-      Width = 198
-      Height = 34
+      Width = 211
+      Height = 41
       Cursor = crHandPoint
+      Margins.Left = 1
+      Margins.Right = 1
+      Align = alBottom
       Anchors = [akLeft, akTop, akRight, akBottom]
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Consolas'
+      Font.Height = -13
+      Font.Name = 'Tahoma'
       Font.Style = []
-      ItemHeight = 13
       ParentFont = False
       PopupMenu = MarkersListBoxPopupMenu
       TabOrder = 2
@@ -2027,7 +1141,7 @@ object Form1: TForm1
     end
     object ShowMarkersOnGraphToggleSwitch: TToggleSwitch
       Left = 8
-      Top = 16
+      Top = 18
       Width = 40
       Height = 20
       Cursor = crHandPoint
@@ -2050,7 +1164,7 @@ object Form1: TForm1
     end
     object ShowMarkerTextToggleSwitch: TToggleSwitch
       Left = 54
-      Top = 16
+      Top = 18
       Width = 40
       Height = 20
       Cursor = crHandPoint
@@ -2074,7 +1188,7 @@ object Form1: TForm1
     end
     object DeleteFrequencyMarkersBitBtn: TBitBtn
       Left = 175
-      Top = 12
+      Top = 14
       Width = 31
       Height = 24
       Cursor = crHandPoint
@@ -2097,7 +1211,7 @@ object Form1: TForm1
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 3
       OnClick = DeleteFrequencyMarkersBitBtnClick
     end
   end
@@ -2156,7 +1270,7 @@ object Form1: TForm1
     Left = 631
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'New graph'
     Glyph.Data = {
@@ -2182,7 +1296,7 @@ object Form1: TForm1
     Left = 355
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Upload VNA firmware'
     Glyph.Data = {
@@ -2207,7 +1321,7 @@ object Form1: TForm1
     Left = 309
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Settings'
     Glyph.Data = {
@@ -2262,7 +1376,7 @@ object Form1: TForm1
     Left = 401
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'VNA battery voltage'
     Glyph.Data = {
@@ -2317,7 +1431,7 @@ object Form1: TForm1
     Left = 447
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Capture VNA screen image'
     Glyph.Data = {
@@ -2372,7 +1486,7 @@ object Form1: TForm1
     Left = 493
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'VNA comms'
     Glyph.Data = {
@@ -2427,7 +1541,7 @@ object Form1: TForm1
     Left = 539
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'VNA usart comms'
     Glyph.Data = {
@@ -2482,7 +1596,7 @@ object Form1: TForm1
     Left = 585
     Top = 4
     Width = 44
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Calibration'
     Glyph.Data = {
@@ -2534,8 +1648,8 @@ object Form1: TForm1
     OnClick = CalibrationBitBtnClick
   end
   object InfoPanelToggleSwitch: TToggleSwitch
-    Left = 836
-    Top = 31
+    Left = 939
+    Top = 33
     Width = 40
     Height = 20
     Cursor = crHandPoint
@@ -2577,7 +1691,7 @@ object Form1: TForm1
     Left = 144
     Top = 256
     Width = 76
-    Height = 21
+    Height = 24
     Alignment = taCenter
     TabOrder = 27
     Text = '0'
@@ -2588,7 +1702,7 @@ object Form1: TForm1
     Left = 144
     Top = 280
     Width = 76
-    Height = 21
+    Height = 24
     Alignment = taCenter
     TabOrder = 28
     Text = '0'
@@ -2599,7 +1713,7 @@ object Form1: TForm1
     Left = 112
     Top = 31
     Width = 153
-    Height = 21
+    Height = 24
     Hint = 'TCP IP address'
     Alignment = taCenter
     Ctl3D = True
@@ -2613,7 +1727,7 @@ object Form1: TForm1
     Left = 268
     Top = 31
     Width = 61
-    Height = 21
+    Height = 24
     Hint = 'TCP IP port'
     Alignment = taCenter
     Ctl3D = True
@@ -2891,14 +2005,9 @@ object Form1: TForm1
   end
   object StatusBar2: TStatusBar
     Left = 0
-    Top = 623
-    Width = 884
+    Top = 624
+    Width = 987
     Height = 19
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clBtnText
-    Font.Height = -11
-    Font.Name = 'Consolas'
-    Font.Style = []
     Panels = <
       item
         Alignment = taCenter
@@ -2929,6 +2038,7 @@ object Form1: TForm1
         Alignment = taCenter
         Width = 50
       end>
+    ParentFont = True
     ParentShowHint = False
     ShowHint = False
     SizeGrip = False
@@ -2940,7 +2050,7 @@ object Form1: TForm1
     Left = 363
     Top = 31
     Width = 70
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 
       'Select the desired calibration you want - None, the VNA'#39's own or' +
@@ -2955,6 +2065,30 @@ object Form1: TForm1
     ShowHint = True
     TabOrder = 47
     OnChange = CalibrationSelectComboBoxChange
+  end
+  object SDPanelToggleSwitch: TToggleSwitch
+    Left = 861
+    Top = 33
+    Width = 40
+    Height = 20
+    Cursor = crHandPoint
+    Hint = 'SD Card access'
+    Anchors = [akTop, akRight]
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    FrameColor = clBtnFace
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    ShowStateCaption = False
+    SwitchWidth = 40
+    TabOrder = 48
+    ThumbColor = clNavy
+    ThumbWidth = 20
+    OnClick = InfoPanelToggleSDClick
   end
   object GraphPopupMenu: TPopupMenu
     AutoHotkeys = maManual
@@ -4511,6 +3645,29 @@ object Form1: TForm1
     end
     object Cancel3: TMenuItem
       Caption = 'Cancel'
+    end
+  end
+  object FilePopupMenu: TPopupMenu
+    OnPopup = FilePopupMenuPopup
+    Left = 476
+    Top = 329
+    object Showimage: TMenuItem
+      Caption = 'Show image'
+    end
+    object LoadM1: TMenuItem
+      Caption = 'Load to slot 1'
+    end
+    object LoadM2: TMenuItem
+      Caption = 'Load to slot 2'
+    end
+    object LoadM3: TMenuItem
+      Caption = 'Load to slot 3'
+    end
+    object LoadM4: TMenuItem
+      Caption = 'Load to slot 4'
+    end
+    object Savetodisk: TMenuItem
+      Caption = 'Save to disk'
     end
   end
 end

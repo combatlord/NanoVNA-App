@@ -5,14 +5,14 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
   BorderStyle = bsSizeToolWin
   Caption = 'VNA USART comms'
   ClientHeight = 382
-  ClientWidth = 516
+  ClientWidth = 529
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 532
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Height = -13
+  Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -25,60 +25,42 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
   OnMouseEnter = FormMouseEnter
   OnShow = FormShow
   DesignSize = (
-    516
+    529
     382)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label1: TLabel
-    Left = 19
-    Top = 332
-    Width = 74
-    Height = 13
+    Left = 12
+    Top = 331
+    Width = 90
+    Height = 16
     Alignment = taRightJustify
     Anchors = [akLeft, akBottom]
     Caption = 'User command '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object Label2: TLabel
-    Left = 14
-    Top = 359
-    Width = 79
-    Height = 13
+    Left = 6
+    Top = 357
+    Width = 96
+    Height = 16
     Alignment = taRightJustify
     Anchors = [akLeft, akBottom]
     Caption = 'User commands '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object Label3: TLabel
-    Left = 374
-    Top = 332
-    Width = 63
-    Height = 13
+    Left = 370
+    Top = 331
+    Width = 82
+    Height = 16
     Alignment = taRightJustify
     Anchors = [akRight, akBottom]
     Caption = 'Timeout (ms) '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object CloseButton: TButton
-    Left = 433
-    Top = 8
+    Left = 446
+    Top = 5
     Width = 75
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Close'
@@ -92,10 +74,10 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
     OnClick = CloseButtonClick
   end
   object SaveButton: TButton
-    Left = 352
-    Top = 8
+    Left = 365
+    Top = 5
     Width = 75
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Save'
@@ -109,10 +91,10 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
     OnClick = SaveButtonClick
   end
   object ClearButton: TButton
-    Left = 271
-    Top = 8
+    Left = 284
+    Top = 5
     Width = 75
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Clear'
@@ -127,8 +109,8 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
   end
   object Memo1: TMemo
     Left = 6
-    Top = 35
-    Width = 502
+    Top = 34
+    Width = 515
     Height = 287
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = ANSI_CHARSET
@@ -144,12 +126,13 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
     ScrollBars = ssBoth
     TabOrder = 5
     WordWrap = False
+    ExplicitWidth = 502
   end
   object CommandEdit: TEdit
-    Left = 95
+    Left = 105
     Top = 328
-    Width = 274
-    Height = 21
+    Width = 259
+    Height = 24
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 6
     OnChange = CommandEditChange
@@ -159,9 +142,9 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
   end
   object VNAUsartBaudrateComboBox: TComboBox
     Left = 105
-    Top = 8
+    Top = 5
     Width = 89
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'VNA usart port baudrate'
     Style = csDropDownList
@@ -172,10 +155,10 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
     OnChange = VNAUsartBaudrateComboBoxChange
   end
   object ScrollToggleSwitch: TToggleSwitch
-    Left = 16
-    Top = 8
-    Width = 72
-    Height = 20
+    Left = 17
+    Top = 7
+    Width = 78
+    Height = 22
     FrameColor = clBtnFace
     StateCaptions.CaptionOn = 'Hold'
     StateCaptions.CaptionOff = 'Scroll'
@@ -185,10 +168,10 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
     ThumbWidth = 20
   end
   object GridPanel1: TGridPanel
-    Left = 95
+    Left = 105
     Top = 353
-    Width = 413
-    Height = 25
+    Width = 416
+    Height = 24
     Anchors = [akLeft, akRight, akBottom]
     BevelOuter = bvNone
     Caption = 'V'
@@ -234,8 +217,8 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
     object CommandsButton1: TButton
       Left = 0
       Top = 0
-      Width = 103
-      Height = 25
+      Width = 104
+      Height = 24
       Cursor = crHandPoint
       Align = alClient
       Caption = 'Commands 1'
@@ -248,12 +231,14 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
       TabOrder = 0
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitWidth = 103
+      ExplicitHeight = 25
     end
     object CommandsButton2: TButton
-      Left = 103
+      Left = 104
       Top = 0
-      Width = 103
-      Height = 25
+      Width = 104
+      Height = 24
       Cursor = crHandPoint
       Align = alClient
       Caption = 'Commands 2'
@@ -266,12 +251,14 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
       TabOrder = 1
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitLeft = 103
+      ExplicitHeight = 25
     end
     object CommandsButton3: TButton
-      Left = 206
+      Left = 208
       Top = 0
-      Width = 103
-      Height = 25
+      Width = 104
+      Height = 24
       Cursor = crHandPoint
       Align = alClient
       Caption = 'Commands 3'
@@ -284,12 +271,15 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
       TabOrder = 2
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitLeft = 207
+      ExplicitWidth = 103
+      ExplicitHeight = 25
     end
     object CommandsButton4: TButton
-      Left = 309
+      Left = 312
       Top = 0
       Width = 104
-      Height = 25
+      Height = 24
       Cursor = crHandPoint
       Align = alClient
       Caption = 'Commands 4'
@@ -302,13 +292,16 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
       TabOrder = 3
       OnClick = CommandsButtonClick
       OnDropDownClick = CommandsButtonDropDownClick
+      ExplicitLeft = 310
+      ExplicitWidth = 103
+      ExplicitHeight = 25
     end
   end
   object CommandEndsComboBox: TComboBox
     Left = 206
-    Top = 8
-    Width = 56
-    Height = 21
+    Top = 5
+    Width = 59
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Command line ends'
     Style = csDropDownList
@@ -327,15 +320,16 @@ object VNAUsartCommsForm: TVNAUsartCommsForm
       'CR')
   end
   object TimeoutEdit: TEdit
-    Left = 440
+    Left = 453
     Top = 328
     Width = 68
-    Height = 21
+    Height = 24
     Anchors = [akRight, akBottom]
     NumbersOnly = True
     TabOrder = 9
     Text = '200'
     OnChange = TimeoutEditChange
+    ExplicitLeft = 440
   end
   object SaveDialog1: TSaveDialog
     DefaultExt = 'txt'

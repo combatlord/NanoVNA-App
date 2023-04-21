@@ -12,8 +12,8 @@ object UploadFirmwareV2Form: TUploadFirmwareV2Form
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  Font.Height = -13
+  Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -29,41 +29,36 @@ object UploadFirmwareV2Form: TUploadFirmwareV2Form
     682
     345)
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Label3: TLabel
-    Left = 18
-    Top = 8
-    Width = 82
-    Height = 13
+    Left = 4
+    Top = 7
+    Width = 102
+    Height = 16
     Alignment = taRightJustify
     Caption = 'Upload Firmware '
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clNavy
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
   end
   object CGauge1: TCGauge
-    Left = 140
+    Left = 144
     Top = 4
     Width = 287
-    Height = 21
+    Height = 24
     Anchors = [akLeft, akTop, akRight]
     ForeColor = clFuchsia
     MaxValue = 500
     Progress = 100
   end
   object Memo1: TMemo
-    Left = 8
-    Top = 31
-    Width = 666
-    Height = 307
+    Left = 0
+    Top = 34
+    Width = 682
+    Height = 311
+    Align = alBottom
     Anchors = [akLeft, akTop, akRight, akBottom]
     DoubleBuffered = True
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -12
+    Font.Height = -13
     Font.Name = 'Consolas'
     Font.Style = []
     Lines.Strings = (
@@ -74,12 +69,13 @@ object UploadFirmwareV2Form: TUploadFirmwareV2Form
     ScrollBars = ssBoth
     TabOrder = 2
     WordWrap = False
+    ExplicitLeft = 4
   end
   object ClearMemoButton: TButton
-    Left = 536
+    Left = 540
     Top = 4
     Width = 96
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Clear'
@@ -93,17 +89,12 @@ object UploadFirmwareV2Form: TUploadFirmwareV2Form
     OnClick = ClearMemoButtonClick
   end
   object OpenFileBitBtn: TBitBtn
-    Left = 103
+    Left = 107
     Top = 4
     Width = 31
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Hint = 'Select Firmware File to Upload'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
     Glyph.Data = {
       76010000424D7601000000000000760000002800000020000000100000000100
       04000000000000010000120B0000120B00001000000000000000000000000000
@@ -118,17 +109,16 @@ object UploadFirmwareV2Form: TUploadFirmwareV2Form
       55555575FFF75555555555700007555555555557777555555555555555555555
       5555555555555555555555555555555555555555555555555555}
     NumGlyphs = 2
-    ParentFont = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
     OnClick = OpenFileBitBtnClick
   end
   object LeaveDFUButton: TButton
-    Left = 433
+    Left = 437
     Top = 4
     Width = 97
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Reboot VNA'
@@ -144,10 +134,10 @@ object UploadFirmwareV2Form: TUploadFirmwareV2Form
     OnClick = LeaveDFUButtonClick
   end
   object CloseBitBtn: TBitBtn
-    Left = 638
+    Left = 642
     Top = 4
     Width = 36
-    Height = 21
+    Height = 24
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Glyph.Data = {

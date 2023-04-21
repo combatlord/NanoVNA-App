@@ -54,6 +54,7 @@ private:
 
 	int m_line_width;
 	int m_line_alpha;
+	bool m_line_antialiasing;
 
 	int m_border_width;
 
@@ -71,6 +72,7 @@ private:
 	t_graph_arrange m_graph_arrangement;
 
 	bool m_info_panel;
+	bool m_sd_panel;
 
 	struct
 	{
@@ -204,6 +206,7 @@ public:
 	__property bool autoScalePeakHold      = {read = m_auto_scale_peak_hold, write = m_auto_scale_peak_hold};
 
 	__property bool smithBothScales = {read = m_smith_both_scales, write = m_smith_both_scales};
+	__property bool linesAntialiasing = {read = m_line_antialiasing, write = m_line_antialiasing};
 
 	__property float s21OffsetdB           = {read = m_s21_offset_dB, write = m_s21_offset_dB};
 	__property double eDelaySecs           = {read = m_edelay_secs, write = m_edelay_secs};
@@ -219,6 +222,7 @@ public:
 	__property float velocityFactor        = {read = m_velocity_factor.value, write = m_velocity_factor.value};
 	__property String velocityFactorName   = {read = m_velocity_factor.name, write = m_velocity_factor.name};
 	__property bool infoPanel              = {read = m_info_panel, write = m_info_panel};
+	__property bool SDPanel                = {read = m_sd_panel, write = m_sd_panel};
 
 	__property String serialPortName       = {read = m_serial_port.name, write = m_serial_port.name};
 	__property int serialPortBaudrate      = {read = m_serial_port.baudrate, write = m_serial_port.baudrate};

@@ -98,10 +98,10 @@ class CCommon
 		String __fastcall localiseDecimalPoint(String s);
 
 		int __fastcall parseString(String s, String separator, std::vector <String> &params);
+		int sprintf(char *s, const char *format, ...);
 
-		String __fastcall freqToStrMHz(double Hz);
+		String __fastcall freqToStrMHz(int64_t Hz);
 		String __fastcall freqToStr1(double Hz, bool trim_trailing_zero, bool space_units, int fraction_size, bool show_sign);
-		String __fastcall freqToStr2(int64_t Hz, const int left_padding);
 
 		String __fastcall secsToStr(double time, bool trim_trailing_zero = true);
 
@@ -138,6 +138,7 @@ class CCommon
 
 		String __fastcall valueToStr(double value, const bool space_units, const bool trim_trailing_zeros, String fmt = "", const bool decimal_units = false);
 
+		String __fastcall parceSxPFile(String filename, int num_chans, std::vector <t_data_point> &s_params, std::vector <String> &lines);
 		String __fastcall loadSParams(std::vector <t_data_point> &s_params, String filename = "");
 		bool __fastcall saveSParams(std::vector <t_data_point> &points, int num_chans, String filename = "");
 

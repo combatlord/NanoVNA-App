@@ -5,11 +5,19 @@
 #include "types.h"
 #include "HighResolutionTick.h"
 
+enum {
+	SD_FILE_BITMAP,
+	SD_FILE_S1P,
+	SD_FILE_S2P
+};
+
 class CNanoVNA1Comms
 {
 	private:
 		t_mode m_mode;		// current mode of operation .. idle mode, initialisation mode, scanning/sweeping mode etc
-
+		int sd_read_mode;
+		int sd_read_slot;
+		String sd_read_filename;
 		bool __fastcall processRxLine();
 		void __fastcall processRxBlock();
 
@@ -51,6 +59,7 @@ class CNanoVNA1Comms
 			int w;
 			int h;
 		} m_region;
+		uint32_t sd_filesize;
 
 		String __fastcall getSerialStateString(t_serial_state state);
 
@@ -64,6 +73,7 @@ class CNanoVNA1Comms
 		void __fastcall addSerialTxCommand(String s, const int command_ends = 0);
 		void __fastcall sendOutputPowerCommand(int power);
 		void __fastcall sendBandwidthCommand();
+		void __fastcall sd_read(String filename, int read_mode);
 
 		void __fastcall sendTxCommand();
 		void __fastcall processTxCommands();

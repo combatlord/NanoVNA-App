@@ -50,8 +50,8 @@ const int NUM_POINTS_DEFAULT[]   = {51, 101, 201, 401, 801, 1024, 1601, 3201, 45
 const int NUM_POINTS_V1[]        = {51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601};
 //const int NUM_POINTS_V2[]      = {11, 21, 51, 101, 201, 401, 801, 1024, 1601, 3201, 6401, 12801, 25601};
 const int NUM_POINTS_V2[]        = {11, 21, 51, 101, 201, 401, 801, 1024};	// the V2 does not handle segments very well - they half it's scan speed
-const int NUM_POINTS_V2LITE[]    = {101, 201, 401, 801, 1001, 3201, 6401, 12801, 25601 };	//
-const int NUM_POINTS_V2PLUS4[]   = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601};
+const int NUM_POINTS_V2LITE[]    = {101, 201, 401, 801, 1001, 3201, 6401, 12801, 25601, 65535 };	//
+const int NUM_POINTS_V2PLUS4[]   = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 6401, 12801, 25601, 65535};
 const int NUM_POINTS_JANVNA_V2[] = {11, 21, 51, 101, 201, 401, 801, 1601, 3201, 4501};
 const int NUM_POINTS_TINYSA[]    = {51, 101, 145, 290, 500, 750, 1000, 2000, 5000};
 
@@ -756,6 +756,9 @@ void __fastcall TForm1::FormCreate(TObject *Sender)
 	InfoPanelToggleSwitch->State = settings.infoPanel ? tssOn : tssOff;
 	InfoPanel->Visible = settings.infoPanel;
 	updateInfoPanel();
+
+	SDPanelToggleSwitch->State = settings.SDPanel ? tssOn : tssOff;
+	SDPanel->Visible = settings.SDPanel;
 
 	// move to the saved position
 	this->Top    = settings.mainWindowPos.top;
@@ -1699,7 +1702,7 @@ void __fastcall TForm1::createGraphTypeMenus()
 				case 15: graph_type = GRAPH_TYPE_REAL_IMAG_S11;          s = "S-Parameters S11";          break;
 				case 16: graph_type = GRAPH_TYPE_REAL_IMAG_S21;          s = "S-Parameters S21";          break;
 				case 17: graph_type = GRAPH_TYPE_VSWR_S11;               s = "VSWR S11";                  break;
-				case 18: graph_type = GRAPH_TYPE_IMPEDANCE_S11;          s = "Impedance S11";             break;
+				case 18: graph_type = GRAPH_TYPE_IMPEDANCE_S11;          s = "|Z| S11";                   break;
 				case 19: graph_type = GRAPH_TYPE_SERIES_RJX_S11;         s = "Series R+jX S11";           break;
 				case 20: graph_type = GRAPH_TYPE_PARALLEL_RJX_S11;       s = "Parallel R+jX S11";         break;
 				case 21: graph_type = GRAPH_TYPE_SERIES_RESISTANCE_S11;  s = "Series resistance S11";     break;
@@ -2026,385 +2029,179 @@ bool __fastcall TForm1::updateInfoPanel2(const int graph)
 		const int size = data_unit.freqArraySize(mem);
 		if (size < 4)
 			return false;
+		const complexf c(re, im);
+		const complexf c0 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s11;
 
-		if (index >= 0 && index < size)
-		{  // mouse is over a graph line
+		const float ref_impedance = 50.0f;
+		const int m                 = (index == 0) ? 0 : index - 1;
+		const int n                 = (index >= (size - 1)) ? size - 1 : index + 1;
+		const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
 
-			const complexf c(re, im);
+		const float return_loss       = data_unit.logmag(c0);
+		const float vswr              = data_unit.swr(c0);
+		const float s11_mag           = data_unit.linear(c0);
+		const float s11_phase         = data_unit.phase(c0);
 
-			const float ref_impedance = 50;
-			const complexf c0 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s11;
-			const complexf c1 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s21;
+		const float quality_factor    = data_unit.qualityfactor(c0);
+		const float s11_z             = data_unit.mod_z(c0);
 
-			const complexf imp            = data_unit.impedance(c0, ref_impedance);
-			const complexf imp_p          = data_unit.serialToParallel(imp);
-			const float return_loss       = data_unit.gain10(c0);
-			const float vswr              = data_unit.VSWR(c0);
-			const float s11_mag           = data_unit.magnitude(c0);
-			const float quality_factor    = data_unit.qualityFactor(c0, ref_impedance);
-			const float s11_z             = data_unit.magnitude(imp);
-			const float s11_phase         = data_unit.phase(c0);
+		const float resistance        = data_unit.resistance(c0, ref_impedance);
+		const float reactance         = data_unit.reactance(c0, ref_impedance);
 
-			const float s21_gain          = data_unit.gain10(c1);
-			const float s21_mag           = data_unit.magnitude(c1);
-			const float s21_phase         = data_unit.phase(c1);
+		const float parallel_r        = data_unit.parallel_r(c0, ref_impedance);
+		const float parallel_x        = data_unit.parallel_x(c0, ref_impedance);
 
-			const float res               = imp.real();
-			const float res_j             = ABS(imp.imag());
+		const float series_c          = data_unit.series_c(c0, Hz, ref_impedance);
+		const float series_l          = data_unit.series_l(c0, Hz, ref_impedance);
 
-			const float resp              = imp_p.real();
-			const float resp_j            = ABS(imp_p.imag());
+		const float parallel_c        = data_unit.parallel_c(c0, Hz, ref_impedance);
+		const float parallel_l        = data_unit.parallel_l(c0, Hz, ref_impedance);
 
-			const float cap               = data_unit.impedanceToCapacitance(imp, Hz);
-			const float cap_p             = data_unit.impedanceToCapacitance(imp_p, Hz);
+		const float conductance       = data_unit.conductance(c0, ref_impedance);
+		const float susceptance       = data_unit.susceptance(c0, ref_impedance);
 
-			const float ind               = data_unit.impedanceToInductance(imp, Hz);
-			const float ind_p             = data_unit.impedanceToInductance(imp_p, Hz);
+		const float s11_group_delay_sec = data_unit.groupdelay(data_unit.m_point_filt[mem][m].s11, data_unit.m_point_filt[mem][n].s11, delta_freq);
 
-			String res_str   = common.valueToStr(res,    false, true).Trim();
-			String resj_str  = common.valueToStr(res_j,  false, true).Trim();
-
-			String resp_str  = common.valueToStr(resp,   false, true).Trim();
-			String respj_str = common.valueToStr(resp_j, false, true).Trim();
-
-			String cap_str   = common.valueToStr(cap,    false, true).Trim() + "F";
-			String capp_str  = common.valueToStr(cap_p,  false, true).Trim() + "F";
-
-			String ind_str   = common.valueToStr(ind,    false, true).Trim() + "H";
-			String indp_str  = common.valueToStr(ind_p,  false, true).Trim() + "H";
-
-			float s11_group_delay_sec;
-			float s21_group_delay_sec;
-			{
-				complexf w;
-				complexf v;
-				complexf cpx;
-
-				const int m                 = (index == 0) ? 0 : index - 1;
-				const int n                 = (index >= (size - 1)) ? size - 1 : index + 1;
-				const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
-
-				w                           = data_unit.m_point_filt[mem][m].s11;
-				v                           = data_unit.m_point_filt[mem][n].s11;
-				cpx                         = w * v;
-				s11_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-
-				w                           = data_unit.m_point_filt[mem][m].s21;
-				v                           = data_unit.m_point_filt[mem][n].s21;
-				cpx                         = w * v;
-				s21_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-			}
-
-
-
-			MarkerFrequencyLabel->Caption = common.freqToStrMHz(Hz) + " MHz";
-
-			MarkerWavelengthLabel1->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / Hz, false, true, "") + "m" : String("");
-			MarkerWavelengthLabel2->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / (Hz * 4), false, true, "") + "m" : String("");
-
-
-			// S11 info
-
-
-			s = common.valueToStr(c0.real(), false, true, "", true) + " " + common.valueToStr(c0.imag(), false, true, "", true);
-			MarkerS11RealImagLabel->Caption = s;
-
-			//s.printf("%0.3f %cj%0.3f", imp.real(), (imp.imag() >= 0) ? '+' : '-', fabsf(imp.imag()));
-			s = res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
-			MarkerS11ImpedanceLabel->Caption = s;
-
-			//s.printf("%0.3f %cj%0.3f", imp_p.real(), (imp_p.imag() >= 0) ? '+' : '-', fabsf(imp_p.imag()));
-			s = resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
-			MarkerS11AdmittanceLabel2->Caption = s;
-
-			s.printf("%0.3f", imp.real());
-			MarkerS11SeriesRLabel->Caption = s;
-			s = (imp.imag() < 0) ? cap_str : ind_str;
-			MarkerS11SeriesXLabel->Caption = s;
-			MarkerS11SeriesLLabel->Caption = ind_str;
-			MarkerS11SeriesCLabel->Caption = cap_str;
-
-			s.printf("%0.3f", imp_p.real());
-			MarkerS11ParallelRLabel->Caption = s;
-			s = (imp_p.imag() < 0) ? capp_str : indp_str;
-			MarkerS11ParallelXLabel->Caption = s;
-			MarkerS11ParallelLLabel->Caption = indp_str;
-			MarkerS11ParallelCLabel->Caption = capp_str;
-
-			s.printf("%0.3f", vswr);
-			MarkerS11VSWRLabel->Caption = s;
-
-			s.printf("%+0.3fdB", return_loss);
-			MarkerS11ReturnLossLabel->Caption = s;
-
-			s.printf("%0.3f", s11_mag);
-			MarkerS11Label->Caption = s;
-
-			s.printf("%0.3f", quality_factor);
-			MarkerS11QualityFactorLabel->Caption = s;
-
-			s.printf("%0.3f", s11_z);
-			MarkerS11ZLabel->Caption = s;
-
-			s.printf("%+0.3f\xb0", s11_phase * rad_2_deg);
-			MarkerS11PhaseLabel->Caption = s;
-
-			s.printf("%0.3f %+0.3f\xb0", s11_mag, s11_phase * rad_2_deg);
-			MarkerS11PolarLabel->Caption = s;
-
-			s = common.valueToStr(s11_group_delay_sec, false, true) + "s";
-			MarkerS11GroupDelayLabel->Caption = s;
-
-
-			// S21 info
-
-
-			s = common.valueToStr(c1.real(), false, true, "", true) + " " + common.valueToStr(c1.imag(), false, true, "", true);
-			MarkerS21RealImagLabel->Caption = s;
-
-			s.printf("%+0.3fdB", s21_gain);
-			MarkerS21GainLabel->Caption = s;
-
-			s.printf("%0.3f", s21_mag);
-			MarkerS21Label->Caption = s;
-
-			s.printf("%+0.3f\xb0", s21_phase * rad_2_deg);
-			MarkerS21PhaseLabel->Caption = s;
-
-			s.printf("%0.3f %+0.3f\xb0", s21_mag, s21_phase * rad_2_deg);
-			MarkerS21PolarLabel->Caption = s;
-
-			s = common.valueToStr(s21_group_delay_sec, false, true) + "s";
-			MarkerS21GroupDelayLabel->Caption = s;
-
-
-			//
-
-
-
-			// make everything visible on the info panel
-			for (int i = 0; i < InfoPanel->ControlCount; i++)
-			{
-				TControl *control = InfoPanel->Controls[i];
-				TLabel *label = dynamic_cast<TLabel *>(control);
-				if (label)
-					if (!label->Visible)
-						label->Visible = true;
-			}
-
-			//InfoPanel->Visible = true;
-
-			// force the info panel to finish display updates
-			InfoPanel->Update();
-
-			return true;
+		static bool first = true;
+		#define qInfo(name, txt)   {if (first) InfoStringGrid->Cells[0][idx] = name; InfoStringGrid->Cells[1][idx] = txt; idx++;}
+		int idx = 0;
+		if (first) {
+			InfoStringGrid->ColWidths[0] = (InfoStringGrid->ColWidths[0] * 90)/100;
+			InfoStringGrid->ColWidths[1] = InfoStringGrid->Width - InfoStringGrid->ColWidths[0];
+			InfoStringGrid->ColAlignments[0] = taRightJustify;
+			InfoStringGrid->ColAlignments[1] = taLeftJustify;
 		}
-		else
-		{  // mouse is on empty space
+		char tmp[256];
+		common.sprintf(tmp, "%qHz", Hz);
+		qInfo("Frequency", tmp);
 
-			const complexf c(re, im);
+		common.sprintf(tmp, "%.5Fm", (float)SPEED_OF_LIGHT / Hz);
+		qInfo("Wavelength", tmp);
 
-			const float ref_impedance = 50;
+		common.sprintf(tmp, "%.5Fm", (float)SPEED_OF_LIGHT / (4*Hz));
+		qInfo("1/4 Wavelength", tmp);
+		qInfo("", "");
 
-			const complexf imp            = data_unit.impedance(c, ref_impedance);
-			const complexf imp_p          = data_unit.serialToParallel(imp);
-			const float return_loss       = data_unit.gain10(c);
-			const float vswr              = data_unit.VSWR(c);
-			const float s11_mag           = data_unit.magnitude(c);
-			const float quality_factor    = data_unit.qualityFactor(c, ref_impedance);
-			const float s11_z             = data_unit.magnitude(imp);
-			const float s11_phase         = data_unit.phase(c);
+		qInfo("S11 info           ", "");
+		// S11 info
+		common.sprintf(tmp, "%.5F %+j.5F", c0.real(), c0.imag());
+		qInfo("Real Imag", tmp);
 
-			const float s21_gain          = data_unit.gain10(c);
-			const float s21_mag           = data_unit.magnitude(c);
-			const float s21_phase         = data_unit.phase(c);
+//		common.sprintf(tmp, "%.5F", s11_mag);
+//		qInfo("Magnitude", tmp);
+//		common.sprintf(tmp, "%+5F\xb0", s11_phase);
+//		qInfo("Phase", tmp);
 
-			const float res               = imp.real();
-			const float res_j             = ABS(imp.imag());
+		common.sprintf(tmp, "%.5F %+.5F\xb0", s11_mag, s11_phase);
+		qInfo("Polar", tmp);
 
-			const float resp              = imp_p.real();
-			const float resp_j            = ABS(imp_p.imag());
+		common.sprintf(tmp, "%.3f", vswr);
+		qInfo("VSWR", tmp);
 
-			const float cap               = data_unit.impedanceToCapacitance(imp, Hz);
-			const float cap_p             = data_unit.impedanceToCapacitance(imp_p, Hz);
+		common.sprintf(tmp, "%+0.3fdB", return_loss);
+		qInfo("Return Loss", tmp);
 
-			const float ind               = data_unit.impedanceToInductance(imp, Hz);
-			const float ind_p             = data_unit.impedanceToInductance(imp_p, Hz);
+		common.sprintf(tmp, "%0.3f", quality_factor);
+		qInfo("Quality Factor", tmp);
 
-			String res_str   = common.valueToStr(res,    false, true).Trim();
-			String resj_str  = common.valueToStr(res_j,  false, true).Trim();
+		common.sprintf(tmp, "%.5Fs", s11_group_delay_sec);
+		qInfo("Group Delay", tmp);
 
-			String resp_str  = common.valueToStr(resp,   false, true).Trim();
-			String respj_str = common.valueToStr(resp_j, false, true).Trim();
+		common.sprintf(tmp, "%F %+jF", resistance, reactance);
+		qInfo("Impedance", tmp);
 
-			String cap_str   = common.valueToStr(cap,    false, true).Trim() + "F";
-			String capp_str  = common.valueToStr(cap_p,  false, true).Trim() + "F";
+		common.sprintf(tmp, "%0.5F", s11_z);
+		qInfo("|Z|", tmp);
 
-			String ind_str   = common.valueToStr(ind,    false, true).Trim() + "H";
-			String indp_str  = common.valueToStr(ind_p,  false, true).Trim() + "H";
+		common.sprintf(tmp, "%.5F", resistance);
+		qInfo("Series R", tmp);
+		common.sprintf(tmp, "%.5F", reactance);
+		qInfo("Series X", tmp);
 
-			float s11_group_delay_sec;
-			float s21_group_delay_sec;
-			{
-				complexf w;
-				complexf v;
-				complexf cpx;
+		common.sprintf(tmp, "%.5FH", series_l);
+		qInfo("Series L", tmp);
+		common.sprintf(tmp, "%.5FF", series_c);
+		qInfo("Series C", tmp);
 
-				const int m                 = (index == 0) ? 0 : index - 1;
-				const int n                 = (index >= (size - 1)) ? size - 1 : index + 1;
-				const int64_t delta_freq    = data_unit.m_point_filt[mem][n].Hz - data_unit.m_point_filt[mem][m].Hz;
+		common.sprintf(tmp, "%.5F", parallel_r);
+		qInfo("Parallel R", tmp);
+		common.sprintf(tmp, "%.5F", parallel_x);
+		qInfo("Parallel X", tmp);
+		common.sprintf(tmp, "%.5FH", parallel_l);
+		qInfo("Parallel L", tmp);
+		common.sprintf(tmp, "%.5FF", parallel_c);
+		qInfo("Parallel C", tmp);
 
-				w                           = data_unit.m_point_filt[mem][m].s11;
-				v                           = data_unit.m_point_filt[mem][n].s11;
-				cpx                         = w * v;
-				s11_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
+		common.sprintf(tmp, "%.5F %+j.5FS", conductance, susceptance);
+		qInfo("Admittance", tmp);
 
-				w                           = data_unit.m_point_filt[mem][m].s21;
-				v                           = data_unit.m_point_filt[mem][n].s21;
-				cpx                         = w * v;
-				s21_group_delay_sec         = (cpx.imag() == 0 || delta_freq == 0) ? 0.0f : (float)(atan2(cpx.real(), cpx.imag()) / (2 * M_PI * delta_freq));
-			}
+		qInfo("", "");
+		// S21 info
+		qInfo("S21 info           ", "");
+		const complexf c1 = (smith_mode && re_im_dist <= 1.0f) ? c : data_unit.m_point_filt[mem][index].s21;
+		const float s21_mag           = data_unit.linear(c1);
+		const float s21_logmag        = data_unit.logmag(c1);
+		const float s21_phase         = data_unit.phase(c1);
+		const float s21shunt_r        = data_unit.s21shunt_r(c1, ref_impedance);
+		const float s21shunt_x        = data_unit.s21shunt_x(c1, ref_impedance);
+		const float s21shunt_z        = data_unit.s21shunt_z(c1, ref_impedance);
+		const float s21series_r       = data_unit.s21series_r(c1, ref_impedance);
+		const float s21series_x       = data_unit.s21series_x(c1, ref_impedance);
+		const float s21series_z       = data_unit.s21series_z(c1, ref_impedance);
+		const float s21_qualityfactor = data_unit.s21_qualityfactor(c1);
 
+		const float s21_group_delay_sec = data_unit.groupdelay(data_unit.m_point_filt[mem][m].s21, data_unit.m_point_filt[mem][n].s21, 2.0f * delta_freq);
 
+		common.sprintf(tmp, "%.5F% +j.5F", c1.real(), c1.imag());
+		qInfo("Real Imag", tmp);
 
-			MarkerFrequencyLabel->Caption = common.freqToStrMHz(Hz) + " MHz";
+		common.sprintf(tmp, "%+0.3fdB", s21_logmag);
+		qInfo("Gain", tmp);
 
-			MarkerWavelengthLabel1->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / Hz, false, true, "") + "m" : String("");
-			MarkerWavelengthLabel2->Caption = (Hz > 0) ? common.valueToStr((double)SPEED_OF_LIGHT / (Hz * 4), false, true, "") + "m" : String("");
+//		common.sprintf(tmp, "%.5F", s21_mag);
+//		qInfo("Magnitude", tmp);
+//		common.sprintf(tmp, "%+5F\xb0", s21_phase);
+//		qInfo("Phase", tmp);
 
+		common.sprintf(tmp, "%.5F% +.5F\xb0", s21_mag, s21_phase);
+		qInfo("Polar", tmp);
 
-			// S11 info
+		common.sprintf(tmp, "%0.3f", s21_qualityfactor);
+		qInfo("Quality Factor", tmp);
 
+		common.sprintf(tmp, "%.5Fs", s21_group_delay_sec);
+		qInfo("Group Delay", tmp);
 
-			s = common.valueToStr(c.real(), false, true, "", true) + " " + common.valueToStr(c.imag(), false, true, "", true);
-			MarkerS11RealImagLabel->Caption = s;
+		common.sprintf(tmp, "%F %+jF", s21shunt_r, s21shunt_x);
+		qInfo("Z shunt", tmp);
+		common.sprintf(tmp, "%.5F", s21shunt_z);
+		qInfo("|Z| shunt", tmp);
 
-			//s.printf("%0.3f %cj%0.3f", imp.real(), (imp.imag() >= 0) ? '+' : '-', fabsf(imp.imag()));
-			s = res_str + " " + ((imp.imag() >= 0) ? "+j" : "-j") + resj_str;
-			MarkerS11ImpedanceLabel->Caption = s;
+		common.sprintf(tmp, "%F %+jF", s21series_r, s21series_x);
+		qInfo("Z series", tmp);
+		common.sprintf(tmp, "%.5F", s21series_z);
+		qInfo("|Z| series", tmp);
 
-			//s.printf("%0.3f %cj%0.3f", imp_p.real(), (imp_p.imag() >= 0) ? '+' : '-', fabsf(imp_p.imag()));
-			s = resp_str + " " + ((imp_p.imag() >= 0) ? "+j" : "-j") + respj_str;
-			MarkerS11AdmittanceLabel2->Caption = s;
-
-			s.printf("%0.3f", imp.real());
-			MarkerS11SeriesRLabel->Caption = s;
-			s = (imp.imag() < 0) ? cap_str : ind_str;
-			MarkerS11SeriesXLabel->Caption = s;
-			MarkerS11SeriesLLabel->Caption = ind_str;
-			MarkerS11SeriesCLabel->Caption = cap_str;
-
-			s.printf("%0.3f", imp_p.real());
-			MarkerS11ParallelRLabel->Caption = s;
-			s = (imp_p.imag() < 0) ? capp_str : indp_str;
-			MarkerS11ParallelXLabel->Caption = s;
-			MarkerS11ParallelLLabel->Caption = indp_str;
-			MarkerS11ParallelCLabel->Caption = capp_str;
-
-			s.printf("%0.3f", vswr);
-			MarkerS11VSWRLabel->Caption = s;
-
-			s.printf("%+0.3fdB", return_loss);
-			MarkerS11ReturnLossLabel->Caption = s;
-
-			s.printf("%0.3f", s11_mag);
-			MarkerS11Label->Caption = s;
-
-			s.printf("%0.3f", quality_factor);
-			MarkerS11QualityFactorLabel->Caption = s;
-
-			s.printf("%0.3f", s11_z);
-			MarkerS11ZLabel->Caption = s;
-
-			s.printf("%+0.3f\xb0", s11_phase * rad_2_deg);
-			MarkerS11PhaseLabel->Caption = s;
-
-			s.printf("%0.3f %+0.3f\xb0", s11_mag, s11_phase * rad_2_deg);
-			MarkerS11PolarLabel->Caption = s;
-
-			s = common.valueToStr(s11_group_delay_sec, false, true) + "s";
-			MarkerS11GroupDelayLabel->Caption = s;
-
-
-			// S21 info
-
-
-			MarkerS21RealImagLabel->Caption   = "";
-			MarkerS21GainLabel->Caption       = "";
-			MarkerS21Label->Caption           = "";
-			MarkerS21PhaseLabel->Caption      = "";
-			MarkerS21PolarLabel->Caption      = "";
-			MarkerS21GroupDelayLabel->Caption = "";
-
-
-			//
-
-
-			// make everything visible on the info panel
-			for (int i = 0; i < InfoPanel->ControlCount; i++)
-			{
-				TControl *control = InfoPanel->Controls[i];
-				TLabel *label = dynamic_cast<TLabel *>(control);
-				if (label)
-					if (!label->Visible)
-						label->Visible = true;
-			}
-
-			//InfoPanel->Visible = true;
-
-			// force the info panel to finish display updates
-			InfoPanel->Update();
-
-			return true;
-		}
-	}
-
-	 return false;
-}
-
-void __fastcall TForm1::updateInfoPanel()
-{
-/*
-	if (settings.borderWidth <= 0)
-	{	// match the colour of the graphs
-		if (InfoPanel->StyleElements.Contains(seClient))
-			InfoPanel->StyleElements = InfoPanel->StyleElements >> seClient;	// disable the client style so we can set our own colour
-		if (InfoPanel->Color != settings.m_colours.background)
-			InfoPanel->Color = settings.m_colours.background;
+		first = false;
+		// make everything visible on the info panel
 		for (int i = 0; i < InfoPanel->ControlCount; i++)
 		{
 			TControl *control = InfoPanel->Controls[i];
 			TLabel *label = dynamic_cast<TLabel *>(control);
 			if (label)
-			{
-				if (label->StyleElements.Contains(seFont))
-					label->StyleElements = label->StyleElements >> seFont;	// disable the font style so we can set our own colour
-				if (label->Font->Color != settings.m_colours.font)
-					label->Font->Color = settings.m_colours.font;
-			}
+				if (!label->Visible)
+					label->Visible = true;
 		}
+		//InfoPanel->Visible = true;
+		// force the info panel to finish display updates
+		InfoPanel->Update();
+		return true;
 	}
-	else
-	{	// put components back to their original colours
-		if (!InfoPanel->StyleElements.Contains(seClient))
-			InfoPanel->StyleElements = InfoPanel->StyleElements << seClient;	// re-enable the client style
-		if (InfoPanel->Color != m_info_panel_colours[0])
-			InfoPanel->Color = m_info_panel_colours[0];
-		for (int i = 0, k = 0; i < InfoPanel->ControlCount; i++)
-		{
-			TControl *control = InfoPanel->Controls[i];
-			TLabel *label = dynamic_cast<TLabel *>(control);
-			if (label)
-			{
-				if (!label->StyleElements.Contains(seFont))
-					label->StyleElements = label->StyleElements << seFont;	// re-enable the font style
-				if (label->Font->Color != m_info_panel_colours[k])
-					label->Font->Color = m_info_panel_colours[k];
-				k++;
-			}
-		}
-	}
-*/
+	return false;
+}
+
+void __fastcall TForm1::updateInfoPanel()
+{
 	const int p_graph = graphs.m_mouse.graph;
 	const int p_mem   = graphs.m_mouse.point_mem;
 	const int p_index = graphs.m_mouse.point_index;
@@ -2425,56 +2222,6 @@ void __fastcall TForm1::updateInfoPanel()
 
 	if (!InfoPanel->Visible)
 		return;
-
-	if (!MarkerFrequencyLabel->Caption.IsEmpty())
-	{
-		InfoPanel->Caption              = "";
-
-		MarkerFrequencyLabel->Caption        = "";
-
-		MarkerWavelengthLabel1->Caption      = "";
-		MarkerWavelengthLabel2->Caption      = "";
-
-		MarkerS11RealImagLabel->Caption      = "";
-		MarkerS11ImpedanceLabel->Caption     = "";
-		MarkerS11AdmittanceLabel2->Caption   = "";
-		MarkerS11SeriesRLabel->Caption       = "";
-		MarkerS11SeriesXLabel->Caption       = "";
-		MarkerS11SeriesLLabel->Caption       = "";
-		MarkerS11SeriesCLabel->Caption       = "";
-		MarkerS11ParallelRLabel->Caption     = "";
-		MarkerS11ParallelXLabel->Caption     = "";
-		MarkerS11ParallelLLabel->Caption     = "";
-		MarkerS11ParallelCLabel->Caption     = "";
-		MarkerS11VSWRLabel->Caption          = "";
-		MarkerS11ReturnLossLabel->Caption    = "";
-		MarkerS11Label->Caption              = "";
-		MarkerS11QualityFactorLabel->Caption = "";
-		MarkerS11ZLabel->Caption             = "";
-		MarkerS11PhaseLabel->Caption         = "";
-		MarkerS11PolarLabel->Caption         = "";
-		MarkerS11GroupDelayLabel->Caption    = "";
-
-		MarkerS21RealImagLabel->Caption      = "";
-		MarkerS21GainLabel->Caption          = "";
-		MarkerS21Label->Caption              = "";
-		MarkerS21PhaseLabel->Caption         = "";
-		MarkerS21PolarLabel->Caption         = "";
-		MarkerS21GroupDelayLabel->Caption    = "";
-/*
-		// make everything invisible on the info panel
-		for (int i = 0; i < InfoPanel->ControlCount; i++)
-		{
-			TControl *control = InfoPanel->Controls[i];
-			TLabel *label = dynamic_cast<TLabel *>(control);
-			if (label)
-				if (label->Visible)
-					label->Visible = false;
-		}
-*/
-		// force the info panel to finish display updates
-		InfoPanel->Update();
-	}
 }
 
 // *************************************************************************
@@ -3490,8 +3237,8 @@ void __fastcall TForm1::WMComDeviceChanged(TMessage &msg)
 			if (data_unit.squeak_wav.size() > MIN_WAV_SIZE)
 				sound_played = PlaySound(&data_unit.squeak_wav[0], NULL, SND_MEMORY | SND_NODEFAULT | SND_NOWAIT | SND_ASYNC);
 		#endif
-		if (sound_played == FALSE)
-			Beep(440, 80);
+		//if (sound_played == FALSE)
+		//	Beep(440, 80);
 	}
 	else
 	{	// disconnected
@@ -3500,8 +3247,8 @@ void __fastcall TForm1::WMComDeviceChanged(TMessage &msg)
 			if (data_unit.phurp_wav.size() > MIN_WAV_SIZE)
 				sound_played = PlaySound(&data_unit.phurp_wav[0], NULL, SND_MEMORY | SND_NODEFAULT | SND_NOWAIT | SND_ASYNC);
 		#endif
-		if (sound_played == FALSE)
-			Beep(349, 80);
+		//if (sound_played == FALSE)
+		//	Beep(349, 80);
 
 		updateDeviceComboBox();
 
@@ -4247,6 +3994,7 @@ void __fastcall TForm1::addNewRxData(std::vector <t_data_point> &new_points)
 			 (!nanovna1_comms.m_pause_comms || (data_unit.m_segment > 0 && data_unit.m_segment < segments)))
 		{
 			requestScan(); 	// request next segment
+			::PostMessage(Form1->Handle, WM_INCOMING_POINTS, (WPARAM)nanovna1_comms.m_rx_block.bin_data_index, 0);
 		}
 		else	// finished scan
 		{
@@ -4293,13 +4041,9 @@ void __fastcall TForm1::buildMarkerListBox()
 	for (unsigned int i = 0; i < settings.m_markers_freq.size(); i++)
 	{
 		const t_marker_freq marker = settings.m_markers_freq[i];
-		String s;
-		s.printf(L"%3d  %s Hz", 1 + i, common.freqToStr2(marker.Hz, 10).c_str());
-		if (marker.type == MARKER_TYPE_DELTA)
-			s += "  Delta";
-		else
-			s += "       ";
-		MarkerListBox->Items->AddObject(s, (TObject *)i);
+		char tmp[128];
+		common.sprintf(tmp, "%3d  %15qHz  %5s", 1 + i, marker.Hz, marker.type == MARKER_TYPE_DELTA ? "Delta" : "");
+		MarkerListBox->Items->AddObject(tmp, (TObject *)i);
 	}
 
 	// move the visible list back to it's original position
@@ -6899,100 +6643,6 @@ void __fastcall TForm1::DeviceComboBoxClick(TObject *Sender)
 		connect();
 }
 
-void __fastcall TForm1::MarkerListViewData(TObject *Sender,
-		TListItem *Item)
-{
-	TListView *lv = dynamic_cast<TListView *>(Sender);
-	if (!lv || !Item)
-		return;
-	if (!lv->OwnerData)
-		return;
-
-	const int index = Item->Index;
-	if (index < 0 || index >= (int)settings.m_markers_freq.size())
-		return;
-
-	Item->Data = (void *)(1 + index);
-	Item->Caption = "";
-	Item->SubItems->Add(IntToStr(1 + index));
-	Item->SubItems->Add(common.freqToStr2(settings.m_markers_freq[index].Hz, 10));
-}
-
-void __fastcall TForm1::MarkerListViewKeyDown(TObject *Sender, WORD &Key,
-		TShiftState Shift)
-{
-	TListView *lv = dynamic_cast<TListView *>(Sender);
-	if (lv == NULL)
-		return;
-
-	if (Key == VK_DELETE)
-	{
-		Key = 0;
-
-		int deleted_items = 0;
-
-		if (lv->Selected == NULL)
-			return;
-
-		//const int top_index = (lv->TopItem) ? lv->TopItem->Index : 0;
-
-		int last_selected_index;
-		for (last_selected_index = lv->Items->Count - 1; last_selected_index >= 0; last_selected_index--)
-			if (lv->Items->Item[last_selected_index]->Selected)
-				break;
-
-		// we must go in reverse for this to work
-		for (int i = lv->Items->Count - 1; i >= 0; i--)
-		{
-			TListItem *pItem = lv->Items->Item[i];
-			if (!pItem)
-				continue;
-			if (!pItem->Selected)
-				continue;
-
-			//const int index = 1 + pItem->Index;
-			const int index = pItem->Index;
-			settings.m_markers_freq.erase(settings.m_markers_freq.begin() + index);	// delete a marker
-			deleted_items++;
-		}
-
-		if (deleted_items > 0)
-		{
-			lv->ClearSelection();
-
-			// select the one that followed the last selected one
-			if (last_selected_index < 0 || last_selected_index > lv->Items->Count - 1)
-				last_selected_index = lv->Items->Count - 1;
-			if (last_selected_index >= 0)
-			{
-				lv->Items->Item[last_selected_index]->Selected = true;
-				if (lv->Showing && lv->CanFocus())
-					lv->Items->Item[last_selected_index]->Focused = true;
-			}
-
-			lv->Invalidate();
-
-			if (Application->MainForm)
-				::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
-			//updateInfoPanel();
-		}
-
-		return;
-	}
-}
-
-void __fastcall TForm1::MarkerListViewChange(TObject *Sender,
-		TListItem *Item, TItemChange Change)
-{
-	TListView *lv = dynamic_cast<TListView *>(Sender);
-	if (lv == NULL)
-		return;
-
-	if (Application->MainForm)
-		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
-	//updateInfoPanel();
-}
-
 void __fastcall TForm1::MarkerListBoxKeyDown(TObject *Sender, WORD &Key,
 		TShiftState Shift)
 {
@@ -7146,9 +6796,6 @@ void __fastcall TForm1::configGUI()
 		OutputPowerLabel2->Visible         = false;
 		OutputPowerTrackBar->Visible       = false;
 
-		MarkerS11AdmittanceLabel1->Visible = false;
-		MarkerS11AdmittanceLabel2->Visible = false;
-
 		LCMatchingLabel->Visible           = false;
 		LCMatchingToggleSwitch->Visible    = false;
 
@@ -7181,11 +6828,8 @@ void __fastcall TForm1::configGUI()
 		OutputPowerLabel2->Visible         = true;
 		OutputPowerTrackBar->Visible       = true;
 
-		MarkerS11AdmittanceLabel1->Visible = true;
-		MarkerS11AdmittanceLabel2->Visible = true;
-
 		LCMatchingLabel->Visible           = true;
-		LCMatchingToggleSwitch->Visible    = true;
+		LCMatchingToggleSwitch->Visible    = true;
 
 		InfoPanelLabel2->Visible           = true;
 		InfoPanelToggleSwitch->Visible     = true;
@@ -7225,7 +6869,7 @@ void __fastcall TForm1::updatePointBandwidthComboBox(const bool create)
 {
 	TComboBox *cb = PointBandwidthHzComboBox;
 
-	const String s = cb->Text;
+	String s = cb->Text;
 
 	const TNotifyEvent ne = cb->OnChange;
 	cb->OnChange = NULL;
@@ -7251,11 +6895,10 @@ void __fastcall TForm1::updatePointBandwidthComboBox(const bool create)
 			avg = 5;cb->AddItem(IntToStr(avg), (TObject *)avg); 
 			avg = 10;cb->AddItem(IntToStr(avg), (TObject *)avg); 
 			avg = 20;cb->AddItem(IntToStr(avg), (TObject *)avg); 
-			avg = 40;cb->AddItem(IntToStr(avg), (TObject *)avg); 
-			avg = 60;cb->AddItem(IntToStr(avg), (TObject *)avg); 
+			avg = 40;cb->AddItem(IntToStr(avg), (TObject *)avg);
+			avg = 60;cb->AddItem(IntToStr(avg), (TObject *)avg);
 			avg = 80;cb->AddItem(IntToStr(avg), (TObject *)avg);
-			cb->ItemIndex = 0;
-			cb->Text = data_unit.m_bandwidth_Hz;
+			s = IntToStr(data_unit.m_bandwidth_Hz);
 		}
 		else {
 			int Hz = data_unit.m_vna_data.max_bandwidth_Hz;
@@ -7593,18 +7236,8 @@ void __fastcall TForm1::clearMemory(const int mem)
 		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
 }
 
-void __fastcall TForm1::loadMemoryFile(const int mem)
+void __fastcall TForm1::applyMemoryFile(String &fn, const int mem, std::vector <t_data_point> &s_params)
 {
-	if (mem <= 0 || mem >= MAX_MEMORIES)
-		return;
-
-	std::vector <t_data_point> s_params;
-
-	String fn = common.loadSParams(s_params, "");
-
-	if (fn.IsEmpty())
-		return;
-
 	data_unit.m_point_mem[mem] = s_params;
 
 	data_unit.m_point_filt[mem].resize(0);
@@ -7640,6 +7273,21 @@ void __fastcall TForm1::loadMemoryFile(const int mem)
 		sb->Down    = settings.memoryEnable[mem];
 		sb->Hint = s;
 	}
+ 	if (Application->MainForm)
+		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
+}
+
+void __fastcall TForm1::loadMemoryFile(const int mem)
+{
+	if (mem <= 0 || mem >= MAX_MEMORIES)
+		return;
+
+	std::vector <t_data_point> s_params;
+
+	String fn = common.loadSParams(s_params, "");
+
+	if (!fn.IsEmpty())
+		applyMemoryFile(fn, mem, s_params);
 }
 
 void __fastcall TForm1::setMemory(const int mem)
@@ -9724,6 +9372,62 @@ void __fastcall TForm1::ScanOnceSpeedButtonClick(TObject *Sender)
 	}
 }
 
+void __fastcall TForm1::SD_list_updateClick(TObject *Sender)
+{
+	if (!connected() || !data_unit.m_vna_data.cmd_sd_read)
+		return;
+
+	String s;
+	s.printf(L"sd_list %s", sd_pattern->Text);
+	Form1->addSerialTxCommand(s);
+}
+
+void __fastcall TForm1::sd_patternSelect(TObject *Sender)
+{
+	SD_list_updateClick(Sender);
+}
+
+void __fastcall TForm1::sd_patternKeyPress(TObject *Sender, System::WideChar &Key)
+
+{
+	if (Key == VK_RETURN)
+		SD_list_updateClick(Sender);
+}
+
+void __fastcall TForm1::file_listDblClick(TObject *Sender)
+{
+	if (!connected() || !data_unit.m_vna_data.cmd_sd_read)
+		return;
+	int index = file_list->ItemIndex;
+	if (index < 0) return;
+	String ext  = ExtractFileExt(file_list->Items->Strings[index]).LowerCase();
+	int format = -1;
+	     if (ext == ".bmp") format = SD_FILE_BITMAP;
+	else if (ext == ".s1p") format = SD_FILE_S1P;
+	else if (ext == ".s2p") format = SD_FILE_S2P;
+	if (format >= 0)
+		nanovna1_comms.sd_read(file_list->Items->Strings[index], format);
+}
+
+void __fastcall TForm1::file_listKeyPress(TObject *Sender, System::WideChar &Key)
+{
+	if (Key != VK_RETURN) return;
+	file_listDblClick(Sender);
+}
+
+void __fastcall TForm1::FilePopupMenuPopup(TObject *Sender)
+{
+	int index = file_list->ItemIndex;
+	if (index < 0) return;
+	FilePopupMenu->Items->Items[0]->Visible = false;// Show image
+	FilePopupMenu->Items->Items[1]->Visible = false;// Load M1
+	FilePopupMenu->Items->Items[2]->Visible = false;// Load M2
+	FilePopupMenu->Items->Items[3]->Visible = false;// Load M3
+	FilePopupMenu->Items->Items[4]->Visible = false;// Load M4
+ //	FilePopupMenu->Items->Items[5]->Visible = false;// Save to disk
+}
+//---------------------------------------------------------------------------
+
 void __fastcall TForm1::CurveSmoothingTrackBarChange(TObject *Sender)
 {
 	settings.curveSmoothingLevel = CurveSmoothingTrackBar->Position;
@@ -10396,6 +10100,13 @@ void __fastcall TForm1::InfoPanelToggleSwitchClick(TObject *Sender)
 	settings.infoPanel = (InfoPanelToggleSwitch->State == tssOn) ? true : false;
 	InfoPanel->Visible = settings.infoPanel;
 }
+
+void __fastcall TForm1::InfoPanelToggleSDClick(TObject *Sender)
+{
+	settings.SDPanel = (SDPanelToggleSwitch->State == tssOn) ? true : false;
+	SDPanel->Visible = settings.SDPanel;
+}
+//---------------------------------------------------------------------------
 
 void __fastcall TForm1::FormMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta,
 			 TPoint &MousePos, bool &Handled)
@@ -13448,5 +13159,7 @@ void __fastcall TForm1::GLPanelMouseUp(TObject *Sender, TMouseButton Button,
 	if (Application->MainForm)
 		::PostMessage(Application->MainForm->Handle, WM_UPDATE_GRAPH, 0, 0);
 }
+
+
 
 
